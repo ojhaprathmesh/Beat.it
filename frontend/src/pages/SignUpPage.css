@@ -1,10 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700&display=swap');
 
+/* Root colors */
 :root {
     --grey: #605E72;
     --blue: #0C47BB;
 }
 
+/* Brand tag styling */
 #brand-tag {
     color: white;
     font-size: 40px;
@@ -15,6 +17,7 @@
     height: auto;
 }
 
+/* Styling for the main white frame (container of the form) */
 .whiteFrame {
     display: flex;
     background-color: white;
@@ -28,68 +31,68 @@
     column-gap: 100px;
 }
 
+/* Rotate and style Beat.it text */
 #beatit-text {
     transform: rotate(-90deg);
     white-space: nowrap;
 }
 
+/* Adjust font size of Beat.it text */
 #beatit-text pre {
     font-size: 40px;
 }
 
+/* Form container styling */
 .signup-form {
     display: flex;
     flex-direction: column;
     gap: 25px;
-    /* height: 60%; */
 }
 
+/* Form heading */
 .signup-form #form-heading {
     font-size: 45px;
     letter-spacing: -2px;
 }
 
+/* Grid layout for form inputs */
 #form-inputs {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-    gap: 20px;
-    column-gap: 10px;
-    /* Adjust for spacing between inputs */
+    gap: 20px 10px;
+    /* First value for row gap, second for column gap */
 }
 
+/* First and last name input positioning */
 #first-name {
     grid-column: 1 / 2;
-    /* First column */
 }
 
 #last-name {
     grid-column: 2 / 3;
-    /* Second column */
 }
 
+/* Input labels for names */
 .name-input label {
     width: calc(84.475px + 15px);
 }
 
-#email {
+/* Email and password input spanning both columns */
+#email, #password {
     grid-column: 1 / 3;
-    /* Span both columns */
 }
 
+/* Email label width */
 #email label {
     width: calc(42.2875px + 15px);
 }
 
-#password {
-    grid-column: 1 / 3;
-    /* Span both columns */
-}
-
+/* Password label width */
 #password label {
     width: calc(76.7875px + 15px);
 }
 
+/* Input label styling */
 .input-container label {
     display: inline-block;
     position: relative;
@@ -100,6 +103,7 @@
     text-align: center;
 }
 
+/* General styling for input boxes */
 .box {
     padding: 16px;
     font-size: 16px;
@@ -108,24 +112,27 @@
     width: 100%;
 }
 
+/* Form button styling */
 .form-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 10px;
+    border: none;
     font-size: 28px;
     color: white;
     background-color: var(--blue);
     grid-column: 1 / 3;
-    border: none;
-    box-sizing: border-box;
     max-height: 52px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    cursor: pointer;
 }
 
+/* Cursor pointer for labels and buttons */
 .input-container label, .form-btn {
     cursor: pointer;
 }
 
+/* Media queries for responsive design on smaller screens */
 @media screen and (max-width: 768px) {
     .signup {
         flex-direction: column;
@@ -134,8 +141,8 @@
 
     .whiteFrame {
         padding-left: 40px;
-        width: 100%;
         border-radius: 0;
+        width: 100%;
     }
 
     #beatit-text {
