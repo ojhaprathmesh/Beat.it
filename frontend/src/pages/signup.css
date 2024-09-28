@@ -31,18 +31,29 @@ body {
     /* Allow graphics to take available space */
 }
 
-#image-container-1 img,
-#image-container-2 img {
+.image-container {
+    position: absolute;
+    z-index: 10;
+}
+
+.image-container img {
     max-width: 100%;
     height: auto;
     object-fit: contain;
     /* Ensures the images fit without distortion */
 }
 
+#image-container-1 {
+    z-index: -1;
+}
+
 #image-container-2 {
-    position: absolute;
     bottom: -4px;
     left: 0px;
+}
+
+#image-container-3 {
+    right: 0;
 }
 
 #brand-tag {
@@ -75,7 +86,7 @@ body {
     /* Prevents text from wrapping in small spaces */
 }
 
-#beatit-text pre {  
+#beatit-text pre {
     font-family: "Syne";
     font-size: 40px;
     font-weight: 1000;
