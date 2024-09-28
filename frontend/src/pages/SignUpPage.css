@@ -127,10 +127,17 @@
     cursor: pointer;
 }
 
+/* Styles for redirection link to login page */
+#redirect-login {
+    position: relative;
+    bottom: 20px;
+}
+
 /* Cursor pointer for labels and buttons */
 .input-container label, .form-btn {
     cursor: pointer;
 }
+
 
 /* Media queries for responsive design on smaller screens */
 @media screen and (max-width: 768px) {
