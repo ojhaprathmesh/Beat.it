@@ -1,35 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne+Mono:wght@400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700&display=swap');
-
-* {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background-color: #034BB5;
-    font-family: "Syne Mono", monospace;
-    overflow: hidden;
-}
-
-.signup {
-    display: flex;
-    height: 100vh;
-    align-items: center;
-    justify-content: center;
-    /* Center elements horizontally */
-}
-
-.graphics {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100vh;
-    position: relative;
-    flex: 1;
-    /* Allow graphics to take available space */
-}
 
 .image-container {
     position: absolute;
@@ -40,7 +9,6 @@ body {
     max-width: 100%;
     height: auto;
     object-fit: contain;
-    /* Ensures the images fit without distortion */
 }
 
 #image-container-1 {
@@ -83,7 +51,6 @@ body {
     position: relative;
     right: 48px;
     width: 75%;
-    /* Prevents text from wrapping in small spaces */
 }
 
 #beatit-text pre {
@@ -96,7 +63,6 @@ body {
 @media screen and (max-width: 768px) {
     .signup {
         flex-direction: column;
-        /* Stack graphics and whiteFrame vertically on mobile */
         justify-content: flex-start;
     }
 
@@ -106,13 +72,11 @@ body {
         border-radius: 0;
     }
 
-    .beatit-text {
+    #beatit-text {
         font-size: 30px;
-        left: 50px;
-        top: 100px;
     }
 
-    .brand-tag {
+    #brand-tag {
         font-size: 30px;
         left: 20px;
         top: 100px;
