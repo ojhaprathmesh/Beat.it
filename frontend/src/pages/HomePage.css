@@ -1,0 +1,239 @@
+    .body{
+        background-color: #002760;
+        background-image: url(./assets/home/bg-graphic.png);
+        background-size: cover;
+        width: 99vw;
+        height: 100vw;
+        overflow-y: hidden;
+    }
+
+
+    .searchbar{
+        background-color: #605E72;
+        width: 725px;
+        height: 52px;
+        /* flex: 1; */
+        position: relative;
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        box-shadow: 4px 4px 10px rgb(24, 24, 24);        
+    }
+
+    .searchicon{
+        margin-left: 10px;
+        height: 32px;
+        width: 32px;
+    }
+
+    .searchbar_input{
+        background-color: #605E72;
+        font-size: 18px;
+        width: 475px; 
+        height: 30px; 
+        margin-left: 25px;
+        border: 0px;
+        outline: none;
+        color: #e6e6e6;
+    }
+
+    .container_topbar {
+        display: flex;
+        position: relative;
+        margin-top: 27px;
+        
+    }
+
+    .container_topbar div {
+        flex: 1;
+    }
+
+    .profile {
+        height: 65px;
+        width: 65px;
+        background-color: #FEFFF1;
+        border-radius: 50%;
+        position: absolute; 
+        top: 0; 
+        right: 0; 
+    }
+
+
+    .container_songs{
+        width: 1307px;
+        height: 322px;
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: rgba(0, 39, 96, 0.55);
+        border-radius: 25px;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        row-gap: 26px;
+
+    }
+
+    .songs_header{
+        font-family: 'Montserrat Alternates';
+        font-size: 24px;
+        font-weight: 600;
+        color: #C3C2C9;
+        position: absolute;
+        margin-top: 25px;
+        margin-left: 25px;
+    }
+
+    .song_column{
+        display: flex;
+        flex-direction: column;
+    }
+
+    #row-1, #row-2 {
+        display: flex;
+        max-height: 73px;
+        margin-top: 20px;
+    }
+
+    /* #row-1 {
+        margin-top: 20px;
+    } */
+
+    .song_row1{
+        margin-top: 60px;
+        margin-left: 25px;
+        margin-right: 25px;
+        display: flex;
+    }
+
+
+    .song_cover{
+        height: 73px;
+        width: 73px;
+    }
+
+    .title_artist{
+        display: flex;
+        flex-direction: column;
+        margin-top: 15px;
+        margin-left: 15px;
+        color: #C3C2C9;
+        font-family: 'Syne';
+        min-width: 70px;
+    }
+
+    .song_title{
+        font-size: 16px;
+    }
+
+    .album_name{
+        font-size: 12px;
+    }
+
+
+
+    .container_albums{
+        width: 1307px;
+        height: 322px;
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: rgba(0, 39, 96, 0.55);
+        border-radius: 25px;
+        position: relative;
+    }
+
+    .album_header{
+        font-family: 'Montserrat Alternates';
+        font-size: 24px;
+        font-weight: 600;
+        color: #C3C2C9;
+        position: absolute;
+        margin-top: 25px;
+        margin-left: 25px;
+        flex: 1;
+    }
+
+    .album_row{
+        display: flex;
+    }
+
+    .album{
+        display: flex;
+        flex-direction: column;
+        margin-right: 15px;
+    }
+
+    .album_cover{
+        width: 145px;
+        height: 145px;
+        margin-top: 80px;
+        margin-left: 25px;
+    }
+
+    .album_title{
+        font-family: 'Syne';
+        color: #C3C2C9;
+        font-size: 16px;
+        margin-left: 30px;
+    }
+
+    .player{
+        width: 100vw;
+        height: 75px;
+        background-color: #022C6B;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: row;
+
+        position: relative;
+    }
+
+    .player_albuminfo{
+        position: absolute;
+        display: flex;
+    }
+
+    .player_songcover{
+        height: 74px;
+        width: 74px;
+    }
+
+    .player_title_artist{
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        font-family: 'Inter';
+        color: #FEFFF1;
+        align-self: center;
+        margin-left: 12px;
+        
+    }
+
+    .player_songname{
+        font-size: 15px;
+    }
+
+    .player_artistname{
+        font-size: 12px;
+    }
+
+    .liked{
+    margin-top: 25px;
+    margin-left: 20px;
+    }
+
+    .player_mediacontrols{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .player_slider{
+        width: 500px;
+        height: 10px;
+        position: absolute;
+        justify-content: center;
+    }
+    
+    .player_vol_queue{}
+
