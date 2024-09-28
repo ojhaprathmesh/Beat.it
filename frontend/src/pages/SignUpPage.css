@@ -1,29 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700&display=swap');
 
-.image-container {
-    position: absolute;
-    z-index: 10;
-}
-
-.image-container img {
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
-}
-
-#image-container-1 {
-    z-index: -1;
-}
-
-#image-container-2 {
-    bottom: -4px;
-    left: 0px;
-}
-
-#image-container-3 {
-    right: 0;
-}
-
 #brand-tag {
     color: white;
     font-size: 40px;
