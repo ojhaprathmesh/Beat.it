@@ -24,16 +24,12 @@
 #beatit-text {
     transform: rotate(-90deg);
     white-space: nowrap;
-    position: relative;
-    right: 48px;
     width: 75%;
 }
 
 #beatit-text pre {
-    font-family: "Syne";
     font-size: 40px;
     font-weight: 1000;
-    text-align: center;
 }
 
 @media screen and (max-width: 768px) {

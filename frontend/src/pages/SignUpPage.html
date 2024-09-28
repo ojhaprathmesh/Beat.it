@@ -25,7 +25,6 @@
 
         body {
             background-color: #034BB5;
-            font-family: "Syne Mono", monospace;
             overflow: hidden;
         }
 
@@ -66,6 +65,14 @@
         #image-container-3 {
             right: 0;
         }
+
+        .font-syne {
+            font-family: "Syne", monospace;
+        }
+
+        .font-syne-mono {
+            font-family: "Syne Mono", monospace;
+        }
     </style>
 
     <link rel="stylesheet" href="SignUpPage.css " media="print" onload="this.media='all'">
@@ -77,18 +84,22 @@
             <div class="image-container" id="image-container-1">
                 <img src="../assets/Graphic Design Blob.png" alt="Graphic Design Blob" width="725px" height="1024px">
             </div>
-            <div id="brand-tag">Join us in the music revolution and just Beat it!</div>
+            <div class="font-syne-mono" id="brand-tag">Join us in the music revolution and just Beat it!</div>
             <div class="image-container" id="image-container-2">
                 <img src="../assets/Singing Boy.png" alt="Singing Boy" width="330px" height="382px">
             </div>
             <div class="image-container" id="image-container-3">
-                <img src="../assets/DJ Girl.png" alt="DJ Girl">
+                <img src="../assets/DJ Girl.png" alt="DJ Girl" width="288px" height="276px">
             </div>
         </div>
         <section class="whiteFrame">
             <div id="beatit-text">
-                <pre>Beat.it     Beat.it     Beat.it     Beat.it</pre>
+                <pre class="font-syne">Beat.it     Beat.it     Beat.it     Beat.it</pre>
             </div>
+
+            <section class="form">
+                <h1>Create Account</h1>
+            </section>
         </section>
     </section>
 </body>
