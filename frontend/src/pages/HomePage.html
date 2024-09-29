@@ -77,7 +77,6 @@
     </footer>
 
     <script>
-        // Define the array of songs
         const songs = [
             { title: 'One More Time', artist: 'Daft Punk', cover: '../assets/home/Song Cover - 1.png' },
             { title: 'Something', artist: 'The Beatles', cover: '../assets/home/Song Cover - 2.png' },
@@ -86,17 +85,15 @@
 
         const songsList = document.getElementById('song-list');
 
-        // Create rows with the same song repeated
         const createSongRow = (songIndex, rowClass, repeatCount) => {
             const row = document.createElement('div');
-            row.classList.add(rowClass); // Use the passed rowClass for styling
+            row.classList.add(rowClass);
 
             // Repeat the same song for 'repeatCount' times
             for (let i = 0; i < repeatCount; i++) {
                 const songRow = document.createElement('div');
                 songRow.classList.add('song-row-item'); // Common class for individual song items
 
-                // Get the song from the index
                 const song = songs[songIndex];
 
                 songRow.innerHTML = `
@@ -113,14 +110,11 @@
             return row;
         };
 
-        // Number of elements (e.g., 4) in each row
         const repeatCountSong = 6;
 
-        // Append two rows of songs to the song list, each row consisting of the same song cover repeated
-        songsList.appendChild(createSongRow(0, 'song-row-1', repeatCountSong)); // First row with same song cover repeated
-        songsList.appendChild(createSongRow(1, 'song-row-2', repeatCountSong)); // Second row with same song cover repeated
+        songsList.appendChild(createSongRow(0, 'song-row-1', repeatCountSong));
+        songsList.appendChild(createSongRow(1, 'song-row-2', repeatCountSong));
 
-        // Define the array of albums
         const albums = [
             { title: 'The Queen Is Dead', cover: '../assets/home/Album Cover - 1.png' },
             { title: 'Abbey Road', cover: '../assets/home/Album Cover - 2.png' },
@@ -130,7 +124,6 @@
 
         const albumList = document.getElementById('album-list');
 
-        // Create a single row with repeated albums
         const createAlbumRow = (albumIndex, rowClass, repeatCount) => {
             const row = document.createElement('div');
             row.classList.add(rowClass); // Use the passed rowClass for styling
@@ -154,11 +147,9 @@
             return row;
         };
 
-        // Number of albums (e.g., 6) in the row
         const repeatCountAlbum = 9;
 
-        // Append one row of albums to the album list
-        albumList.appendChild(createAlbumRow(0, 'album-row', repeatCountAlbum)); // Single row with repeated album covers
+        albumList.appendChild(createAlbumRow(0, 'album-row', repeatCountAlbum));
 
     </script>
 </body>
