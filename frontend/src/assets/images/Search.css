@@ -77,84 +77,94 @@ body{
     color: black;
 }
 
-.outerBox{
-    background-color: black ;
-    width: 73rem;
-    margin: 0 auto;
-    display: flex;
-    padding: 2rem;
-    background: rgba(0, 39, 96, 0.55);
-    border-radius: 50px;
-    height: 23rem;
-
-}
-
-.leftBox{
-    display: flex;
-    flex-direction: column;
-    width: 45rem;
-}
-
-.buttons{
-    display: flex;
-    gap: .5rem;
-    color: white;
-}
-
-.songGrid{
-    display: grid;
-    height: 22rem;
-    margin-top: 1rem;
-    grid-template-columns: repeat(1, 5fr);
-}
-
-.songTile{
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-    font-size: 15px;
-    height: fit-content;
-    background-color: #7CBBDF;
-    border-radius: 10px;
-    color: black;
-}
-
-
-.p2{
-    display: flex;
-    gap: .5rem;
-    justify-content: space-between;
-}
-
-.rightBox{
+.first{
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+    gap: 2rem;
+}
+
+.artist{
+    width: 30%;
+    background: rgba(0, 39, 96, 0.55);
+    height: 13rem;
+    border-radius: 2rem;
+    box-shadow: 4px 4px 10px rgb(24, 24, 24); 
+}
+
+.songs{
+    width: 70%;
+    background: rgba(0, 39, 96, 0.55);
+    height: 13rem;
+    border-radius: 2rem;
+    box-shadow: 4px 4px 10px rgb(24, 24, 24); 
+}
+
+.artist, .songs{
+    display: flex;
     flex-direction: column;
-    margin-left: 4rem;
-    width: 24rem;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    color: #FEFFF1;
 }
 
-.albumCover{
+.artist img{
+    height: 60%;
+    border-radius: 10rem;
+}
+
+.songPanel{
+    display: grid;
+    margin: 0 auto;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.2rem;
+}
+
+.container{
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
-.albumCover img{
-    height: 15rem;
-    margin: 1rem 0 0;
-}
-
-.albumInfo{
+.content{
     display: flex;
-    margin-top: 1rem;
-    width: 15rem;
     flex-direction: column;
-    gap: .2rem;
 }
 
-.t1 .t2 .t3{
+.container img{
+    height: 4rem;
+}
+
+.second{
+    box-shadow: 4px 4px 10px rgb(24, 24, 24); 
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 39, 96, 0.55);
+    border-radius: 2rem;
+    margin: 0 3rem;
+    height: 10rem;
 }
 
-.t1{
-    font-size: 19px;
+.albumPanel{
+    display: grid;
+    margin: 0 auto;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2.2rem;
+}
+
+.albumContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.albumContainer img{
+    height: 5rem;
 }

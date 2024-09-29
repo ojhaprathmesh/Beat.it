@@ -1,239 +1,203 @@
-    .body{
-        background-color: #002760;
-        background-image: url(../assets/home/bg-graphic.png);
-        background-size: cover;
-        width: 99vw;
-        height: 100vw;
-        overflow-y: hidden;
+:root {
+    --grey: #605E72;
+    --shadow: rgb(24, 24, 24);
+    --white: #FEFFF1;
+    --primary-text: #C3C2C9;
+    --search-text: #AFAFB1;
+    --footer-bg: #022C6B;
+    --main-body-bg: rgba(0, 39, 96, 0.55);
+}
+
+/* Nav Bar Styles */
+.navbar {
+    display: flex;
+    margin: 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#logo-home img {
+    border-radius: 30px;
+    box-shadow: 0 0 0 var(--shadow);
+    transition: box-shadow 0.4s ease-in-out;
+}
+
+#logo-home img:hover {
+    box-shadow: 0 0 50px var(--shadow);
+}
+
+/* Search Bar Styles */
+.searchbar {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 725px;
+    height: 52px;
+    border-radius: 25px;
+    background-color: var(--grey);
+    box-shadow: 0 0 20px var(--shadow);
+}
+
+#search-icon {
+    margin-left: 10px;
+}
+
+#line-separator {
+    width: 35px;
+    margin-left: 35px;
+    position: absolute;
+    transform: rotate(90deg);
+    border: 1px solid var(--white);
+}
+
+#search-input {
+    margin-left: 25px;
+    border: none;
+    font-size: larger;
+    color: var(--search-text);
+    background-color: var(--grey);
+    width: 80%;
+}
+
+#search-input::placeholder {
+    color: var(--search-text);
+}
+
+/* Profile Styles */
+.profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    background-color: var(--white);
+    box-shadow: 0 0 0 var(--shadow);
+    transition: box-shadow 0.4s ease-in-out;
+}
+
+.profile:hover {
+    cursor: pointer;
+    box-shadow: 0 0 50px var(--shadow);
+}
+
+.profile #username-letter {
+    color: var(--grey);
+}
+
+/* Song Section Styles */
+.main-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+.song-container,
+.album-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: var(--main-body-bg);
+    width: 90%;
+    height: 50%;
+    border-radius: 50px;
+    padding: 30px 25px;
+    font-size: 18px;
+}
+
+#song-heading,
+#album-heading {
+    color: var(--primary-text);
+    font-weight: 500;
+    /* letter-spacing: 0.4px; */
+}
+
+#song-list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+.song-row-1,
+.song-row-2 {
+    display: flex;
+}
+
+.song-row-item {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    width: 20%;
+}
+
+.title-artist {
+    display: flex;
+    flex-direction: column;
+    font-size: smaller;
+    row-gap: 5px;
+    font-weight: 400;
+    color: var(--primary-text);
+}
+
+.title-artist .album-name {
+    font-size: smaller;
+}
+
+.album-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.album-row-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: smaller;
+    row-gap: 15px;
+}
+
+.album-title {
+    font-weight: 200;
+    color: var(--primary-text);
+}
+
+/* Player Section Styles*/
+.player {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: var(--footer-bg);
+    width: 100%;
+}
+
+/* Responsive Design (Media Queries) */
+@media (max-width: 768px) {
+
+    /* Adjust container widths for mobile view */
+    .container_songs,
+    .container_albums {
+        width: 100%;
+        margin: 0;
     }
 
-
-    .searchbar{
-        background-color: #605E72;
-        width: 725px;
-        height: 52px;
-        /* flex: 1; */
-        position: relative;
-        border-radius: 25px;
-        display: flex;
-        align-items: center;
-        box-shadow: 4px 4px 10px rgb(24, 24, 24);        
+    /* Reduce the search bar size for mobile */
+    .searchbar {
+        width: 90%;
     }
 
-    .searchicon{
-        margin-left: 10px;
-        height: 32px;
-        width: 32px;
+    /* Smaller covers for songs and albums on mobile */
+    .song_cover,
+    .album_cover {
+        width: 50px;
+        height: 50px;
     }
 
-    .searchbar_input{
-        background-color: #605E72;
+    /* Adjust font sizes on mobile */
+    .songs_header,
+    .album_header {
         font-size: 18px;
-        width: 475px; 
-        height: 30px; 
-        margin-left: 25px;
-        border: 0px;
-        outline: none;
-        color: #e6e6e6;
     }
-
-    .container_topbar {
-        display: flex;
-        position: relative;
-        margin-top: 27px;
-        
-    }
-
-    .container_topbar div {
-        flex: 1;
-    }
-
-    .profile {
-        height: 65px;
-        width: 65px;
-        background-color: #FEFFF1;
-        border-radius: 50%;
-        position: absolute; 
-        top: 0; 
-        right: 0; 
-    }
-
-
-    .container_songs{
-        width: 1307px;
-        height: 322px;
-        margin-top: 20px;
-        margin-left: auto;
-        margin-right: auto;
-        background-color: rgba(0, 39, 96, 0.55);
-        border-radius: 25px;
-        display: flex;
-        flex-direction: column;
-        overflow-x: hidden;
-        row-gap: 26px;
-
-    }
-
-    .songs_header{
-        font-family: 'Montserrat Alternates';
-        font-size: 24px;
-        font-weight: 600;
-        color: #C3C2C9;
-        position: absolute;
-        margin-top: 25px;
-        margin-left: 25px;
-    }
-
-    .song_column{
-        display: flex;
-        flex-direction: column;
-    }
-
-    #row-1, #row-2 {
-        display: flex;
-        max-height: 73px;
-        margin-top: 20px;
-    }
-
-    /* #row-1 {
-        margin-top: 20px;
-    } */
-
-    .song_row1{
-        margin-top: 60px;
-        margin-left: 25px;
-        margin-right: 25px;
-        display: flex;
-    }
-
-
-    .song_cover{
-        height: 73px;
-        width: 73px;
-    }
-
-    .title_artist{
-        display: flex;
-        flex-direction: column;
-        margin-top: 15px;
-        margin-left: 15px;
-        color: #C3C2C9;
-        font-family: 'Syne';
-        min-width: 70px;
-    }
-
-    .song_title{
-        font-size: 16px;
-    }
-
-    .album_name{
-        font-size: 12px;
-    }
-
-
-
-    .container_albums{
-        width: 1307px;
-        height: 322px;
-        margin-top: 20px;
-        margin-left: auto;
-        margin-right: auto;
-        background-color: rgba(0, 39, 96, 0.55);
-        border-radius: 25px;
-        position: relative;
-    }
-
-    .album_header{
-        font-family: 'Montserrat Alternates';
-        font-size: 24px;
-        font-weight: 600;
-        color: #C3C2C9;
-        position: absolute;
-        margin-top: 25px;
-        margin-left: 25px;
-        flex: 1;
-    }
-
-    .album_row{
-        display: flex;
-    }
-
-    .album{
-        display: flex;
-        flex-direction: column;
-        margin-right: 15px;
-    }
-
-    .album_cover{
-        width: 145px;
-        height: 145px;
-        margin-top: 80px;
-        margin-left: 25px;
-    }
-
-    .album_title{
-        font-family: 'Syne';
-        color: #C3C2C9;
-        font-size: 16px;
-        margin-left: 30px;
-    }
-
-    .player{
-        width: 100vw;
-        height: 75px;
-        background-color: #022C6B;
-        margin-top: 20px;
-        display: flex;
-        flex-direction: row;
-
-        position: relative;
-    }
-
-    .player_albuminfo{
-        position: absolute;
-        display: flex;
-    }
-
-    .player_songcover{
-        height: 74px;
-        width: 74px;
-    }
-
-    .player_title_artist{
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        font-family: 'Inter';
-        color: #FEFFF1;
-        align-self: center;
-        margin-left: 12px;
-        
-    }
-
-    .player_songname{
-        font-size: 15px;
-    }
-
-    .player_artistname{
-        font-size: 12px;
-    }
-
-    .liked{
-    margin-top: 25px;
-    margin-left: 20px;
-    }
-
-    .player_mediacontrols{
-        display: flex;
-        flex-direction: column;
-    }
-
-    .player_slider{
-        width: 500px;
-        height: 10px;
-        position: absolute;
-        justify-content: center;
-    }
-    
-    .player_vol_queue{}
-
+}
