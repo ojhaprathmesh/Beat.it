@@ -1,0 +1,26 @@
+.whiteFrame-login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 35%;
+    height: 65%;
+    background-color: white;
+    border: none;
+    border-radius: 20px;
+}
+
+/* Email and password input spanning both columns */
+#email, #password {
+    grid-column: 1 / 3;
+}
+
+/* Email label width */
+#email label {
+    width: calc(42.2875px + 15px);
+}
+
+/* Password label width */
+#password label {
+    width: calc(76.7875px + 15px);
+}

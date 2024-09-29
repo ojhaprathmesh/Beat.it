@@ -39,7 +39,7 @@
             justify-content: center;
         }
 
-        .graphics {
+        .graphics-signup {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -86,33 +86,35 @@
     </style>
 
     <link rel="stylesheet" href="SignUpPage.css " media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="formStyles.css" media="print" onload="this.media='all'">
+
 </head>
 
 <body>
     <section class="signup">
-        <div class="graphics">
+        <div class="graphics-signup">
             <div class="image-container" id="image-container-1">
                 <img src="../assets/signup/Graphic Design Blob.png" alt="Graphic Design Blob" width="725px"
                     height="1024px">
             </div>
             <div class="font-syne-mono" id="brand-tag"">Join us in the music revolution and just Beat it!</div>
-            <div class=" image-container" id="image-container-2">
+            <div class="image-container" id="image-container-2">
                 <img src="../assets/signup/Singing Boy.png" alt="Singing Boy" width="330px" height="382px">
             </div>
             <div class="image-container" id="image-container-3">
                 <img src="../assets/signup/DJ Girl.png" alt="DJ Girl" width="288px" height="276px">
             </div>
         </div>
-        <section class="whiteFrame">
+        <section class="whiteFrame-signup">
             <div id="beatit-text" style="width: 50px; position: relative; bottom: 65px;">
                 <pre class="font-syne">Beat.it     Beat.it     Beat.it     Beat.it</pre>
             </div>
 
             <form class="signup-form font-inter">
-                <div id="form-heading">
+                <section id="form-heading">
                     <h1>Create Account</h1>
-                </div>
-                <div id="form-inputs">
+                </section>
+                <section id="form-inputs">
                     <div class="input-container name-input" id="first-name">
                         <input type="text" class="name box" id="first-name-label" required>
                         <label for="first-name-label">First Name</label>
@@ -132,7 +134,7 @@
                     <button class="form-btn font-inter" id="create-account">
                         Create Account
                     </button>
-                </div>
+                </section>
                 <a class="font-inter" id="redirect-login" href="LoginPage.html">
                     <p>Already have an account? </p>
                     <p>Login</p>
