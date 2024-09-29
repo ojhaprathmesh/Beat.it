@@ -45,30 +45,45 @@
     </style>
 
     <link rel="stylesheet" href="LoginPage.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="formStyles.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../modular_styles/fontStyles.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../modular_styles/formStyles.css" media="print" onload="this.media='all'">
 </head>
 
 <body>
     <section class="login">
-        <form class="whiteFrame-login">
-            <section class="logo-container">
-                <img id="logo" src="../assets/Beat.it Logo.png" alt="Beat.it">
-            </section>
-            <section id="form-heading">
-                <h1>Welcome back!</h1>
-                <p>Please enter your details</p>
-            </section>
-            <section class="form-inputs">
-                <div class="input-container" id="email">
-                    <input type="email" class="box" id="email-label" required>
-                    <label for="email-label">Email</label>
-                </div>
-                <div class="input-container" id="password">
-                    <input type="password" class="box" id="password-label" required>
-                    <label for="password-label">Password</label>
-                </div>
-            </section>
-        </form>
+        <section class="whiteFrame-login">
+            <div class="logo-container" id="logo-login">
+                <img src="../assets/Beat.it Logo.png" alt="Beat.it">
+            </div>
+            <form class="form font-inter">
+                <section class="form-heading">
+                    <h1 class="main-heading">Welcome back!</h1>
+                    <h4 class="sub-heading">Please enter your details</h4>
+                </section>
+
+                <section class="form-inputs">
+                    <div class="input-container email">
+                        <input type="email" class="box" id="email-label" required>
+                        <label for="email-label">Email</label>
+                    </div>
+
+                    <div class="input-container password">
+                        <input type="password" class="box" id="password-label" required>
+                        <label for="password-label">Password</label>
+                    </div>
+
+                    <button class="form-btn font-inter form-btn" id="create-account">
+                        Create Account
+                    </button>
+                </section>
+
+                <a class="font-inter redirect" id="redirect-login" href="SignupPage.html">
+                    <p>Don't have an account? </p>
+                    <p>Sign up</p>
+                </a>
+            </form>
+        </section>
+
     </section>
 </body>
 
