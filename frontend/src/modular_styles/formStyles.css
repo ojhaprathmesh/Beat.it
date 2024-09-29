@@ -1,0 +1,132 @@
+/* Root colors */
+:root {
+    --grey: #605E72;
+    --blue: #0C47BB;
+}
+
+/* Form container styling */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    height: 70%;
+}
+
+/* Form heading */
+.form-heading .main-heading {
+    font-size: 45px;
+    letter-spacing: -2px;
+}
+
+.form-heading .sub-heading {
+    color: var(--grey);
+}
+
+/* Grid layout for form inputs */
+.form-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 10px;
+}
+
+/* First and last name input positioning */
+.first-name {
+    grid-column: 1 / 2;
+}
+
+.last-name {
+    grid-column: 2 / 3;
+}
+
+/* Email and password input spanning both columns */
+.email, .password, .form-btn {
+    grid-column: 1 / 3;
+}
+
+/* Styles for redirection link to login page */
+.redirect {
+    position: relative;
+    bottom: 20px;
+    text-decoration: none;
+}
+
+.redirect p {
+    display: inline;
+    color: var(--blue);
+}
+
+.redirect p:first-child {
+    color: var(--grey);
+}
+
+/* Cursor pointer for labels and buttons */
+.input-container label, .form-btn {
+    cursor: pointer;
+}
+
+/* General styling for input boxes */
+.box {
+    padding: 16px;
+    font-size: 16px;
+    border: 1px solid var(--grey);
+    border-radius: 5px;
+    width: 100%;
+}
+
+/* Input label styling */
+.input-container label {
+    display: inline-block;
+    position: relative;
+    bottom: 60px;
+    left: 30px;
+    color: var(--grey);
+    background-color: white;
+    text-align: center;
+}
+
+/* Email label width */
+.first-name label {
+    width: calc(84.475px + 15px);
+}
+
+/* Password label width */
+.last-name label {
+    width: calc(82.5625px + 15px);
+}
+
+/* Email label width */
+.email label {
+    width: calc(42.2875px + 15px);
+}
+
+/* Password label width */
+.password label {
+   width: calc(76.7875px + 15px);
+}
+
+/* Form button styling */
+.form-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border: none;
+    font-size: 28px;
+    color: white;
+    background-color: var(--blue);
+    max-height: 52px;
+    cursor: pointer;
+}
+
+/* Media queries for responsive design on smaller screens */
+@media screen and (max-width: 768px) {
+    .form-btn {
+        font-size: 24px;
+        /* Adjust font size for smaller screens */
+    }
+
+    .box {
+        font-size: 14px;
+        /* Adjust font size for smaller screens */
+    }
+}
