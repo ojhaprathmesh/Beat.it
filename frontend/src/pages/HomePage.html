@@ -234,13 +234,18 @@
         </div>
 
         <div class="other-controls">
-            <div> <!-- More Options -->
+            <div class="menu"> <!-- More Options -->
                 <i class="fas fa-ellipsis-v"></i>
                 <i class="fas fa-bars"></i>
             </div>
-            <i class="fas fa-volume-mute" id="volume-mute"></i> <!-- Mute -->
-            <i class="fas fa-volume-down" id="volume-one" style="display: none;"></i> <!-- Low Volume -->
-            <i class="fas fa-volume-up" id="volume-three" style="display: none;"></i> <!-- High Volume -->
+            <div class="volume">
+                <i class="fas fa-volume-mute" id="volume-mute" style="display: none;"></i> <!-- Mute -->
+                <i class="fas fa-volume-down" id="volume-one" style="display: none;"></i> <!-- Low Volume -->
+                <i class="fas fa-volume-up" id="volume-three" style="display: block;"></i> <!-- High Volume -->
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -261,14 +266,14 @@
         // Music play/pause functionality
         const progress = document.querySelector(".progress")
 
-        const control = document.querySelector(".controls");
+        const songControl = document.querySelector(".controls");
 
-        const playBtn = control.querySelector(".play");
-        const pauseBtn = control.querySelector(".pause");
-        const reverseBtn = control.querySelector(".reverse");
-        const forwardBtn = control.querySelector(".forward");
-        const shuffleBtn = control.querySelector(".shuffle");
-        const repeatBtn = control.querySelector(".repeat");
+        const playBtn = songControl.querySelector(".play");
+        const pauseBtn = songControl.querySelector(".pause");
+        const reverseBtn = songControl.querySelector(".reverse");
+        const forwardBtn = songControl.querySelector(".forward");
+        const shuffleBtn = songControl.querySelector(".shuffle");
+        const repeatBtn = songControl.querySelector(".repeat");
 
         let isPlaying = true;
 
