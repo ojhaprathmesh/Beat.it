@@ -1,0 +1,203 @@
+.main {
+    display: flex;
+    flex-direction: column;   
+    background-image: url("../assets/home/bg-graphic.png");
+    background-size: 100vw 100vh; 
+    width: 100%;
+    height: 100vh;
+    gap: 2rem;
+    color: #FEFFF1;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow-x:hidden;
+    background-color: #002760;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;   
+    top: 0;
+    padding: 1rem;
+}
+
+.nav img {
+    width: 2rem;
+    max-width: max-content;
+    height: auto;
+}
+
+.nav .search input {
+    width: 40%;
+    height: fit-content;
+    background-color: #605E72;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+    color: #FEFFF1; 
+}
+
+.search input::placeholder {
+    color: #FEFFF1;
+    opacity: .5;
+}
+
+.nav .search i {
+    color: white;
+    font-size: 1rem;
+}
+
+.nav .search {
+    box-shadow: 4px 4px 10px rgb(24, 24, 24);   
+    background-color: #605E72;
+    padding: 1rem;
+    width: 40%;
+    max-width: 40%;
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.line {
+    border: 1px solid white;
+    height: 1rem;
+}
+
+.profile {
+    padding: 0.7rem;
+    height: 1rem;
+    width: 1rem;
+    max-width: 5%;
+    background-color: #FEFFF1;
+    border-radius: 50%;
+}
+
+.profile i {
+    font-size: 1rem;
+    color: black;
+}
+
+.songsPanel{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 auto;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 90%;
+    background: rgba(0, 39, 96, 0.55);
+    border-radius: 50px;
+}
+
+.songsPanel .songText{
+    font-size: 1vw;
+}
+
+.songsPanel .songGrid{
+    margin-top: 1rem;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(6, 2fr);
+    gap: 2rem;
+}
+
+.songsPanel .songGrid .songTile1{
+    display: flex;
+    gap: 1rem;
+}
+
+.songsPanel .songGrid .songTile1 img{
+    width: 4rem;
+    max-width: 40%; 
+}
+
+.songsPanel .songGrid .songTile1 .songTile1Text{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.songsPanel .songGrid .songTile1 .songTile1Text .songTitle1{
+    font-size: 1vw;
+}
+
+.songsPanel .songGrid .songTile1 .songTile1Text .songArtist1{
+    font-size: 0.7vw;
+}
+
+.albumPanel{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 auto;
+    padding: 2rem;
+    width: 90%;
+    max-width: 90%;
+    background: rgba(0, 39, 96, 0.55);
+    border-radius: 50px;
+}
+
+.albumPanel .albumText{
+    font-size: 1vw;
+}
+
+.albumPanel .albumGrid{
+    margin-top: 1rem;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2rem;
+}
+.albumPanel .albumGrid .albumTile{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.albumPanel .albumGrid .albumTile img{
+    width: 70%;
+    max-width: 100%;
+}
+
+.playbar{
+    display: flex;
+    justify-content: space-between;
+    background: #022C6B;
+    box-shadow: 0px 4px 48.1px 5px #000000;
+    padding: 0.5rem;
+    margin-top: auto;
+    width: 100%;
+}
+
+.playbar .left{
+    display: flex;
+    margin-left: 1rem;
+    gap: 1rem;
+    align-items: center;
+}
+
+.playbar .left img{
+    max-width: 26%;
+}
+
+.playbar .left .text{
+    display: flex;
+    flex-direction: column;
+}
+
+.playbar .left .txt1{
+    font-size: 1vw;
+}
+
+.playbar .left .txt2{
+    font-size: 0.8vw;
+}
