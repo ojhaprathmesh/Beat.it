@@ -116,6 +116,7 @@
     background-color: var(--blue);
     max-height: 52px;
     cursor: pointer;
+    text-decoration: none;
 }
 
 /* Media queries for responsive design on smaller screens */
