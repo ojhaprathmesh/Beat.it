@@ -63,6 +63,10 @@
     color: var(--search-text);
 }
 
+#search-input:focus {
+    outline: none;
+}
+
 /* Profile Styles */
 .profile {
     display: flex;
@@ -131,9 +135,12 @@
     width: 20%;
 }
 
-.song-row-item:hover, .album-row-item:hover {
-    transform: scale(1.05); /* Slightly increase size on hover */
-    transition: transform 0.32s; /* Smooth transition */
+.song-row-item:hover,
+.album-row-item:hover {
+    transform: scale(1.05);
+    /* Slightly increase size on hover */
+    transition: transform 0.32s;
+    /* Smooth transition */
 }
 
 .song-row-item .song-cover {
@@ -322,34 +329,5 @@
 
     100% {
         width: 100%;
-    }
-}
-
-/* Responsive Design (Media Queries) */
-@media (max-width: 768px) {
-
-    /* Adjust container widths for mobile view */
-    .container_songs,
-    .container_albums {
-        width: 100%;
-        margin: 0;
-    }
-
-    /* Reduce the search bar size for mobile */
-    .searchbar {
-        width: 90%;
-    }
-
-    /* Smaller covers for songs and albums on mobile */
-    .song_cover,
-    .album_cover {
-        width: 50px;
-        height: 50px;
-    }
-
-    /* Adjust font sizes on mobile */
-    .songs_header,
-    .album_header {
-        font-size: 18px;
     }
 }
