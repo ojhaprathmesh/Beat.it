@@ -36,6 +36,7 @@
     </style>
 
     <link rel="stylesheet" href="HomePage.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../modular_styles/profileStyles.css" media="print" onload="this.media='all'">
 </head>
 
 <body>
@@ -52,7 +53,19 @@
         </form>
 
         <div class="profile font-inter">
-            <h1 id="username-letter" style="font-weight: 100;">P</h1>
+            <label for="toggle-overlay">
+                <h1 id="username-letter" style="font-weight: 100;">S</h1>
+            </label>
+
+            <input type="checkbox" id="toggle-overlay" style="display: none;">
+
+            <div class="overlay">
+                <a href="ProfilePage.html">Profile</a>
+                <div>
+                    <hr style="width: 90%; border: 1px solid #3E3E3E">
+                </div>
+                <a href="LoginPage.html">Log Out</a>
+            </div>
         </div>
     </nav>
 

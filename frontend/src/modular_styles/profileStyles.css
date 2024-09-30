@@ -1,0 +1,61 @@
+.profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    background-color: var(--white);
+    box-shadow: 0 0 0 var(--shadow);
+    transition: box-shadow 0.4s ease-in-out;
+}
+
+.profile:hover {
+    cursor: pointer;
+    box-shadow: 0 0 50px var(--shadow);
+}
+
+.profile #username-letter {
+    color: var(--grey);
+}
+
+.profile .overlay {
+    display: none;
+    position: fixed;
+    top: 90px;
+    right: 10px;
+    width: 120px;
+    height: 100px;
+    background-color: var(--grey);
+    align-items: flex-start;
+    justify-content: space-evenly;
+    color: var(--white);
+    font-size: 16px;
+    border-radius: 4px;
+    flex-direction: column;
+    box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.35);
+}
+
+.profile .overlay a {
+    padding-left: 20px;
+    text-decoration: none;
+    color: var(--white);
+}
+
+.profile .overlay a:visited {
+    color: var(--white);
+}
+
+.profile .overlay div {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"]:checked+.overlay {
+    display: flex;
+}

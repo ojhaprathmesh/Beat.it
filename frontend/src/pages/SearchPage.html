@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Join the music revolution with Beat.it! Login now to enjoy an amazing experience.">
+        content="Join the music revolution with Beat.it! Search now to enjoy an amazing experience.">
     <title>Beat.it</title>
 
     <!-- Preconnect -->
@@ -36,12 +36,15 @@
     </style>
 
     <link rel="stylesheet" href="SearchPage.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../modular_styles/profileStyles.css" media="print" onload="this.media='all'">
 </head>
 
 <body>
     <nav class="navbar">
         <div class="logo-container" id="logo-home">
-            <img src="../assets/Beat.it White Logo.png" alt="Beat.it Logo" width="60px" height="60px">
+            <a href="HomePage.html" class="logo-container" id="logo-home">
+                <img src="../assets/Beat.it White Logo.png" alt="Beat.it Logo" width="60px" height="60px">
+            </a>
         </div>
 
         <div class="searchbar">
@@ -52,14 +55,27 @@
         </div>
 
         <div class="profile font-inter">
-            <h1 id="username-letter" style="font-weight: 100;">P</h1>
+            <label for="toggle-overlay">
+                <h1 id="username-letter" style="font-weight: 100;">S</h1>
+            </label>
+
+            <input type="checkbox" id="toggle-overlay" style="display: none;">
+
+            <div class="overlay">
+                <a href="ProfilePage.html">Profile</a>
+                <div>
+                    <hr style="width: 90%; border: 1px solid #3E3E3E">
+                </div>
+                <a href="LoginPage.html">Log Out</a>
+            </div>
         </div>
     </nav>
 
     <main class="main-body">
         <div class="top-container">
             <section class="artist-container">
-                <img src="../assets/search/Artist Closeup.png" alt="The Smiths Cover Page" width="268px" height="282.8px">
+                <img src="../assets/search/Artist Closeup.png" alt="The Smiths Cover Page" width="268px"
+                    height="282.8px">
             </section>
             <section class="song-container font-montserrat">
                 <h1 id="song-heading">Songs</h1>
@@ -96,7 +112,7 @@
                                 width="75px" height="75px">
                             <div class="title-artist font-syne">
                                 <div class="song-title">This Charming Man</div>
-                                <div class="album-name">The Smiths  </div>
+                                <div class="album-name">The Smiths </div>
                             </div>
                         </div>
                         <div class="song-row-item">
@@ -180,6 +196,7 @@
             <div class="progress-bar">
                 <div class="progress"></div>
             </div>
+
             <div class="controls">
                 <i class="fas fa-random shuffle"></i> <!-- Shuffle -->
                 <i class="fas fa-step-backward reverse"></i> <!-- Reverse -->
@@ -195,6 +212,7 @@
                 <i class="fas fa-ellipsis-v"></i>
                 <i class="fas fa-bars"></i>
             </div>
+
             <div class="volume">
                 <i class="fas fa-volume-mute" id="volume-mute" style="display: none;"></i> <!-- Mute -->
                 <i class="fas fa-volume-down" id="volume-one" style="display: none;"></i> <!-- Low Volume -->
