@@ -13,8 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Preload critical fonts -->
-    <link rel="preload" href="../modular_styles/fontStyles.css" as="style"
-        onload="this.rel='stylesheet'">
+    <link rel="preload" href="../modular_styles/fontStyles.css" as="style" onload="this.rel='stylesheet'">
 
     <style>
         * {
@@ -50,6 +49,7 @@
             <div class="logo-container" id="logo-login">
                 <img src="../assets/Beat.it Logo.png" alt="Beat.it" width="115px" height="115px">
             </div>
+
             <form class="form font-inter">
                 <section class="form-heading">
                     <h1 class="main-heading">Welcome back!</h1>
@@ -67,9 +67,8 @@
                         <label for="password-label">Password</label>
                     </div>
 
-                    <button class="form-btn font-inter form-btn" id="create-account">
-                        Create Account
-                    </button>
+                    <a class="form-btn font-inter" id="login-btn" href="HomePage.html"> Login
+                    </a>
                 </section>
 
                 <a class="font-inter redirect" id="redirect-login" href="SignupPage.html">
@@ -78,7 +77,6 @@
                 </a>
             </form>
         </section>
-
     </section>
 </body>
 
