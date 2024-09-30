@@ -59,12 +59,19 @@
     width: 80%;
 }
 
-#search-input::placeholder {
-    color: var(--search-text);
-}
-
 #search-input:focus {
     outline: none;
+    color: var(--search-text);
+    background-color: var(--grey);
+}
+
+#search-input:webkit-autofill {
+    color: var(--search-text) !important;
+    background-color: var(--grey) !important;
+}
+
+#search-input::placeholder {
+    color: var(--search-text);
 }
 
 /* Song Section Styles */
@@ -280,7 +287,7 @@
 }
 
 .other-controls .progress-bar .progress {
-    width: 0%;
+    width: 80%;
     height: 10px;
     max-width: 100%;
     border-radius: 5px;
