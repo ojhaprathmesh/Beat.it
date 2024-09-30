@@ -8,12 +8,15 @@
         content="Join the music revolution with Beat.it! Login now to enjoy an amazing experience.">
     <title>Beat.it</title>
 
-    <!-- Preconnect to Google Fonts -->
+    <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Preload critical fonts -->
     <link rel="preload" href="../modular_styles/fontStyles.css" as="style" onload="this.rel='stylesheet'">
+
+    <!-- External stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
         * {
@@ -64,16 +67,21 @@
     </section>
 
     <footer class="player">
-        <div class="player_albuminfo">
-            <div class="player_songcover"><img src="../assets/home/player_albumcover.png" alt="Player Album Cover">
+        <div class="player-albuminfo">
+            <div class="player-songcover">
+                <img src="../assets/home/Album Cover.png" alt="Player Album Cover" width="75px" height="75px">
             </div>
-            <div class="player_title_artist">
-                <div class="player_songname">Main Yahaan Hoon</div>
-                <div class="player_artistname">Artist</div>
+            <div class="player-songdetails">
+                <div class="player-songname">Main Yahaan Hoon</div>
+                <div class="player-artistname">Artist</div>
             </div>
-            <div><img src="../assets/home/liked.png" class="liked" alt="Liked Icon"></div>
+            <div class="like-btn">
+                <input type="checkbox" id="like-check" style="display: none;">
+                <i class="fas fa-heart"></i>
+            </div>
         </div>
-        <img src="../assets/home/Slider.png" class="player_slider" alt="Slider" width="500px" height="10px">
+        </div>
+        <img src="../assets/home/Player-Slider.png" class="player_slider" alt="Slider" width="500px" height="10px">
     </footer>
 
     <script>
@@ -124,20 +132,18 @@
 
         const albumList = document.getElementById('album-list');
 
-        const createAlbumRow = (albumIndex, rowClass, repeatCount) => {
+        const createAlbumRow = (rowClass, repeatCount) => {
             const row = document.createElement('div');
-            row.classList.add(rowClass); // Use the passed rowClass for styling
+            row.classList.add(rowClass);
 
-            // Repeat the same album for 'repeatCount' times
             for (let i = 0; i < repeatCount; i++) {
                 const albumDiv = document.createElement('div');
                 albumDiv.classList.add('album-row-item'); // Common class for individual album items
 
-                // Get the album from the index
-                const album = albums[albumIndex];
+                const album = albums[i % albums.length];
 
                 albumDiv.innerHTML = `
-                <img src="${album.cover}" class="album_cover" alt="Album Cover: ${album.title} width="120px" height="120px"">
+                <img src="${album.cover}" class="album_cover" alt="Album Cover: ${album.title}" width="145px" height="145px">
                 <p class="album-title font-syne">${album.title}</p>
             `;
 
@@ -147,10 +153,21 @@
             return row;
         };
 
-        const repeatCountAlbum = 9;
+        const repeatCountAlbum = 6; // Number of album covers to display
 
-        albumList.appendChild(createAlbumRow(0, 'album-row', repeatCountAlbum));
+        albumList.appendChild(createAlbumRow('album-row', repeatCountAlbum));
 
+        const likeBtn = document.querySelector('.like-btn');
+        const checkbox = document.getElementById('like-check');
+
+        likeBtn.addEventListener('click', () => {
+            checkbox.checked = !checkbox.checked; // Toggle the checkbox
+            if (checkbox.checked) {
+                likeBtn.querySelector('.fa-heart').style.color = 'red'; // Change to red
+            } else {
+                likeBtn.querySelector('.fa-heart').style.color = 'gray'; // Change back to gray
+            }
+        });
     </script>
 </body>
 

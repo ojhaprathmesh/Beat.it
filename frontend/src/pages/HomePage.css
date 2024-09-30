@@ -156,6 +156,8 @@
     align-items: center;
     font-size: smaller;
     row-gap: 15px;
+    max-width: 145px;
+    text-align: center;
 }
 
 .album-title {
@@ -171,6 +173,47 @@
     left: 0;
     background-color: var(--footer-bg);
     width: 100%;
+    align-items: center;
+    box-shadow: 0 0 40px;
+}
+
+.player-albuminfo {
+    display: flex;
+    align-items: center;
+}
+
+.like-btn {
+    cursor: pointer;
+    width: 20px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.like-btn .fa-heart {
+    color: grey;
+    font-weight: 100;
+    transition: color 0.2s ease-in, font-weight 0.15s ease-in;
+}
+
+.like-btn input[type="checkbox"]:checked+.fa-heart {
+    color: red;
+    font-weight: 900;
+}
+
+.player-songcover {
+    margin: 12px 12px 12px 20px;
+    width: 75px;
+    height: 75px;
+}
+
+.player-songdetails {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    justify-content: center;
+    margin: auto 10px;
 }
 
 /* Responsive Design (Media Queries) */
