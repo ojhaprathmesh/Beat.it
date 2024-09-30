@@ -56,7 +56,7 @@
         </div>
     </nav>
 
-    <section class="main-body">
+    <main class="main-body">
         <section class="song-container font-montserrat">
             <h1 id="song-heading">Songs</h1>
             <div id="song-list">
@@ -168,39 +168,39 @@
             <div id="album-list">
                 <div class="album-row">
                     <div class="album-row-item">
-                        <img src="../assets/home/Album Cover - 1.png" class="album_cover"
+                        <img src="../assets/home/Album Cover - 1.png" class="album-cover"
                             alt="Album Cover: The Queen Is Dead" width="145px" height="145px">
                         <p class="album-title font-syne">The Queen Is Dead</p>
                     </div>
                     <div class="album-row-item">
-                        <img src="../assets/home/Album Cover - 2.png" class="album_cover" alt="Album Cover: Abbey Road"
+                        <img src="../assets/home/Album Cover - 2.png" class="album-cover" alt="Album Cover: Abbey Road"
                             width="145px" height="145px">
                         <p class="album-title font-syne">Abbey Road</p>
                     </div>
                     <div class="album-row-item">
-                        <img src="../assets/home/Album Cover - 3.png" class="album_cover"
+                        <img src="../assets/home/Album Cover - 3.png" class="album-cover"
                             alt="Album Cover: Random Access Memories" width="145px" height="145px">
                         <p class="album-title font-syne">Random Access Memories</p>
                     </div>
                     <div class="album-row-item">
-                        <img src="../assets/home/Album Cover - 1.png" class="album_cover"
+                        <img src="../assets/home/Album Cover - 1.png" class="album-cover"
                             alt="Album Cover: The Queen Is Dead" width="145px" height="145px">
                         <p class="album-title font-syne">The Queen Is Dead</p>
                     </div>
                     <div class="album-row-item">
-                        <img src="../assets/home/Album Cover - 2.png" class="album_cover" alt="Album Cover: Abbey Road"
+                        <img src="../assets/home/Album Cover - 2.png" class="album-cover" alt="Album Cover: Abbey Road"
                             width="145px" height="145px">
                         <p class="album-title font-syne">Abbey Road</p>
                     </div>
                     <div class="album-row-item">
-                        <img src="../assets/home/Album Cover - 3.png" class="album_cover"
+                        <img src="../assets/home/Album Cover - 3.png" class="album-cover"
                             alt="Album Cover: Random Access Memories" width="145px" height="145px">
                         <p class="album-title font-syne">Random Access Memories</p>
                     </div>
                 </div>
             </div>
         </section>
-    </section>
+    </main>
 
     <footer class="player">
         <div class="player-albuminfo">
@@ -259,12 +259,20 @@
         });
 
         // Music play/pause functionality
+        const progress = document.querySelector(".progress")
+
         const control = document.querySelector(".controls");
+
         const playBtn = control.querySelector(".play");
         const pauseBtn = control.querySelector(".pause");
-        const progress = document.querySelector(".progress")
+        const reverseBtn = control.querySelector(".reverse");
+        const forwardBtn = control.querySelector(".forward");
+        const shuffleBtn = control.querySelector(".shuffle");
+        const repeatBtn = control.querySelector(".repeat");
+
         let isPlaying = true;
 
+        // Play button functionality
         playBtn.addEventListener('click', () => {
             if (!isPlaying) {
                 playBtn.style.display = "none";
@@ -274,6 +282,7 @@
             isPlaying = true;
         });
 
+        // Pause button functionality
         pauseBtn.addEventListener('click', () => {
             if (isPlaying) {
                 playBtn.style.display = "block";
@@ -281,6 +290,43 @@
                 progress.style.animationPlayState = "paused";
             }
             isPlaying = false;
+        });
+
+        // Reverse button functionality
+        reverseBtn.addEventListener('click', () => {
+            progress.style.animation = 'none';
+            progress.offsetHeight;
+
+            progress.style.animation = 'musicProgress 30s linear forwards';
+            progress.style.animationPlayState = 'running';
+
+            playBtn.style.display = "none";
+            pauseBtn.style.display = "block";
+
+            isPlaying = true;
+        });
+
+        // Forward button functionality
+        forwardBtn.addEventListener('click', () => {
+            progress.style.animationPlayState = 'paused';
+
+            progress.style.animation = 'none';
+            progress.offsetHeight;
+            progress.style.animation = 'musicProgress 0s linear forwards';
+
+            playBtn.style.display = "block";
+            pauseBtn.style.display = "none";
+
+            isPlaying = false;
+        });
+
+        // Shuffle button functionality
+        shuffleBtn.addEventListener('click', () => {
+            shuffleBtn.style.color = "yellow";
+
+            setTimeout(() => {
+                shuffleBtn.style.color = "#FEFFF1";
+            }, 500);
         });
     </script>
 </body>

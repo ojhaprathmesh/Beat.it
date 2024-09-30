@@ -131,6 +131,15 @@
     width: 20%;
 }
 
+.song-row-item:hover, .album-row-item:hover {
+    transform: scale(1.05); /* Slightly increase size on hover */
+    transition: transform 0.32s; /* Smooth transition */
+}
+
+.song-row-item .song-cover {
+    border-radius: 5px;
+}
+
 .title-artist {
     display: flex;
     flex-direction: column;
@@ -244,11 +253,10 @@
     max-width: 100%;
     border-radius: 5px;
     background-color: var(--white);
-    animation: musicProgress 30s linear normal forwards;
-    /* animation-play-state: ; */
+    animation: musicProgress 30s linear forwards;
 }
 
-.player .controls {
+.playbar .controls {
     display: flex;
     font-size: 25px;
     cursor: default;
@@ -257,8 +265,13 @@
     color: var(--white);
 }
 
-.player .controls i {
+.playbar .controls i {
     cursor: pointer;
+}
+
+.playbar .controls .shuffle {
+    transition: color 0.5s ease;
+    color: var(--white);
 }
 
 @keyframes musicProgress {
