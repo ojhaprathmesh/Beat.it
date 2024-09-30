@@ -242,7 +242,7 @@
     max-width: 100%;
     border-radius: 5px;
     background-color: var(--white);
-    animation: musicProgress 10s linear normal forwards;
+    animation: musicProgress 30s linear normal forwards;
 }
 
 .player .controls {
@@ -250,7 +250,8 @@
     font-size: 25px;
     cursor: default;
     justify-content: space-between;
-    width: 400px;
+    width: 160px;
+    color: var(--white);
 }
 
 .player .controls i {
