@@ -43,12 +43,14 @@
         <div class="logo-container" id="logo-home">
             <img src="../assets/Beat.it White Logo.png" alt="Beat.it Logo" width="60px" height="60px">
         </div>
+
         <div class="searchbar">
             <img id="search-icon" src="../assets/home/Search.png" alt="Search Icon" width="32px" height="32px">
             <hr id="line-separator">
             <input class="font-inter" style="font-weight: 100;" id="search-input" type="text"
                 placeholder="Search by artists, songs or albums">
         </div>
+
         <div class="profile font-inter">
             <h1 id="username-letter" style="font-weight: 100;">P</h1>
         </div>
@@ -71,17 +73,41 @@
             <div class="player-songcover">
                 <img src="../assets/home/Album Cover.png" alt="Player Album Cover" width="75px" height="75px">
             </div>
-            <div class="player-songdetails">
+
+            <div class="player-songdetails font-inter" style="font-weight: 500;">
                 <div class="player-songname">Main Yahaan Hoon</div>
                 <div class="player-artistname">Artist</div>
             </div>
+
             <div class="like-btn">
                 <input type="checkbox" id="like-check" style="display: none;">
-                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart" style="font-size: larger;"></i>
             </div>
         </div>
+
+        <div class="playbar">
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <div class="controls">
+                <i class="fas fa-random"></i> <!-- Shuffle -->
+                <i class="fas fa-step-backward"></i> <!-- Reverse -->
+                <i class="fas fa-play" style="width: 23px;"></i> <!-- Play -->
+                <i class="fas fa-pause" style="display: none;"></i> <!-- Pause -->
+                <i class="fas fa-step-forward"></i> <!-- Forward -->
+                <i class="fa-solid fa-repeat"></i> <!-- Repeat -->
+            </div>
         </div>
-        <img src="../assets/home/Player-Slider.png" class="player_slider" alt="Slider" width="500px" height="10px">
+
+        <div class="other-controls">
+            <div> <!-- More Options -->
+                <i class="fas fa-ellipsis-v"></i>
+                <i class="fas fa-bars"></i>
+            </div>
+            <i class="fas fa-volume-mute" id="volume-mute"></i> <!-- Mute -->
+            <i class="fas fa-volume-down" id="volume-one" style="display: none;"></i> <!-- Low Volume -->
+            <i class="fas fa-volume-up" id="volume-three" style="display: none;"></i> <!-- High Volume -->
+        </div>
     </footer>
 
     <script>
@@ -167,7 +193,7 @@
             if (checkbox.checked) {
                 likeBtn.querySelector('.fa-heart').style.color = 'red';
             } else {
-                likeBtn.querySelector('.fa-heart').style.color = 'gray';
+                likeBtn.querySelector('.fa-heart').style.color = '#FEFFF1';
             }
         });
     </script>
