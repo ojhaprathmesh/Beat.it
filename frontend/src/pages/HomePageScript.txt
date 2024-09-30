@@ -1,0 +1,71 @@
+        // Song repetition code
+        // const songs = [
+        //     { title: 'One More Time', artist: 'Daft Punk', cover: '../assets/home/Song Cover - 1.png' },
+        //     { title: 'Something', artist: 'The Beatles', cover: '../assets/home/Song Cover - 2.png' }
+        // ];
+
+        // const songsList = document.getElementById('song-list');
+
+        // const createSongRow = (songIndex, rowClass, repeatCount) => {
+        //     const row = document.createElement('div');
+        //     row.classList.add(rowClass);
+
+        //     for (let i = 0; i < repeatCount; i++) {
+        //         const songRow = document.createElement('div');
+        //         songRow.classList.add('song-row-item'); // Common class for individual song items
+
+        //         const song = songs[songIndex];
+
+        //         songRow.innerHTML = `
+        //             <img src="${song.cover}" class="song-cover" alt="Song Cover: ${song.title}" width="75px" height="75px">
+        //             <div class="title-artist font-syne">
+        //                 <div class="song-title">${song.title}</div>
+        //                 <div class="album-name">${song.artist}</div>
+        //             </div>
+        //         `;
+
+        //         row.appendChild(songRow);
+        //     }
+
+        //     return row;
+        // };
+
+        // const repeatCountSong = 6;
+
+        // songsList.appendChild(createSongRow(0, 'song-row-1', repeatCountSong));
+        // songsList.appendChild(createSongRow(1, 'song-row-2', repeatCountSong));
+
+
+        // Album repetition code
+        // const albums = [
+        //     { title: 'The Queen Is Dead', cover: '../assets/home/Album Cover - 1.png' },
+        //     { title: 'Abbey Road', cover: '../assets/home/Album Cover - 2.png' },
+        //     { title: 'Random Access Memories', cover: '../assets/home/Album Cover - 3.png' }
+        // ];
+
+        // const albumList = document.getElementById('album-list');
+
+        // const createAlbumRow = (rowClass, repeatCount) => {
+        //     const row = document.createElement('div');
+        //     row.classList.add(rowClass);
+
+        //     for (let i = 0; i < repeatCount; i++) {
+        //         const albumDiv = document.createElement('div');
+        //         albumDiv.classList.add('album-row-item'); // Common class for individual album items
+
+        //         const album = albums[i % albums.length];
+
+        //         albumDiv.innerHTML = `
+        //         <img src="${album.cover}" class="album_cover" alt="Album Cover: ${album.title}" width="145px" height="145px">
+        //         <p class="album-title font-syne">${album.title}</p>
+        //         `;
+
+        //         row.appendChild(albumDiv);
+        //     }
+
+        //     return row;
+        // };
+
+        // const repeatCountAlbum = 6;
+
+        // albumList.appendChild(createAlbumRow('album-row', repeatCountAlbum));

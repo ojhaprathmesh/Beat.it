@@ -224,12 +224,12 @@
                 <div class="progress"></div>
             </div>
             <div class="controls">
-                <i class="fas fa-random"></i> <!-- Shuffle -->
-                <i class="fas fa-step-backward"></i> <!-- Reverse -->
-                <i class="fas fa-play" style="padding-right: 4px;"></i> <!-- Play -->
-                <i class="fas fa-pause" style="display: none;"></i> <!-- Pause -->
-                <i class="fas fa-step-forward"></i> <!-- Forward -->
-                <i class="fa-solid fa-repeat"></i> <!-- Repeat -->
+                <i class="fas fa-random shuffle"></i> <!-- Shuffle -->
+                <i class="fas fa-step-backward reverse"></i> <!-- Reverse -->
+                <i class="fas fa-play play" style="display: none; padding-right: 4px;"></i> <!-- Play -->
+                <i class="fas fa-pause pause" style="display: block; padding: 0 7px;"></i> <!-- Pause -->
+                <i class="fas fa-step-forward forward"></i> <!-- Forward -->
+                <i class="fa-solid fa-repeat repeat"></i> <!-- Repeat -->
             </div>
         </div>
 
@@ -252,87 +252,36 @@
         likeBtn.addEventListener('click', () => {
             checkbox.checked = !checkbox.checked; // Toggle the checkbox
             if (checkbox.checked) {
-                likeBtn.querySelector('.fa-heart').style.color = 'red';
+                likeBtn.style.color = 'red';
             } else {
-                likeBtn.querySelector('.fa-heart').style.color = '#FEFFF1';
+                likeBtn.style.color = '#FEFFF1';
             }
         });
 
         // Music play/pause functionality
+        const control = document.querySelector(".controls");
+        const playBtn = control.querySelector(".play");
+        const pauseBtn = control.querySelector(".pause");
+        const progress = document.querySelector(".progress")
+        let isPlaying = true;
 
-        
- 
-        // Song repetition code
-        // const songs = [
-        //     { title: 'One More Time', artist: 'Daft Punk', cover: '../assets/home/Song Cover - 1.png' },
-        //     { title: 'Something', artist: 'The Beatles', cover: '../assets/home/Song Cover - 2.png' }
-        // ];
+        playBtn.addEventListener('click', () => {
+            if (!isPlaying) {
+                playBtn.style.display = "none";
+                pauseBtn.style.display = "block";
+                progress.style.animationPlayState = "running";
+            }
+            isPlaying = true;
+        });
 
-        // const songsList = document.getElementById('song-list');
-
-        // const createSongRow = (songIndex, rowClass, repeatCount) => {
-        //     const row = document.createElement('div');
-        //     row.classList.add(rowClass);
-
-        //     for (let i = 0; i < repeatCount; i++) {
-        //         const songRow = document.createElement('div');
-        //         songRow.classList.add('song-row-item'); // Common class for individual song items
-
-        //         const song = songs[songIndex];
-
-        //         songRow.innerHTML = `
-        //             <img src="${song.cover}" class="song-cover" alt="Song Cover: ${song.title}" width="75px" height="75px">
-        //             <div class="title-artist font-syne">
-        //                 <div class="song-title">${song.title}</div>
-        //                 <div class="album-name">${song.artist}</div>
-        //             </div>
-        //         `;
-
-        //         row.appendChild(songRow);
-        //     }
-
-        //     return row;
-        // };
-
-        // const repeatCountSong = 6;
-
-        // songsList.appendChild(createSongRow(0, 'song-row-1', repeatCountSong));
-        // songsList.appendChild(createSongRow(1, 'song-row-2', repeatCountSong));
-
-
-        // Album repetition code
-        // const albums = [
-        //     { title: 'The Queen Is Dead', cover: '../assets/home/Album Cover - 1.png' },
-        //     { title: 'Abbey Road', cover: '../assets/home/Album Cover - 2.png' },
-        //     { title: 'Random Access Memories', cover: '../assets/home/Album Cover - 3.png' }
-        // ];
-
-        // const albumList = document.getElementById('album-list');
-
-        // const createAlbumRow = (rowClass, repeatCount) => {
-        //     const row = document.createElement('div');
-        //     row.classList.add(rowClass);
-
-        //     for (let i = 0; i < repeatCount; i++) {
-        //         const albumDiv = document.createElement('div');
-        //         albumDiv.classList.add('album-row-item'); // Common class for individual album items
-
-        //         const album = albums[i % albums.length];
-
-        //         albumDiv.innerHTML = `
-        //         <img src="${album.cover}" class="album_cover" alt="Album Cover: ${album.title}" width="145px" height="145px">
-        //         <p class="album-title font-syne">${album.title}</p>
-        //         `;
-
-        //         row.appendChild(albumDiv);
-        //     }
-
-        //     return row;
-        // };
-
-        // const repeatCountAlbum = 6;
-
-        // albumList.appendChild(createAlbumRow('album-row', repeatCountAlbum));
+        pauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                playBtn.style.display = "block";
+                pauseBtn.style.display = "none";
+                progress.style.animationPlayState = "paused";
+            }
+            isPlaying = false;
+        });
     </script>
 </body>
 

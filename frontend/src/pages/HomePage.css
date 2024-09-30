@@ -245,6 +245,7 @@
     border-radius: 5px;
     background-color: var(--white);
     animation: musicProgress 30s linear normal forwards;
+    /* animation-play-state: ; */
 }
 
 .player .controls {
