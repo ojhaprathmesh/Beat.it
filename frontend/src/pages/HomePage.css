@@ -174,6 +174,7 @@
     background-color: var(--footer-bg);
     width: 100%;
     align-items: center;
+    /* justify-content: left; */
     box-shadow: 0 0 40px;
 }
 
@@ -214,6 +215,7 @@
     text-align: left;
     justify-content: center;
     margin: auto 10px;
+    color: #FEFFF1;
 }
 
 /* Responsive Design (Media Queries) */
@@ -243,4 +245,24 @@
     .album_header {
         font-size: 18px;
     }
+}
+
+.slider_controls{
+    display: flex;
+    flex-direction: column;
+}
+
+.player_slider{
+    margin: 0 20rem 1rem;
+}
+
+.playercontrols{
+    width: 12rem;
+    height: 2.507rem;
+    margin: 0 auto;
+
+}
+
+.queue_vol{
+    margin: 0 auto;
 }
