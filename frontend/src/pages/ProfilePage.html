@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Join the music revolution with Beat.it! Login now to enjoy an amazing experience.">
+    <title>Beat.it</title>
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="../modular_styles/fontStyles.css" as="style" onload="this.rel='stylesheet'">
+
+    <!-- External stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #002760;
+            background-image: url(../assets/home/bg-graphic.png);
+            background-size: cover;
+            width: 100vw;
+            height: 100vw;
+            overflow: hidden;
+        }
+    </style>
+
+    <link rel="stylesheet" href="ProfilePage.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../modular_styles/profileStyles.css" media="print" onload="this.media='all'">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo-container" id="logo-home">
+            <img src="../assets/Beat.it White Logo.png" alt="Beat.it Logo" width="60px" height="60px">
+        </div>
+
+        <div class="logout">
+            <a class="fa-solid fa-power-off" href="LoginPage.html"></a>
+        </div>
+    </nav>
+
+    <main class="expanded-profile">
+        <div class="profile-pic">
+            <img src="../assets/Shrey Jaiswal Pic.png" alt="Profile Image" width="400px" height="400px">
+        </div>
+        <div class="details-container font-syne">
+            <h1 class="username">Shrey Jaiswal</h1>
+            <h5 class="usermail">shrey.jaiswal.23cse@bmu.edu.in</h5>
+        </div>
+    </main>
+
+    <footer class="player">
+        <div class="player-albuminfo">
+            <div class="player-songcover">
+                <img src="../assets/home/Album Cover.png" alt="Player Album Cover" width="75px" height="75px">
+            </div>
+
+            <div class="player-songdetails font-inter" style="font-weight: 500;">
+                <div class="player-songname">Main Yahaan Hoon</div>
+                <div class="player-artistname">Artist</div>
+            </div>
+
+            <div class="like-btn">
+                <input type="checkbox" id="like-check" style="display: none;">
+                <i class="fas fa-heart" style="font-size: larger;"></i>
+            </div>
+        </div>
+
+        <div class="playbar">
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <div class="controls">
+                <i class="fas fa-random shuffle"></i> <!-- Shuffle -->
+                <i class="fas fa-step-backward reverse"></i> <!-- Reverse -->
+                <i class="fas fa-play play" style="display: none; padding-right: 4px;"></i> <!-- Play -->
+                <i class="fas fa-pause pause" style="display: block; padding: 0 7px;"></i> <!-- Pause -->
+                <i class="fas fa-step-forward forward"></i> <!-- Forward -->
+                <i class="fa-solid fa-repeat repeat"></i> <!-- Repeat -->
+            </div>
+        </div>
+
+        <div class="other-controls">
+            <div class="menu"> <!-- More Options -->
+                <i class="fas fa-ellipsis-v"></i>
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="volume">
+                <i class="fas fa-volume-mute" id="volume-mute" style="display: none;"></i> <!-- Mute -->
+                <i class="fas fa-volume-down" id="volume-one" style="display: none;"></i> <!-- Low Volume -->
+                <i class="fas fa-volume-up" id="volume-three" style="display: block;"></i> <!-- High Volume -->
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Like button funtionality
+        const likeBtn = document.querySelector('.like-btn');
+        const checkbox = document.getElementById('like-check');
+
+        likeBtn.addEventListener('click', () => {
+            checkbox.checked = !checkbox.checked; // Toggle the checkbox
+            if (checkbox.checked) {
+                likeBtn.style.color = 'red';
+            } else {
+                likeBtn.style.color = '#FEFFF1';
+            }
+        });
+
+        // Music play/pause functionality
+        const progress = document.querySelector(".progress")
+
+        const songControl = document.querySelector(".controls");
+
+        const playBtn = songControl.querySelector(".play");
+        const pauseBtn = songControl.querySelector(".pause");
+        const reverseBtn = songControl.querySelector(".reverse");
+        const forwardBtn = songControl.querySelector(".forward");
+        const shuffleBtn = songControl.querySelector(".shuffle");
+        const repeatBtn = songControl.querySelector(".repeat");
+
+        let isPlaying = true;
+
+        // Play button functionality
+        playBtn.addEventListener('click', () => {
+            if (!isPlaying) {
+                playBtn.style.display = "none";
+                pauseBtn.style.display = "block";
+                progress.style.animationPlayState = "running";
+            }
+            isPlaying = true;
+        });
+
+        // Pause button functionality
+        pauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                playBtn.style.display = "block";
+                pauseBtn.style.display = "none";
+                progress.style.animationPlayState = "paused";
+            }
+            isPlaying = false;
+        });
+
+        // Reverse button functionality
+        reverseBtn.addEventListener('click', () => {
+            progress.style.animation = 'none';
+            progress.offsetHeight;
+
+            progress.style.animation = 'musicProgress 30s linear forwards';
+            progress.style.animationPlayState = 'running';
+
+            playBtn.style.display = "none";
+            pauseBtn.style.display = "block";
+
+            isPlaying = true;
+        });
+
+        // Forward button functionality
+        forwardBtn.addEventListener('click', () => {
+            progress.style.animationPlayState = 'paused';
+
+            progress.style.animation = 'none';
+            progress.offsetHeight;
+            progress.style.animation = 'musicProgress 0s linear forwards';
+
+            playBtn.style.display = "block";
+            pauseBtn.style.display = "none";
+
+            isPlaying = false;
+        });
+
+        // Shuffle button functionality
+        shuffleBtn.addEventListener('click', () => {
+            shuffleBtn.style.color = "yellow";
+
+            setTimeout(() => {
+                shuffleBtn.style.color = "#FEFFF1";
+            }, 500);
+        });
+
+        // Repeat button funcitonality
+        repeatBtn.addEventListener('click', () => {
+            // Work in progress :)
+        })
+    </script>
+</body>
+
+</html>

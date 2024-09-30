@@ -1,0 +1,234 @@
+:root {
+    --grey: #605E72;
+    --shadow: rgb(24, 24, 24);
+    --white: #FEFFF1;
+    --primary-text: #C3C2C9;
+    --search-text: #AFAFB1;
+    --footer-bg: #022C6B;
+    --main-body-bg: rgba(0, 39, 96, 0.55);
+}
+
+/* Nav Bar Styles */
+.navbar {
+    display: flex;
+    margin: 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#logo-home img {
+    border-radius: 30px;
+    box-shadow: 0 0 0 var(--shadow);
+    transition: box-shadow 0.4s ease-in-out;
+}
+
+#logo-home img:hover {
+    box-shadow: 0 0 50px var(--shadow);
+}
+
+.logout {
+    font-size: 60px;
+}
+
+.logout a {
+    text-decoration: none;
+    color: darkred;
+    transition: color 0.4s ease-in-out;
+}
+
+.logout a:visited {
+    color: darkred;
+}
+
+.logout a:hover {
+    color: red;
+}
+
+/* Expanded Profile Styles */
+.expanded-profile {
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+    height: 50vh;
+    margin: auto;
+    align-items: center;
+    justify-content: center;
+    background-color: #022c6bd1;
+    position: relative;
+    top: 150px;
+    border-radius: 40px;
+}
+
+.profile-pic {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    top: 60px;
+}
+
+.details-container {
+    width: 100%;
+    text-align: center;
+    color: var(--white);
+    letter-spacing: 1px;
+    position: relative;
+    top: 40px;
+    font-size: xx-large;
+}
+
+.username, .usermail {
+    font-weight: 100;
+    padding: 8px;
+}
+
+/* Player Section Styles*/
+.player {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: var(--footer-bg);
+    width: 100%;
+    height: 90px;
+    align-items: center;
+    box-shadow: 0 0 40px;
+    justify-content: space-between;
+}
+
+.player-albuminfo,
+.other-controls {
+    display: flex;
+    width: 25vw;
+    height: 100%;
+    align-items: center;
+}
+
+.player-albuminfo .like-btn {
+    cursor: pointer;
+    width: fit-content;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 10px;
+}
+
+.player-albuminfo .like-btn .fa-heart {
+    color: var(--white);
+    font-weight: 100;
+    transition: color 0.2s ease-in, font-weight 0.15s ease-in;
+}
+
+.player-albuminfo .like-btn input[type="checkbox"]:checked+.fa-heart {
+    color: red;
+    font-weight: 900;
+}
+
+.player-albuminfo .player-songcover {
+    margin: 12px 12px 12px 20px;
+    width: 75px;
+    height: 75px;
+}
+
+.player-albuminfo .player-songdetails {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    justify-content: center;
+    margin: auto 10px;
+    color: var(--white);
+}
+
+/* Playbar Section Styles */
+.playbar {
+    display: flex;
+    flex-direction: column;
+    width: 50vw;
+    align-items: center;
+    row-gap: 20px;
+}
+
+.playbar .progress-bar {
+    width: 500px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: var(--grey);
+}
+
+.playbar .progress-bar .progress {
+    width: 0%;
+    height: 10px;
+    max-width: 100%;
+    border-radius: 5px;
+    background-color: var(--white);
+    animation: musicProgress 30s linear forwards;
+}
+
+.playbar .controls {
+    display: flex;
+    font-size: 25px;
+    cursor: default;
+    justify-content: space-between;
+    width: 160px;
+    color: var(--white);
+}
+
+.playbar .controls i {
+    cursor: pointer;
+}
+
+.playbar .controls .shuffle {
+    transition: color 0.5s ease;
+    color: var(--white);
+}
+
+.other-controls {
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px;
+    color: var(--white);
+}
+
+.other-controls .volume {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.other-controls .progress-bar {
+    width: 100px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: var(--grey);
+}
+
+.other-controls .progress-bar .progress {
+    width: 80%;
+    height: 10px;
+    max-width: 100%;
+    border-radius: 5px;
+    background-color: var(--white);
+}
+
+
+@keyframes musicProgress {
+    0% {
+        width: 0%;
+    }
+
+    25% {
+        width: 25%;
+    }
+
+    50% {
+        width: 50%;
+    }
+
+    75% {
+        width: 75%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
