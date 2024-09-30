@@ -1,4 +1,4 @@
-.main{
+.main {
     display: flex;
     flex-direction: column;
     background-image: url("./images/backgroundSearch.png");
@@ -8,29 +8,29 @@
     color: #FEFFF1;
 }
 
-*{
+* {
     margin: 0;
     padding: 0;
 }
 
-body{
+body {
     overflow-x: hidden;
     background-color: #002760;
 }
 
-.nav{
+.nav {
     display: flex;
     align-items: center;
-    justify-content: space-between;   
+    justify-content: space-between;
     top: 0;
     padding: 1rem;
 }
 
-.nav img{
+.nav img {
     width: 2.5rem;
 }
 
-.nav .search input{
+.nav .search input {
     width: 35rem;
     background-color: #605E72;
     border: none;
@@ -39,18 +39,18 @@ body{
     color: #FEFFF1;
 }
 
-.search input::placeholder{
+.search input::placeholder {
     color: #FEFFF1;
     opacity: .5;
 }
 
-.nav .search i{
+.nav .search i {
     color: white;
     font-size: 1rem;
 }
 
-.nav .search{
-    box-shadow: 4px 4px 10px rgb(24, 24, 24);   
+.nav .search {
+    box-shadow: 4px 4px 10px rgb(24, 24, 24);
     background-color: #605E72;
     padding: 1rem;
     border-radius: 2rem;
@@ -59,12 +59,12 @@ body{
     gap: 1rem;
 }
 
-.line{
+.line {
     border: 1px solid white;
     height: 1rem;
 }
 
-.profile{
+.profile {
     padding: 0.7rem;
     height: 1rem;
     width: 1rem;
@@ -72,13 +72,13 @@ body{
     border-radius: 50%;
 }
 
-.profile i{
+.profile i {
     font-size: 1rem;
     color: black;
 }
 
-.outerBox{
-    background-color: black ;
+.outerBox {
+    background-color: black;
     width: 73rem;
     margin: 0 auto;
     display: flex;
@@ -89,26 +89,26 @@ body{
 
 }
 
-.leftBox{
+.leftBox {
     display: flex;
     flex-direction: column;
     width: 45rem;
 }
 
-.buttons{
+.buttons {
     display: flex;
     gap: .5rem;
     color: white;
 }
 
-.songGrid{
+.songGrid {
     display: grid;
     height: 22rem;
     margin-top: 1rem;
     grid-template-columns: repeat(1, 5fr);
 }
 
-.songTile{
+.songTile {
     display: flex;
     justify-content: space-between;
     padding: 1rem;
@@ -120,13 +120,13 @@ body{
 }
 
 
-.p2{
+.p2 {
     display: flex;
     gap: .5rem;
     justify-content: space-between;
 }
 
-.rightBox{
+.rightBox {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -134,16 +134,16 @@ body{
     width: 24rem;
 }
 
-.albumCover{
+.albumCover {
     display: flex;
 }
 
-.albumCover img{
+.albumCover img {
     height: 15rem;
     margin: 1rem 0 0;
 }
 
-.albumInfo{
+.albumInfo {
     display: flex;
     margin-top: 1rem;
     width: 15rem;
@@ -151,10 +151,10 @@ body{
     gap: .2rem;
 }
 
-.t1 .t2 .t3{
+.t1 .t2 .t3 {
     display: flex;
 }
 
-.t1{
+.t1 {
     font-size: 19px;
 }

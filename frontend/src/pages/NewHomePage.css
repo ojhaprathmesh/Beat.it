@@ -1,8 +1,8 @@
 .main {
     display: flex;
-    flex-direction: column;   
+    flex-direction: column;
     background-image: url("../assets/home/bg-graphic.png");
-    background-size: 100vw 100vh; 
+    background-size: 100vw 100vh;
     width: 100%;
     height: 100vh;
     gap: 2rem;
@@ -15,14 +15,14 @@
 }
 
 body {
-    overflow-x:hidden;
+    overflow-x: hidden;
     background-color: #002760;
 }
 
 .nav {
     display: flex;
     align-items: center;
-    justify-content: space-between;   
+    justify-content: space-between;
     top: 0;
     padding: 1rem;
 }
@@ -40,7 +40,7 @@ body {
     border: none;
     font-size: 1rem;
     outline: none;
-    color: #FEFFF1; 
+    color: #FEFFF1;
 }
 
 .search input::placeholder {
@@ -54,7 +54,7 @@ body {
 }
 
 .nav .search {
-    box-shadow: 4px 4px 10px rgb(24, 24, 24);   
+    box-shadow: 4px 4px 10px rgb(24, 24, 24);
     background-color: #605E72;
     padding: 1rem;
     width: 40%;
@@ -84,7 +84,7 @@ body {
     color: black;
 }
 
-.songsPanel{
+.songsPanel {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -96,11 +96,11 @@ body {
     border-radius: 50px;
 }
 
-.songsPanel .songText{
+.songsPanel .songText {
     font-size: 1vw;
 }
 
-.songsPanel .songGrid{
+.songsPanel .songGrid {
     margin-top: 1rem;
     max-width: 100%;
     display: grid;
@@ -108,31 +108,31 @@ body {
     gap: 2rem;
 }
 
-.songsPanel .songGrid .songTile1{
+.songsPanel .songGrid .songTile1 {
     display: flex;
     gap: 1rem;
 }
 
-.songsPanel .songGrid .songTile1 img{
+.songsPanel .songGrid .songTile1 img {
     width: 4rem;
-    max-width: 40%; 
+    max-width: 40%;
 }
 
-.songsPanel .songGrid .songTile1 .songTile1Text{
+.songsPanel .songGrid .songTile1 .songTile1Text {
     display: flex;
     flex-direction: column;
     gap: .5rem;
 }
 
-.songsPanel .songGrid .songTile1 .songTile1Text .songTitle1{
+.songsPanel .songGrid .songTile1 .songTile1Text .songTitle1 {
     font-size: 1vw;
 }
 
-.songsPanel .songGrid .songTile1 .songTile1Text .songArtist1{
+.songsPanel .songGrid .songTile1 .songTile1Text .songArtist1 {
     font-size: 0.7vw;
 }
 
-.albumPanel{
+.albumPanel {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -144,18 +144,19 @@ body {
     border-radius: 50px;
 }
 
-.albumPanel .albumText{
+.albumPanel .albumText {
     font-size: 1vw;
 }
 
-.albumPanel .albumGrid{
+.albumPanel .albumGrid {
     margin-top: 1rem;
     max-width: 100%;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 2rem;
 }
-.albumPanel .albumGrid .albumTile{
+
+.albumPanel .albumGrid .albumTile {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -163,12 +164,12 @@ body {
     justify-content: space-between;
 }
 
-.albumPanel .albumGrid .albumTile img{
+.albumPanel .albumGrid .albumTile img {
     width: 70%;
     max-width: 100%;
 }
 
-.playbar{
+.playbar {
     display: flex;
     justify-content: space-between;
     background: #022C6B;
@@ -178,26 +179,26 @@ body {
     width: 100%;
 }
 
-.playbar .left{
+.playbar .left {
     display: flex;
     margin-left: 1rem;
     gap: 1rem;
     align-items: center;
 }
 
-.playbar .left img{
+.playbar .left img {
     max-width: 26%;
 }
 
-.playbar .left .text{
+.playbar .left .text {
     display: flex;
     flex-direction: column;
 }
 
-.playbar .left .txt1{
+.playbar .left .txt1 {
     font-size: 1vw;
 }
 
-.playbar .left .txt2{
+.playbar .left .txt2 {
     font-size: 0.8vw;
 }
