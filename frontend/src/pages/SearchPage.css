@@ -16,16 +16,6 @@
     justify-content: space-between;
 }
 
-#logo-home img {
-    border-radius: 30px;
-    box-shadow: 0 0 0 var(--shadow);
-    transition: box-shadow 0.4s ease-in-out;
-}
-
-#logo-home img:hover {
-    box-shadow: 0 0 50px var(--shadow);
-}
-
 /* Search Bar Styles */
 .searchbar {
     display: flex;
