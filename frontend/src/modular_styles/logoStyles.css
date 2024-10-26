@@ -1,0 +1,11 @@
+/* Styling for logo image */
+#logo img {
+    border-radius: 30px;
+    box-shadow: 0 0 0 var(--shadow);
+    cursor: pointer;
+    transition: box-shadow 0.4s ease-in-out;
+}
+
+#logo img:hover {
+    box-shadow: 0 0 50px var(--shadow);
+}
