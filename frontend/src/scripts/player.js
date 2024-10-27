@@ -1,15 +1,15 @@
-import { insertPlayer } from '../components/playerRenderer.js';
+import { insertPlayer } from "../components/playerRenderer.js";
 
-document.addEventListener('DOMContentLoaded', () => {
-    insertPlayer('.player');
+document.addEventListener("DOMContentLoaded", () => {
+    insertPlayer(".player");
 
     // Like button functionality
-    const likeBtn = document.querySelector('.like-btn');
-    const checkbox = document.getElementById('like-check');
+    const likeBtn = document.querySelector(".like-btn");
+    const checkbox = document.getElementById("like-check");
 
-    likeBtn.addEventListener('click', () => {
+    likeBtn.addEventListener("click", () => {
         checkbox.checked = !checkbox.checked; // Toggle the checkbox
-        likeBtn.classList.toggle('liked', checkbox.checked);
+        likeBtn.classList.toggle("liked", checkbox.checked);
     });
 
     // Music play/pause functionality
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Play button functionality
-    playBtn.addEventListener('click', () => {
+    playBtn.addEventListener("click", () => {
         if (!isPlaying) {
             togglePlayPause(true);
             isPlaying = true;
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Pause button functionality
-    pauseBtn.addEventListener('click', () => {
+    pauseBtn.addEventListener("click", () => {
         if (isPlaying) {
             togglePlayPause(false);
             isPlaying = false;
@@ -49,37 +49,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Reverse button functionality
-    reverseBtn.addEventListener('click', () => {
+    reverseBtn.addEventListener("click", () => {
         // Reset animation and start again
-        progress.style.animation = 'none';
+        progress.style.animation = "none";
         progress.offsetHeight; // Trigger reflow to restart animation
-        progress.style.animation = 'musicProgress 30s linear forwards';
+        progress.style.animation = "musicProgress 30s linear forwards";
         togglePlayPause(true);
         isPlaying = true;
     });
 
     // Forward button functionality
-    forwardBtn.addEventListener('click', () => {
+    forwardBtn.addEventListener("click", () => {
         // Stop animation and reset progress instantly
-        progress.style.animation = 'none';
+        progress.style.animation = "none";
         progress.offsetHeight;
-        progress.style.animation = 'musicProgress 0s linear forwards';
+        progress.style.animation = "musicProgress 0s linear forwards";
         togglePlayPause(false);
         isPlaying = false;
     });
 
     // Shuffle button functionality
-    shuffleBtn.addEventListener('click', () => {
-        shuffleBtn.style.animation = 'shuffleAnimation 0.5s forwards';
+    shuffleBtn.addEventListener("click", () => {
+        shuffleBtn.style.animation = "shuffleAnimation 0.5s forwards";
 
-        shuffleBtn.addEventListener('animationend', () => {
-            shuffleBtn.style.animation = '';
+        shuffleBtn.addEventListener("animationend", () => {
+            shuffleBtn.style.animation = "";
         }, { once: true }); // Ensure this listener runs only once
     });
 
 
     // Repeat button functionality (Work in progress)
-    repeatBtn.addEventListener('click', () => {
+    repeatBtn.addEventListener("click", () => {
         console.log("Repeat functionality not yet implemented.");
     });
 });

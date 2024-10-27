@@ -26,7 +26,7 @@
             align-items: center;
             width: 100vw;
             height: 100vh;
-            background-image: url('../assets/login/Background.webp');
+            background-image: url("../assets/login/Background.webp");
             background-size: cover;
             background-position: center;
         }
@@ -43,7 +43,7 @@
 </head>
 
 <body>
-    <section class="login">
+    <main class="login">
         <section class="whiteFrame-login">
             <div class="logo-container" id="logo-login">
                 <img src="../assets/Beat.it Logo.png" alt="Beat.it" width="115px" height="115px">
@@ -71,13 +71,22 @@
                     </button>
                 </section>
 
-                <a class="font-inter redirect" id="redirect-login" href="SignupPage.html">
-                    <p>Don't have an account? </p>
+                <div class="font-inter redirect" id="redirect-login">
+                    <p>Don"t have an account? </p>
                     <p>Sign up</p>
-                </a>
+                </div>
             </form>
         </section>
-    </section>
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const login = document.querySelector(".redirect p:nth-child(2)");
+
+            login.addEventListener("click", () => {
+                window.location.href = "SignupPage.html";
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -55,6 +55,10 @@
     color: var(--grey);
 }
 
+.redirect p:nth-child(2) {
+    cursor: pointer;
+}
+
 /* Cursor pointer for labels and buttons */
 .input-container label,
 .form-btn {

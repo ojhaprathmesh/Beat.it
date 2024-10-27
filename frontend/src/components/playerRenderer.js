@@ -32,7 +32,7 @@ function extendFooter() {
     </div>
 
     <div class="other-controls">
-        <div class="menu"> <!-- More Options -->
+        <div class="burger-menu"> <!-- More Options -->
             <i class="fas fa-ellipsis-v"></i>
             <i class="fas fa-bars"></i>
         </div>

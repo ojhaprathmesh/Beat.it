@@ -32,13 +32,11 @@
 
 <body>
     <nav class="navbar">
-        <a class="logo-container" id="logo" href="HomePage.html">
+        <div id="logo">
             <img src="../assets/Beat.it White Logo.webp" alt="Beat.it Logo" width="60px" height="60px">
-        </a>
-
-        <div class="logout">
-            <a class="fa-solid fa-power-off" href="LoginPage.html"></a>
         </div>
+
+        <div class="fa-solid fa-power-off logout"></div>
     </nav>
 
     <main class="expanded-profile">
@@ -54,6 +52,18 @@
     <footer class="player"></footer>
 
     <script type="module" src="../scripts/player.js"></script>
+    <script>
+        const logo = document.getElementById("logo");
+        logo.addEventListener("click", () => {
+            window.location.assign("HomePage.html");
+            console.log("Not Working");
+        });
+
+        const logout = document.querySelector(".logout");
+        logout.addEventListener("click", () => {
+            window.location.assign("LoginPage.html")
+        })
+    </script>
 </body>
 
 </html>
