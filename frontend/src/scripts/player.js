@@ -1,4 +1,4 @@
-import { insertPlayer } from '../components/player.js';
+import { insertPlayer } from '../components/playerRenderer.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     insertPlayer('.player');
