@@ -66,15 +66,20 @@
     </nav>
 
     <main class="main-body">
-        <div class="top-container">
-            <section class="artist-container">
-                <img src="../assets/search/Artist Closeup.webp" alt="The Smiths Cover Page" width="268px"
-                    height="282.8px">
-            </section>
-            <section class="song-container font-montserrat">
+        <section class="top-container">
+            <div class="artist-container">
+                <figure class="album-logo">
+                    <img src="../assets/search/Artist Closeup.webp" alt="The Smiths Cover Page" height="180px">
+                </figure>
+                <div id="album-details">
+                    <h1 class="font-montserrat" id="album-artist">The Smiths</h1>
+                    <h6 class="font-montserrat" id="creator-type">Artist</h6>
+                </div>
+            </div>
+            <div class="font-montserrat" id="song-container">
                 <h1 id="song-heading">Songs</h1>
                 <div id="song-list">
-                    <div class="song-row-1">
+                    <div class="song-row">
                         <div class="song-row-item">
                             <img src="../assets/home/Song Cover - 1.webp" class="song-cover"
                                 alt="Song Cover: One More Time" width="75px" height="75px">
@@ -100,7 +105,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="song-row-2">
+                    <div class="song-row">
                         <div class="song-row-item">
                             <img src="../assets/home/Song Cover - 2.webp" class="song-cover" alt="Song Cover: Something"
                                 width="75px" height="75px">
@@ -127,10 +132,10 @@
                         </div>
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
+        </section>
 
-        <section class="album-container font-montserrat">
+        <section class="font-montserrat" id="album-container">
             <h1 id="album-heading">Albums</h1>
             <div id="album-list">
                 <div class="album-row">

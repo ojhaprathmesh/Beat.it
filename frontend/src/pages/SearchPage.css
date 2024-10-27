@@ -72,14 +72,38 @@
     width: 90%;
 }
 
-.song-container,
-.album-container {
+.artist-container {
+    background-color: var(--main-body-bg);
+    border-radius: 50px;
+}
+
+.artist-container .album-logo {
+    margin: 10px;
+}
+
+.artist-container #album-details {
+    margin: 10px;
+    padding-left: 16px;
+}
+
+#album-artist {
+    font-size: xx-large;
+    color: var(--white);
+    font-weight: 800;
+}
+
+#creator-type {
+    font-size: small;
+    color: var(--white);
+}
+
+#song-container,
+#album-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
     background-color: var(--main-body-bg);
     width: 90%;
-    height: 50%;
     border-radius: 50px;
     padding: 30px 25px;
     font-size: 18px;
@@ -97,8 +121,7 @@
     row-gap: 20px;
 }
 
-.song-row-1,
-.song-row-2 {
+.song-row {
     display: flex;
     justify-content: space-between;
 }
@@ -146,13 +169,17 @@
     align-items: center;
     font-size: smaller;
     row-gap: 15px;
-    max-width: 145px;
+    max-width: fit-content;
     text-align: center;
 }
 
 .album-title {
     font-weight: 200;
     color: var(--primary-text);
+}
+
+.song-title, .album-title {
+    font-size: 14px;
 }
 
 /* Player Section Styles*/
