@@ -113,5 +113,5 @@
     background-color: var(--form-blue);
     max-height: 52px;
     cursor: pointer;
-    text-decoration: none;
+    border-radius: 5px;
 }
