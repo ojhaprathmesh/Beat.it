@@ -121,16 +121,3 @@
     cursor: pointer;
     text-decoration: none;
 }
-
-/* Media queries for responsive design on smaller screens */
-@media screen and (max-width: 768px) {
-    .form-btn {
-        font-size: 24px;
-        /* Adjust font size for smaller screens */
-    }
-
-    .box {
-        font-size: 14px;
-        /* Adjust font size for smaller screens */
-    }
-}
