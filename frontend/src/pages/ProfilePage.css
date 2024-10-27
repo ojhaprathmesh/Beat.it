@@ -1,19 +1,7 @@
-:root {
-    --grey: #605E72;
-    --shadow: rgb(24, 24, 24);
-    --white: #FEFFF1;
-    --primary-text: #C3C2C9;
-    --search-text: #AFAFB1;
-    --footer-bg: #022C6B;
-    --main-body-bg: rgba(0, 39, 96, 0.55);
-}
-
-/* Nav Bar Styles */
-.navbar {
-    display: flex;
-    margin: 20px;
-    align-items: center;
-    justify-content: space-between;
+#logo {
+    display: block;
+    width: fit-content;
+    height: fit-content;
 }
 
 .logout {
@@ -69,4 +57,8 @@
 .username, .usermail {
     font-weight: 100;
     padding: 8px;
+}
+
+.usermail {
+    font-size: 1.2rem;
 }

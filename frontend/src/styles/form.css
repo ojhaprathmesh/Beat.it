@@ -1,9 +1,3 @@
-/* Root colors */
-:root {
-    --grey: #605E72;
-    --blue: #0C47BB;
-}
-
 /* Form container styling */
 .form {
     display: flex;
@@ -54,7 +48,7 @@
 
 .redirect p {
     display: inline;
-    color: var(--blue);
+    color: var(--form-blue);
 }
 
 .redirect p:first-child {
@@ -116,7 +110,7 @@
     border: none;
     font-size: 28px;
     color: white;
-    background-color: var(--blue);
+    background-color: var(--form-blue);
     max-height: 52px;
     cursor: pointer;
     text-decoration: none;

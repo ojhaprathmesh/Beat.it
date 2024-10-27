@@ -1,13 +1,3 @@
-:root {
-    --grey: #605E72;
-    --shadow: rgb(24, 24, 24);
-    --white: #FEFFF1;
-    --primary-text: #C3C2C9;
-    --search-text: #AFAFB1;
-    --footer-bg: #022C6B;
-    --main-body-bg: rgba(0, 39, 96, 0.55);
-}
-
 .top-container {
     display: flex;
     gap: 50px;
