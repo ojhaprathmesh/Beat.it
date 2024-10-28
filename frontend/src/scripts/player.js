@@ -6,7 +6,9 @@ class VolumeSlider {
         this.circle = null;
         this.isDragging = false;
 
-        // Initialize event bindings
+        this.minPosition = 0;
+        this.maxPosition = 0;
+
         this.bindEvents();
     }
 
@@ -20,19 +22,26 @@ class VolumeSlider {
         document.addEventListener("mouseup", (e) => this.onMouseUp(e));
     }
 
+    updateCirclePosition(clientX) {
+        const currentPosition = clientX - 7;
+        const newPosition = Math.max(this.minPosition, Math.min(currentPosition, this.maxPosition));
+        this.circle.style.left = `${newPosition}px`;
+    }
+
     onMouseEnter(e) {
-        const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
+        const progress = this.volumeBar.querySelector(".progress");
+        const progressDimensions = progress.getBoundingClientRect();
+
+        // Cache the min and max positions
+        this.minPosition = progressDimensions.left;
+        this.maxPosition = this.minPosition + progressDimensions.width - 14;
 
         // Create the circle indicator if it doesn't exist and if not dragging
         if (!this.circle && !this.isDragging) {
             this.circle = document.createElement("div");
             this.circle.classList.add("circle");
-
             this.circle.style.transform = "translateY(-50%)"; // Vertically center the circle
-
-            const minPosition = progressDimensions.left;
-            const maxPosition = minPosition + progressDimensions.width - 14;
-            this.circle.style.left = `${Math.max(maxPosition, minPosition)}px`;
+            this.circle.style.left = `${this.maxPosition}px`;
 
             this.volumeBar.appendChild(this.circle);
 
@@ -55,7 +64,7 @@ class VolumeSlider {
             setTimeout(() => {
                 if (this.circle) this.circle.remove();
                 this.circle = null;
-            }, 800);
+            }, 500);
         }
     }
 
@@ -84,27 +93,17 @@ class VolumeSlider {
                     setTimeout(() => {
                         if (this.circle) this.circle.remove();
                         this.circle = null;
-                    }, 800);
+                    }, 500);
                 }
             }
         }
     }
 
     onMouseMove(e) {
-        // Update the circle's position while dragging
+        // Only update the circle position if dragging
         if (this.isDragging && this.circle) {
-            const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
-            const minPosition = progressDimensions.left;
-            const maxPosition = minPosition + progressDimensions.width - 14;
-            let currentPosition = e.clientX - 7;
-
-            // Move the circle within the allowed range
-            this.circle.style.left = `${Math.max(minPosition, Math.min(currentPosition, maxPosition))}px`;
-            console.log(minPosition, currentPosition, maxPosition);
-            if (this.isDragging) {
-                e.preventDefault(); // Prevent other default actions
-            }
-
+            this.updateCirclePosition(e.clientX);
+            e.preventDefault(); // Prevent other default actions
         }
     }
 }
