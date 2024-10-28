@@ -147,14 +147,12 @@
     cursor: grab;
     opacity: 0;
     transform: scale(0);
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: opacity 0.8s ease, transform 0.4s ease;
 }
 
 .circle.show {
     opacity: 1;
-    /* Fully visible */
     transform: scale(1);
-    /* Scale to original size */
 }
 
 

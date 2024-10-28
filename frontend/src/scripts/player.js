@@ -26,7 +26,7 @@ class VolumeSlider {
             this.circle = document.createElement("div");
             this.circle.classList.add("circle");
 
-            const barDimensions = this.volumeBar.getBoundingClientRect();
+            // const barDimensions = this.volumeBar.getBoundingClientRect();
             const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
             const minPosition = progressDimensions.left - progressDimensions.right;
             const maxPosition = minPosition + progressDimensions.width - 14;
@@ -38,7 +38,7 @@ class VolumeSlider {
 
             // Animate the circle's appearance
             requestAnimationFrame(() => {
-                this.circle.classList.add("show");
+                if (this.circle) this.circle.classList.add("show");
             });
         }
     }
@@ -53,9 +53,9 @@ class VolumeSlider {
             this.circle.classList.remove("show");
 
             setTimeout(() => {
-                this.circle.remove();
+                if (this.circle) this.circle.remove();
                 this.circle = null;
-            }, 400);
+            }, 800);
         }
     }
 
@@ -82,9 +82,9 @@ class VolumeSlider {
                 if (this.circle) {
                     this.circle.classList.remove("show");
                     setTimeout(() => {
-                        this.circle.remove();
+                        if (this.circle) this.circle.remove();
                         this.circle = null;
-                    }, 400);
+                    }, 800);
                 }
             }
         }
@@ -105,6 +105,9 @@ class VolumeSlider {
             if (this.isDragging) {
                 e.preventDefault(); // Prevent other default actions
             }
+
+            let circleDimensions = this.circle.getBoundingClientRect();
+            console.log(circleDimensions, progressDimensions, barDimensions);
         }
     }
 }
