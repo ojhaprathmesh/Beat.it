@@ -21,19 +21,20 @@ class VolumeSlider {
     }
 
     onMouseEnter(e) {
-        // Create the circle indicator on hover
+        // Ensure progress bar is stable in width (not resized on hover)
+        const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
+
+        // Create the circle indicator if it doesn't exist and you're not dragging
         if (!this.circle && !this.isDragging) {
             this.circle = document.createElement("div");
             this.circle.classList.add("circle");
 
-            // const barDimensions = this.volumeBar.getBoundingClientRect();
-            const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
-            const minPosition = progressDimensions.left - progressDimensions.right;
-            const maxPosition = minPosition + progressDimensions.width - 14;
-            // let currentPosition = e.clientX - barDimensions.right + 14;
+            this.circle.style.transform = "translateY(-50%)"; // Vertically center the circle
 
-            // Set initial circle position
-            this.circle.style.left = `${maxPosition}px`;
+            const minPosition = progressDimensions.left;
+            const maxPosition = minPosition + progressDimensions.width - 14;
+            this.circle.style.left = `${Math.max(maxPosition, minPosition)}px`;
+            
             this.volumeBar.appendChild(this.circle);
 
             // Animate the circle's appearance

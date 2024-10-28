@@ -138,8 +138,8 @@
 }
 
 .circle {
-    position: relative;
-    top: -2px;
+    position: absolute;
+    top: 50%;
     width: 14px;
     height: 14px;
     border-radius: 50%;
