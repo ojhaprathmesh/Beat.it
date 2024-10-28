@@ -144,13 +144,10 @@
     height: 14px;
     border-radius: 50%;
     background-color: var(--white);
-    pointer-events: none;
+    cursor: grab;
     opacity: 0;
-    /* Start with invisible */
     transform: scale(0);
-    /* Start scaled down */
     transition: opacity 0.4s ease, transform 0.4s ease;
-    /* Add transition for smoothness */
 }
 
 .circle.show {

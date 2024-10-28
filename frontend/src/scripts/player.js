@@ -14,19 +14,22 @@ class VolumeSlider {
         this.volumeBar.addEventListener("mouseenter", (e) => this.onMouseEnter(e));
         this.volumeBar.addEventListener("mouseleave", () => this.onMouseLeave());
         this.volumeBar.addEventListener("mousedown", (e) => this.onMouseDown(e));
-        this.volumeBar.addEventListener("mouseup", (e) => this.onMouseUp(e));
-        this.volumeBar.addEventListener("mousemove", (e) => this.onMouseMove(e));
+
+        // Global mousemove and mouseup events
+        document.addEventListener("mousemove", (e) => this.onMouseMove(e));
+        document.addEventListener("mouseup", (e) => this.onMouseUp(e));
     }
 
     onMouseEnter(e) {
-        if (!this.circle) {
+        // Create the circle only when the mouse enters the bar and no drag is happening
+        if (!this.circle && !this.isDragging) {
             this.circle = document.createElement("div");
             this.circle.classList.add("circle");
 
             const barDimensions = this.volumeBar.getBoundingClientRect();
             const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
             const minPosition = progressDimensions.left - progressDimensions.right;
-            let maxPosition = minPosition + progressDimensions.width - 14;
+            const maxPosition = minPosition + progressDimensions.width - 14;
             let currentPosition = e.clientX - barDimensions.right + 14;
 
             // Set initial circle position
@@ -41,7 +44,8 @@ class VolumeSlider {
     }
 
     onMouseLeave() {
-        if (this.circle) {
+        // If the mouse leaves and we are not dragging, remove the circle
+        if (this.circle && !this.isDragging) {
             this.circle.classList.remove("show");
 
             setTimeout(() => {
@@ -52,18 +56,32 @@ class VolumeSlider {
     }
 
     onMouseDown(e) {
+        // Only start dragging if the left mouse button (button === 0) is pressed inside the volume bar
         if (e.button === 0) {
             this.isDragging = true;
+            this.circle.style.cursor="grabbing";
         }
     }
 
     onMouseUp(e) {
         if (e.button === 0) {
             this.isDragging = false;
+            this.circle.style.cursor="grab";
+
+            if (!this.volumeBar.contains(e.target)) {
+                if (this.circle) {
+                    this.circle.classList.remove("show");
+                    setTimeout(() => {
+                        this.circle.remove();
+                        this.circle = null;
+                    }, 400); // Match transition timing
+                }
+            }
         }
     }
 
     onMouseMove(e) {
+        // Allow the slider to move only if the left button is held down
         if (this.isDragging && this.circle) {
             const barDimensions = this.volumeBar.getBoundingClientRect();
             const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
@@ -76,6 +94,7 @@ class VolumeSlider {
         }
     }
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
     insertPlayer(".player");
