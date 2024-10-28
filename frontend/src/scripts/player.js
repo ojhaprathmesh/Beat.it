@@ -6,6 +6,7 @@ class VolumeSlider {
         this.circle = null;
         this.isDragging = false;
 
+        this.circleWidth = 0;
         this.minPosition = 0;
         this.maxPosition = 0;
 
@@ -23,31 +24,43 @@ class VolumeSlider {
     }
 
     updateCirclePosition(clientX) {
-        const currentPosition = clientX - 7;
+        const halfCircleWidth = this.circleWidth / 2; // Dynamically calculate half the width
+        const currentPosition = clientX - halfCircleWidth;
         const newPosition = Math.max(this.minPosition, Math.min(currentPosition, this.maxPosition));
         this.circle.style.left = `${newPosition}px`;
     }
 
+    acquireCircleDimensions() {
+        if (this.circle) {
+            // Acquiring the circle's actual width after it is rendered
+            this.circleWidth = this.circle.offsetWidth;
+
+            // Cache the min and max positions based on the circle's dimensions
+            const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
+            this.minPosition = progressDimensions.left;
+            this.maxPosition = this.minPosition + progressDimensions.width - this.circleWidth;
+        }
+    }
+
     onMouseEnter(e) {
-        const progress = this.volumeBar.querySelector(".progress");
-        const progressDimensions = progress.getBoundingClientRect();
-
-        // Cache the min and max positions
-        this.minPosition = progressDimensions.left;
-        this.maxPosition = this.minPosition + progressDimensions.width - 14;
-
         // Create the circle indicator if it doesn't exist and if not dragging
         if (!this.circle && !this.isDragging) {
             this.circle = document.createElement("div");
             this.circle.classList.add("circle");
+
             this.circle.style.transform = "translateY(-50%)"; // Vertically center the circle
-            this.circle.style.left = `${this.maxPosition}px`;
 
             this.volumeBar.appendChild(this.circle);
 
-            // Animate the circle's appearance
+            // Wait until the circle is added to the DOM to acquire its dimensions
             requestAnimationFrame(() => {
-                if (this.circle) this.circle.classList.add("show");
+                this.acquireCircleDimensions(); // Acquire dimensions after the circle is rendered
+                this.circle.style.left = `${this.maxPosition}px`;
+
+                // Animate the circle's appearance
+                if (this.circle) {
+                    this.circle.classList.add("show");
+                }
             });
         }
     }
@@ -62,8 +75,10 @@ class VolumeSlider {
             this.circle.classList.remove("show");
 
             setTimeout(() => {
-                if (this.circle) this.circle.remove();
-                this.circle = null;
+                if (this.circle) {
+                    this.circle.remove();
+                    this.circle = null;
+                }
             }, 500);
         }
     }
@@ -91,8 +106,10 @@ class VolumeSlider {
                 if (this.circle) {
                     this.circle.classList.remove("show");
                     setTimeout(() => {
-                        if (this.circle) this.circle.remove();
-                        this.circle = null;
+                        if (this.circle) {
+                            this.circle.remove();
+                            this.circle = null;
+                        }
                     }, 500);
                 }
             }
