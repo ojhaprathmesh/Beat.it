@@ -44,6 +44,10 @@ class VolumeSlider {
     }
 
     onMouseLeave() {
+        if (this.isDragging) {
+            document.querySelector("body").style.cursor = "grabbing";
+        }
+
         // Remove the circle when the mouse leaves, unless dragging
         if (this.circle && !this.isDragging) {
             this.circle.classList.remove("show");
@@ -60,14 +64,19 @@ class VolumeSlider {
         if (e.button === 0) {
             this.isDragging = true;
             this.circle.style.cursor = "grabbing";
+            e.preventDefault();
         }
     }
 
     onMouseUp(e) {
+        document.querySelector("body").style.cursor = "auto";
+
         // Stop dragging and reset the cursor when the mouse button is released
         if (e.button === 0) {
             this.isDragging = false;
-            this.circle.style.cursor = "grab";
+            if (this.circle) {
+                this.circle.style.cursor = "grab";
+            }
 
             if (!this.volumeBar.contains(e.target)) {
                 if (this.circle) {
@@ -92,6 +101,10 @@ class VolumeSlider {
 
             // Move the circle within the allowed range
             this.circle.style.left = `${Math.max(minPosition, Math.min(currentPosition, maxPosition))}px`;
+
+            if (this.isDragging) {
+                e.preventDefault(); // Prevent other default actions
+            }
         }
     }
 }
