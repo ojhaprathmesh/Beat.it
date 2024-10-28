@@ -30,10 +30,10 @@ class VolumeSlider {
             const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
             const minPosition = progressDimensions.left - progressDimensions.right;
             const maxPosition = minPosition + progressDimensions.width - 14;
-            let currentPosition = e.clientX - barDimensions.right + 14;
+            // let currentPosition = e.clientX - barDimensions.right + 14;
 
             // Set initial circle position
-            this.circle.style.left = `${Math.max(minPosition, Math.min(currentPosition, maxPosition))}px`;
+            this.circle.style.left = `${maxPosition}px`;
             this.volumeBar.appendChild(this.circle);
 
             // Animate the circle's appearance
