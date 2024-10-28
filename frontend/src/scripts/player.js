@@ -1,5 +1,82 @@
 import { insertPlayer } from "../components/playerRenderer.js";
 
+class VolumeSlider {
+    constructor(volumeSelector) {
+        this.volumeBar = document.querySelector(volumeSelector);
+        this.circle = null;
+        this.isDragging = false;
+
+        // Bind events
+        this.bindEvents();
+    }
+
+    bindEvents() {
+        this.volumeBar.addEventListener("mouseenter", (e) => this.onMouseEnter(e));
+        this.volumeBar.addEventListener("mouseleave", () => this.onMouseLeave());
+        this.volumeBar.addEventListener("mousedown", (e) => this.onMouseDown(e));
+        this.volumeBar.addEventListener("mouseup", (e) => this.onMouseUp(e));
+        this.volumeBar.addEventListener("mousemove", (e) => this.onMouseMove(e));
+    }
+
+    onMouseEnter(e) {
+        if (!this.circle) {
+            this.circle = document.createElement("div");
+            this.circle.classList.add("circle");
+
+            const barDimensions = this.volumeBar.getBoundingClientRect();
+            const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
+            const minPosition = progressDimensions.left - progressDimensions.right;
+            let maxPosition = minPosition + progressDimensions.width - 14;
+            let currentPosition = e.clientX - barDimensions.right + 14;
+
+            // Set initial circle position
+            this.circle.style.left = `${Math.max(minPosition, Math.min(currentPosition, maxPosition))}px`;
+            this.volumeBar.appendChild(this.circle);
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                this.circle.classList.add("show");
+            });
+        }
+    }
+
+    onMouseLeave() {
+        if (this.circle) {
+            this.circle.classList.remove("show");
+
+            setTimeout(() => {
+                this.circle.remove();
+                this.circle = null;
+            }, 400); // Match transition timing
+        }
+    }
+
+    onMouseDown(e) {
+        if (e.button === 0) {
+            this.isDragging = true;
+        }
+    }
+
+    onMouseUp(e) {
+        if (e.button === 0) {
+            this.isDragging = false;
+        }
+    }
+
+    onMouseMove(e) {
+        if (this.isDragging && this.circle) {
+            const barDimensions = this.volumeBar.getBoundingClientRect();
+            const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
+            const minPosition = progressDimensions.left - progressDimensions.right;
+            const maxPosition = minPosition + progressDimensions.width - 14;
+            let currentPosition = e.clientX - barDimensions.right + 14;
+
+            // Move the circle within the allowed range
+            this.circle.style.left = `${Math.max(minPosition, Math.min(currentPosition, maxPosition))}px`;
+        }
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     insertPlayer(".player");
 
@@ -12,8 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
         likeBtn.classList.toggle("liked", checkbox.checked);
     });
 
-    // Music play/pause functionality
-    const progress = document.querySelector(".progress");
+    // Music functionalities
+    const progress = document.querySelector(".playbar .progress");
     const songControl = document.querySelector(".controls");
 
     const playBtn = songControl.querySelector(".play");
@@ -50,7 +127,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Reverse button functionality
     reverseBtn.addEventListener("click", () => {
-        // Reset animation and start again
         progress.style.animation = "none";
         progress.offsetHeight; // Trigger reflow to restart animation
         progress.style.animation = "musicProgress 30s linear forwards";
@@ -60,7 +136,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Forward button functionality
     forwardBtn.addEventListener("click", () => {
-        // Stop animation and reset progress instantly
         progress.style.animation = "none";
         progress.offsetHeight;
         progress.style.animation = "musicProgress 0s linear forwards";
@@ -82,5 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
     repeatBtn.addEventListener("click", () => {
         console.log("Repeat functionality not yet implemented.");
     });
-});
 
+    const volumeSlider = new VolumeSlider(".volume .progress-bar");
+});
