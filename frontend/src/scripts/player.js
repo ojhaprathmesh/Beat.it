@@ -21,10 +21,9 @@ class VolumeSlider {
     }
 
     onMouseEnter(e) {
-        // Ensure progress bar is stable in width (not resized on hover)
         const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
 
-        // Create the circle indicator if it doesn't exist and you're not dragging
+        // Create the circle indicator if it doesn't exist and if not dragging
         if (!this.circle && !this.isDragging) {
             this.circle = document.createElement("div");
             this.circle.classList.add("circle");
@@ -34,7 +33,7 @@ class VolumeSlider {
             const minPosition = progressDimensions.left;
             const maxPosition = minPosition + progressDimensions.width - 14;
             this.circle.style.left = `${Math.max(maxPosition, minPosition)}px`;
-            
+
             this.volumeBar.appendChild(this.circle);
 
             // Animate the circle's appearance
@@ -94,21 +93,18 @@ class VolumeSlider {
     onMouseMove(e) {
         // Update the circle's position while dragging
         if (this.isDragging && this.circle) {
-            const barDimensions = this.volumeBar.getBoundingClientRect();
             const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
-            const minPosition = progressDimensions.left - progressDimensions.right;
+            const minPosition = progressDimensions.left;
             const maxPosition = minPosition + progressDimensions.width - 14;
-            let currentPosition = e.clientX - barDimensions.right + 14;
+            let currentPosition = e.clientX - 7;
 
             // Move the circle within the allowed range
             this.circle.style.left = `${Math.max(minPosition, Math.min(currentPosition, maxPosition))}px`;
-
+            console.log(minPosition, currentPosition, maxPosition);
             if (this.isDragging) {
                 e.preventDefault(); // Prevent other default actions
             }
 
-            let circleDimensions = this.circle.getBoundingClientRect();
-            console.log(circleDimensions, progressDimensions, barDimensions);
         }
     }
 }
