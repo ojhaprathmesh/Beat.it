@@ -6,7 +6,7 @@ class VolumeSlider {
         this.circle = null;
         this.isDragging = false;
 
-        // Bind events
+        // Initialize event bindings
         this.bindEvents();
     }
 
@@ -15,13 +15,13 @@ class VolumeSlider {
         this.volumeBar.addEventListener("mouseleave", () => this.onMouseLeave());
         this.volumeBar.addEventListener("mousedown", (e) => this.onMouseDown(e));
 
-        // Global mousemove and mouseup events
+        // Track mouse movements and releases globally
         document.addEventListener("mousemove", (e) => this.onMouseMove(e));
         document.addEventListener("mouseup", (e) => this.onMouseUp(e));
     }
 
     onMouseEnter(e) {
-        // Create the circle only when the mouse enters the bar and no drag is happening
+        // Create the circle indicator on hover
         if (!this.circle && !this.isDragging) {
             this.circle = document.createElement("div");
             this.circle.classList.add("circle");
@@ -36,7 +36,7 @@ class VolumeSlider {
             this.circle.style.left = `${Math.max(minPosition, Math.min(currentPosition, maxPosition))}px`;
             this.volumeBar.appendChild(this.circle);
 
-            // Trigger animation
+            // Animate the circle's appearance
             requestAnimationFrame(() => {
                 this.circle.classList.add("show");
             });
@@ -44,29 +44,30 @@ class VolumeSlider {
     }
 
     onMouseLeave() {
-        // If the mouse leaves and we are not dragging, remove the circle
+        // Remove the circle when the mouse leaves, unless dragging
         if (this.circle && !this.isDragging) {
             this.circle.classList.remove("show");
 
             setTimeout(() => {
                 this.circle.remove();
                 this.circle = null;
-            }, 400); // Match transition timing
+            }, 400);
         }
     }
 
     onMouseDown(e) {
-        // Only start dragging if the left mouse button (button === 0) is pressed inside the volume bar
+        // Start dragging if the left mouse button is pressed
         if (e.button === 0) {
             this.isDragging = true;
-            this.circle.style.cursor="grabbing";
+            this.circle.style.cursor = "grabbing";
         }
     }
 
     onMouseUp(e) {
+        // Stop dragging and reset the cursor when the mouse button is released
         if (e.button === 0) {
             this.isDragging = false;
-            this.circle.style.cursor="grab";
+            this.circle.style.cursor = "grab";
 
             if (!this.volumeBar.contains(e.target)) {
                 if (this.circle) {
@@ -74,14 +75,14 @@ class VolumeSlider {
                     setTimeout(() => {
                         this.circle.remove();
                         this.circle = null;
-                    }, 400); // Match transition timing
+                    }, 400);
                 }
             }
         }
     }
 
     onMouseMove(e) {
-        // Allow the slider to move only if the left button is held down
+        // Update the circle's position while dragging
         if (this.isDragging && this.circle) {
             const barDimensions = this.volumeBar.getBoundingClientRect();
             const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
@@ -95,7 +96,6 @@ class VolumeSlider {
     }
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
     insertPlayer(".player");
 
@@ -104,11 +104,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const checkbox = document.getElementById("like-check");
 
     likeBtn.addEventListener("click", () => {
-        checkbox.checked = !checkbox.checked; // Toggle the checkbox
+        checkbox.checked = !checkbox.checked; // Toggle the like state
         likeBtn.classList.toggle("liked", checkbox.checked);
     });
 
-    // Music functionalities
+    // Music control functionalities
     const progress = document.querySelector(".playbar .progress");
     const songControl = document.querySelector(".controls");
 
@@ -165,17 +165,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Shuffle button functionality
     shuffleBtn.addEventListener("click", () => {
         shuffleBtn.style.animation = "shuffleAnimation 0.5s forwards";
-
         shuffleBtn.addEventListener("animationend", () => {
             shuffleBtn.style.animation = "";
         }, { once: true }); // Ensure this listener runs only once
     });
-
 
     // Repeat button functionality (Work in progress)
     repeatBtn.addEventListener("click", () => {
         console.log("Repeat functionality not yet implemented.");
     });
 
+    // Initialize the volume slider
     const volumeSlider = new VolumeSlider(".volume .progress-bar");
 });
