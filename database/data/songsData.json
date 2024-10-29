@@ -1,0 +1,11 @@
+[
+    {
+        "id": 1,
+        "title": "Main Yahaan Hoon",
+        "artist": "Udit Narayan",
+        "album": "Veer-Zaara",
+        "genre": "Bollywood",
+        "duration": "4:54",
+        "filePath": "../../../database/uploads/main-yahaan-hoon.mp3"
+    }
+]
