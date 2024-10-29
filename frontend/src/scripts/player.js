@@ -105,12 +105,17 @@ class VolumeSlider {
     }
 
     updateOutputVolume(mouseX) {
-        const offsetX = mouseX - this.volumeBarDimensions.left;
+        const newMin = 0;
+        const newMax = 100;
+        const offsetX = mouseX - this.volumeBarDimensions.x;
+        const originalMin = this.minPosition - this.volumeBarDimensions.x;
+        const originalMax = this.maxPosition - this.volumeBarDimensions.x;
+        console.log(originalMin, originalMax, this.volumeBarDimensions.x);
 
-        const newVolume = ((offsetX - Math.round(this.minPosition)) * (100)) / (this.maxPosition - this.minPosition);
+        const newVolume = ((offsetX - originalMin) * (newMax - newMin)) / (originalMax - originalMin);
         // y = ((x-a)*(d-c))/(b-a) + c
 
-        this.outputVolume = Math.round((newVolume + this.volumeBarDimensions.right) * 2) / 2;
+        this.outputVolume = Math.round((newVolume) * 2) / 2;
         console.log(this.outputVolume);
     }
 
