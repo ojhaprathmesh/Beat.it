@@ -20,11 +20,11 @@ class VolumeSlider {
     bindEvents() {
         this.volControl.addEventListener("mouseenter", () => this.onMouseEnter());
         this.volControl.addEventListener("mouseleave", () => this.onMouseLeave());
-        this.volControl.addEventListener("mousedown", (e) => this.onMouseDown(e));
+        this.volControl.addEventListener("mousedown", (event) => this.onMouseDown(event));
 
         // Track mouse movements and releases globally
-        document.addEventListener("mousemove", (e) => this.onMouseMove(e));
-        document.addEventListener("mouseup", (e) => this.onMouseUp(e));
+        document.addEventListener("mousemove", (event) => this.onMouseMove(event));
+        document.addEventListener("mouseup", (event) => this.onMouseUp(event));
     }
 
     acquireCircleDimensions() {
@@ -89,26 +89,26 @@ class VolumeSlider {
         }
     }
 
-    onMouseDown(e) {
+    onMouseDown(event) {
         // Start dragging if the left mouse button is pressed
-        if (e.button === 0) {
+        if (event.button === 0) {
             this.isDragging = true;
             this.circle.style.cursor = "grabbing";
-            e.preventDefault();
+            event.preventDefault();
         }
     }
 
-    onMouseUp(e) {
+    onMouseUp(event) {
         document.querySelector("body").style.cursor = "auto";
 
         // Stop dragging and reset the cursor when the mouse button is released
-        if (e.button === 0) {
+        if (event.button === 0) {
             this.isDragging = false;
             if (this.circle) {
                 this.circle.style.cursor = "grab";
             }
 
-            if (!this.volControl.contains(e.target)) {
+            if (!this.volControl.contains(event.target)) {
                 if (this.circle && !this.isDragging) {
                     this.circle.classList.remove("show");
 
@@ -125,10 +125,10 @@ class VolumeSlider {
         }
     }
 
-    onMouseMove(e) {
+    onMouseMove(event) {
         if (this.isDragging && this.circle) {
-            this.updateCirclePosition(e.clientX);
-            e.preventDefault(); // Prevent other default actions
+            this.updateCirclePosition(event.clientX);
+            event.preventDefault(); // Prevent other default actions
         }
     }
 

@@ -3,17 +3,18 @@ import { SongControl } from "../classes/SongControl.js";
 import { MusicControl } from "../classes/MusicControl.js";
 import { VolumeSlider } from "../classes/VolumeSlider.js";
 
-function toggleLike(likeBtnSelector, checkboxSelector) {
+const toggleLike = (likeBtnSelector, checkboxSelector) => {
     const likeBtn = document.querySelector(likeBtnSelector);
     const checkbox = document.getElementById(checkboxSelector);
 
     likeBtn.addEventListener("click", () => {
-        checkbox.checked = !checkbox.checked; // Toggle the like state
-        likeBtn.classList.toggle("liked", checkbox.checked);
+        const isLiked = !checkbox.checked;
+        checkbox.checked = isLiked;
+        likeBtn.classList.toggle("liked", isLiked);
     });
-}
+};
 
-const updateVolumeIcons = (currentVolume) => {
+const updateVolumeIcons = (volumeIcons, currentVolume) => {
     const [muteIcon, lowVolumeIcon, midVolumeIcon, highVolumeIcon] = volumeIcons;
 
     muteIcon.style.display = currentVolume === 0 ? "block" : "none";
@@ -29,17 +30,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const songControl = new SongControl();
     const musicControl = new MusicControl(".playbar", songControl);
-
     const volumeSlider = new VolumeSlider(".volume-control-bar");
-    const volumeIcons = document.querySelector(".volume").getElementsByTagName("i");
+    const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
-    Array.from(volumeIcons).forEach(icon => {
-        icon.style.width = "20px";
-    });
+    volumeIcons.forEach(icon => icon.style.width = "20px");
 
     volumeSlider.volControl.addEventListener('volumeChange', (event) => {
-        updateVolumeIcons(event.detail);
+        updateVolumeIcons(volumeIcons, event.detail);
     });
 });
-
-export { MusicControl };
