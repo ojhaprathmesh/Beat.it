@@ -52,18 +52,17 @@ class VolumeSlider {
         if (!this.circle && !this.isDragging) {
             this.circle = document.createElement("div");
             this.circle.classList.add("circle");
-
             this.circle.style.transform = "translateY(-50%)"; // Vertically center the circle
 
             this.volControl.appendChild(this.circle);
 
+            // Wait for the circle to render
             requestAnimationFrame(() => {
-                this.acquireCircleDimensions(); // Acquire dimensions after the circle is rendered
+                this.acquireCircleDimensions();
                 this.circle.style.left = `${Math.max(this.volControlDimensions.x, Math.min(this.outputVolume + (this.volControlDimensions.x - this.circleWidth / 2), this.volControlDimensions.right - this.circleWidth))}px`;
 
-                // Animate the circle's appearance
                 if (this.circle) {
-                    this.circle.classList.add("show");
+                    this.circle.classList.add("show"); // Animate the circle's appearance
                 }
             });
         }
@@ -74,7 +73,42 @@ class VolumeSlider {
             document.querySelector("body").style.cursor = "grabbing";
         }
 
-        // Remove the circle when the mouse leaves, unless dragging
+        this.removeCircle(); // Removes the circle when the mouse leaves, unless dragging
+    }
+
+    onMouseUp(event) {
+        document.querySelector("body").style.cursor = "auto";
+
+        // Stop dragging and reset the cursor when the mouse button is released
+        if (event.button === 0) {
+            this.isDragging = false;
+            if (this.circle) {
+                this.circle.style.cursor = "grab";
+            }
+
+            if (!this.volControl.contains(event.target)) {
+                this.removeCircle();
+            }
+        }
+    }
+
+    onMouseDown(event) {
+        // Start dragging if the left mouse button is pressed
+        if (event.button === 0) {
+            this.isDragging = true;
+            this.circle.style.cursor = "grabbing";
+            event.preventDefault();
+        }
+    }
+
+    onMouseMove(event) {
+        if (this.isDragging && this.circle) {
+            this.updateCirclePosition(event.clientX);
+            event.preventDefault(); // Prevent other default actions
+        }
+    }
+
+    removeCircle() {
         if (this.circle && !this.isDragging) {
             this.circle.classList.remove("show");
 
@@ -89,49 +123,6 @@ class VolumeSlider {
         }
     }
 
-    onMouseDown(event) {
-        // Start dragging if the left mouse button is pressed
-        if (event.button === 0) {
-            this.isDragging = true;
-            this.circle.style.cursor = "grabbing";
-            event.preventDefault();
-        }
-    }
-
-    onMouseUp(event) {
-        document.querySelector("body").style.cursor = "auto";
-
-        // Stop dragging and reset the cursor when the mouse button is released
-        if (event.button === 0) {
-            this.isDragging = false;
-            if (this.circle) {
-                this.circle.style.cursor = "grab";
-            }
-
-            if (!this.volControl.contains(event.target)) {
-                if (this.circle && !this.isDragging) {
-                    this.circle.classList.remove("show");
-
-                    this.volProgress.style.borderTopRightRadius = `5px`;
-                    this.volProgress.style.borderBottomRightRadius = `5px`;
-                    setTimeout(() => {
-                        if (this.circle) {
-                            this.circle.remove();
-                            this.circle = null;
-                        }
-                    }, 500);
-                }
-            }
-        }
-    }
-
-    onMouseMove(event) {
-        if (this.isDragging && this.circle) {
-            this.updateCirclePosition(event.clientX);
-            event.preventDefault(); // Prevent other default actions
-        }
-    }
-
     updateOutputVolume(mouseX) {
         const newMin = 0;
         const newMax = 100;
@@ -139,7 +130,7 @@ class VolumeSlider {
         const originalMin = this.minPosition - this.volControlDimensions.x;
         const originalMax = this.maxPosition - this.volControlDimensions.x;
 
-        const newVolume = ((offsetX - originalMin) * (newMax - newMin)) / (originalMax - originalMin); // y = ((x-a)*(d-c))/(b-a) + c
+        const newVolume = ((offsetX - originalMin) * (newMax - newMin)) / (originalMax - originalMin) + newMin; // y = ((x-a)*(d-c))/(b-a) + c
 
         this.outputVolume = Math.round((newVolume) * 2) / 2;
         this.setVolume(this.volProgress.style);
@@ -151,14 +142,9 @@ class VolumeSlider {
 
     setVolume(volProgress) {
         if (volProgress && typeof this.outputVolume === "number") {
-            if (this.outputVolume < 25) {
-                volProgress.borderTopRightRadius = 0;
-                volProgress.borderBottomRightRadius = 0;
-            }
-            if (this.outputVolume > 95) {
-                volProgress.borderTopRightRadius = `5px`;
-                volProgress.borderBottomRightRadius = `5px`;
-            }
+            const radius = this.outputVolume < 25 ? 0 : (this.outputVolume > 95 ? `5px` : `5px`);
+            volProgress.borderTopRightRadius = radius;
+            volProgress.borderBottomRightRadius = radius;
             volProgress.width = `${this.outputVolume}%`;
         }
     }
