@@ -246,8 +246,8 @@ class VolumeSlider {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    insertPlayer(".player");
+document.addEventListener("DOMContentLoaded", async () => {
+    await insertPlayer(".player");
 
     // Like button functionality
     const likeBtn = document.querySelector(".like-btn");

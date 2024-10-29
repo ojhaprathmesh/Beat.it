@@ -1,4 +1,12 @@
-function renderAlbumInfo() {
+async function fetchSongData() {
+    const response = await fetch('../../../database/data/songsData.json');
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return await response.json();
+}
+
+function renderAlbumInfo(song) {
     return `
         <div class="player-albuminfo">
             <div class="player-songcover">
@@ -6,8 +14,8 @@ function renderAlbumInfo() {
             </div>
 
             <div class="player-songdetails font-inter" style="font-weight: 500;">
-                <div class="player-songname">Main Yahaan Hoon</div>
-                <div class="player-artistname">Artist</div>
+                <div class="player-songname">${song.title}</div>
+                <div class="player-artistname">${song.artist}</div>
             </div>
 
             <div class="like-btn">
@@ -65,18 +73,24 @@ function renderOtherControls() {
     `;
 }
 
-function createPlayer() {
+function createPlayer(song) {
     return `
-        ${renderAlbumInfo()}
+        ${renderAlbumInfo(song)}
         ${renderPlayBar()}
         ${renderOtherControls()}
     `;
 }
 
-function insertPlayer(containerSelector) {
+async function insertPlayer(containerSelector) {
     const container = document.querySelector(containerSelector);
     if (container) {
-        container.innerHTML += createPlayer();
+        try {
+            const songData = await fetchSongData();
+            const song = songData[0];
+            container.innerHTML += createPlayer(song);
+        } catch (error) {
+            console.error('Error fetching song data:', error);
+        }
     }
 }
 
