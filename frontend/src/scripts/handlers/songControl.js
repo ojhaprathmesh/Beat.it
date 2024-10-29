@@ -2,11 +2,11 @@ import { fetchSongData } from "../apis/fetchSongData.js"; // Import the fetch fu
 
 class SongControl {
     constructor() {
-        this.songList = []; // Initialize an empty array for the song list
+        this.songList = [];
         this.currentSongIndex = 0;
         this.audio = new Audio(); // Audio element to play the song
 
-        this.init(); // Initialize and load song data
+        this.init();
     }
 
     async init() {
@@ -20,7 +20,7 @@ class SongControl {
 
     loadSong(index) {
         if (index < 0 || index >= this.songList.length) {
-            console.error("Invalid song index.");
+            console.error("Error: next song not found!");
             return;
         }
 
@@ -29,7 +29,6 @@ class SongControl {
         this.audio.src = song.filePath; // Set the audio source to the selected song's file path
         this.audio.load();
 
-        // Update UI, e.g., display song title
         this.updateSongUI(song);
     }
 
@@ -54,9 +53,15 @@ class SongControl {
 
     playNext() {
         const nextIndex = (this.currentSongIndex + 1) % this.songList.length;
-        this.loadSong(nextIndex);
-        this.playSong();
+
+        if (nextIndex !== this.currentSongIndex) {
+            this.loadSong(nextIndex);
+            this.playSong();
+        } else {
+            this.pauseSong();
+        }
     }
+
 
     playPrevious() {
         const previousIndex = (this.currentSongIndex - 1 + this.songList.length) % this.songList.length;
@@ -71,7 +76,7 @@ class SongControl {
 
     getCurrentSongDuration() {
         const song = this.songList[this.currentSongIndex];
-        return song ? this.convertDurationToSeconds(song.duration) : 0; // Return duration in seconds
+        return song ? this.convertDurationToSeconds(song.duration) : 0;
     }
 }
 
