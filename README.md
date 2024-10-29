@@ -2,21 +2,13 @@
 
 ```plaintext
 Beat.it/
-├── .gitattributes
-├── .gitignore
-├── LICENSE
-├── package-lock.json
-├── README.md
-├── backend/                         # Backend-related files
-├── database/                        # Database-related files
+├── backend/                               # Backend-related files
+├── database/                              # Database-related files
 ├── frontend/
 │   ├── public/
-│   │   ├── index.html               # Main HTML file for frontend
+│   │   ├── index.html                     # Main HTML file for frontend
 │   ├── src/
 │   │   ├── assets/
-│   │   │   ├── Beat.it Logo.png        # Project logo image
-│   │   │   ├── Beat.it White Logo.webp # Project white logo image
-│   │   │   ├── bg-graphic.webp         # Background graphic image
 │   │   │   ├── home/
 │   │   │   │   ├── Album Cover - 1.webp   # Album cover image 1
 │   │   │   │   ├── Album Cover - 2.webp   # Album cover image 2
@@ -33,8 +25,11 @@ Beat.it/
 │   │   │   │   ├── Artist Closeup.webp    # Closeup image of artist
 │   │   │   ├── signup/
 │   │   │   │   ├── DJ Girl.webp           # DJ girl image for signup
-│   │   │   │   ├── Graphic Design Blob.webp  # Graphic design element for signup
+│   │   │   │   ├── Graphic Design.webp    # Graphic design element for signup
 │   │   │   │   ├── Singing Boy.webp       # Singing boy image for signup
+│   │   │   ├── Beat.it Logo.png           # Project logo image
+│   │   │   ├── Beat.it White Logo.webp    # Project white logo image
+│   │   │   ├── bg-graphic.webp            # Background graphic image
 │   │   ├── components/
 │   │   │   ├── navbarRenderer.js          # Navbar renderer script
 │   │   │   ├── playerRenderer.js          # Player renderer script
@@ -64,6 +59,11 @@ Beat.it/
 │   │   │   ├── player.css                 # Styles for player
 │   │   │   ├── profile.css                # Styles for profile
 │   │   │   ├── song-album.css             # Styles for song and album
+├── .gitattributes
+├── .gitignore
+├── LICENSE
+├── package-lock.json
+├── README.md
 ```
 
 ## Contributors ✨
