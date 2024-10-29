@@ -32,8 +32,8 @@ Beat.it/
 │   │   │   ├── Beat.it White Logo.webp    # Project white logo image
 │   │   │   ├── bg-graphic.webp            # Background graphic image
 │   │   ├── components/
-│   │   │   ├── navbarRenderer.js          # Navbar renderer script
-│   │   │   ├── playerRenderer.js          # Player renderer script
+│   │   │   ├── navbarElements.js          # Script to generate navbar (changed)
+│   │   │   ├── playerElements.js          # Script to generate player (changed)
 │   │   ├── pages/
 │   │   │   ├── AlbumPage.css              # Styles for album page
 │   │   │   ├── AlbumPage.html             # HTML for album page
@@ -48,8 +48,8 @@ Beat.it/
 │   │   │   ├── SignupPage.css             # Styles for signup page
 │   │   │   ├── SignupPage.html            # HTML for signup page
 │   │   ├── scripts/
-│   │   │   ├── navbar.js                  # Navbar script
-│   │   │   ├── player.js                  # Player script
+│   │   │   ├── navbarHandler.js           # Navbar script (changed)
+│   │   │   ├── playerHandler.js           # Player script (changed)
 │   │   ├── styles/
 │   │   │   ├── background.css             # Styles for background
 │   │   │   ├── colors.css                 # Styles for colors

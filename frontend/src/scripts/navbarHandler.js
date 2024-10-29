@@ -1,4 +1,4 @@
-import { insertNavbar } from "../components/navbarRenderer.js";
+import { insertNavbar } from "../components/navbarElements.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     insertNavbar(".navbar");

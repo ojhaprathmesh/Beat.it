@@ -1,4 +1,4 @@
-import { insertPlayer } from "../components/playerRenderer.js";
+import { insertPlayer } from "../components/playerElements.js";
 
 class MusicControl {
     constructor(playbarSelector, controlsSelector) {
