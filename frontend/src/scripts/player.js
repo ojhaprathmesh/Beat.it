@@ -137,7 +137,9 @@ class VolumeSlider {
 
             requestAnimationFrame(() => {
                 this.acquireCircleDimensions(); // Acquire dimensions after the circle is rendered
-                this.circle.style.left = `${Math.max(this.volControlDimensions.x, Math.min(this.outputVolume + (this.volControlDimensions.x - this.circleWidth / 2), this.outputVolume + (this.volControlDimensions.x - this.circleWidth)))}px`;
+                this.circle.style.left = `${Math.max(this.volControlDimensions.x, Math.min(this.outputVolume + (this.volControlDimensions.x - this.circleWidth / 2), this.volControlDimensions.right - this.circleWidth))}px`;
+
+                console.log(this.volControlDimensions.x, this.outputVolume + (this.volControlDimensions.x - this.circleWidth / 2), this.volControlDimensions.x - this.circleWidth)
 
                 // Animate the circle's appearance
                 if (this.circle) {
@@ -156,10 +158,10 @@ class VolumeSlider {
         if (this.circle && !this.isDragging) {
             this.circle.classList.remove("show");
 
+            this.volProgress.style.borderTopRightRadius = `5px`;
+            this.volProgress.style.borderBottomRightRadius = `5px`;
             setTimeout(() => {
                 if (this.circle) {
-                    this.volProgress.style.borderTopRightRadius = `5px`;
-                    this.volProgress.style.borderBottomRightRadius = `5px`;
                     this.circle.remove();
                     this.circle = null;
                 }
@@ -187,12 +189,13 @@ class VolumeSlider {
             }
 
             if (!this.volControl.contains(e.target)) {
-                if (this.circle) {
+                if (this.circle && !this.isDragging) {
                     this.circle.classList.remove("show");
+
+                    this.volProgress.style.borderTopRightRadius = `5px`;
+                    this.volProgress.style.borderBottomRightRadius = `5px`;
                     setTimeout(() => {
                         if (this.circle) {
-                            this.volProgress.style.borderTopRightRadius = `5px`;
-                            this.volProgress.style.borderBottomRightRadius = `5px`;
                             this.circle.remove();
                             this.circle = null;
                         }
