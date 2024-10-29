@@ -1,5 +1,5 @@
 import { insertPlayer } from "../components/playerElements.js";
-import { SongControl } from "./songControl.js";
+import { SongControl } from "./SongControl.js";
 
 class MusicControl {
     constructor(playbarSelector, songControlInstance) {
