@@ -269,11 +269,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const updateVolumeIcons = (currentVolume) => {
-        const [muteIcon, lowVolumeIcon, highVolumeIcon] = volumeIcons;
+        const [muteIcon, lowVolumeIcon, midVolumeIcon, highVolumeIcon] = volumeIcons;
 
         muteIcon.style.display = currentVolume === 0 ? "block" : "none";
-        lowVolumeIcon.style.display = currentVolume > 0 && currentVolume < 50 ? "block" : "none";
-        highVolumeIcon.style.display = currentVolume >= 50 ? "block" : "none";
+        lowVolumeIcon.style.display = currentVolume > 0 && currentVolume < 30 ? "block" : "none";
+        midVolumeIcon.style.display = currentVolume >= 30 && currentVolume < 70 ? "block" : "none";
+        highVolumeIcon.style.display = currentVolume >= 70 ? "block" : "none";
     };
 
     volumeSlider.volControl.addEventListener('volumeChange', (event) => {
