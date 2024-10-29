@@ -1,6 +1,6 @@
 import { fetchSongData } from "../apis/fetchSongData.js"; // Import the fetch function
 
-class SongHandler {
+class SongControl {
     constructor() {
         this.songList = []; // Initialize an empty array for the song list
         this.currentSongIndex = 0;
@@ -75,4 +75,4 @@ class SongHandler {
     }
 }
 
-export { SongHandler };
+export { SongControl };
