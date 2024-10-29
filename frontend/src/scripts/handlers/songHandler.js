@@ -64,16 +64,6 @@ class SongHandler {
         this.playSong();
     }
 
-    bindToMusicControl(musicControl) {
-        this.musicControl = musicControl;
-        this.musicControl.playBtn.addEventListener("click", () => this.playSong());
-        this.musicControl.pauseBtn.addEventListener("click", () => this.pauseSong());
-        this.musicControl.forwardBtn.addEventListener("click", () => this.playNext());
-        this.musicControl.reverseBtn.addEventListener("click", () => this.playPrevious());
-
-        this.audio.addEventListener("ended", () => this.playNext()); // Play next song when current ends
-    }
-
     convertDurationToSeconds(duration) {
         const [minutes, seconds] = duration.split(':').map(Number);
         return minutes * 60 + seconds;

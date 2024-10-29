@@ -15,18 +15,19 @@ class MusicControl {
         this.shuffleBtn = this.songControl.querySelector(".shuffle");
         this.repeatBtn = this.songControl.querySelector(".repeat");
 
-        this.isPlaying = true;
+        this.isPlaying = false;
+        this.togglePlayPause(this.isPlaying);
 
         this.bindEvents();
     }
 
     bindEvents() {
-        this.playBtn.addEventListener("click", () => this.play());
-        this.pauseBtn.addEventListener("click", () => this.pause());
-        this.reverseBtn.addEventListener("click", () => this.reverse());
-        this.forwardBtn.addEventListener("click", () => this.forward());
-        this.shuffleBtn.addEventListener("click", () => this.shuffle());
-        this.repeatBtn.addEventListener("click", () => this.repeat());
+        this.playBtn.addEventListener("click", () => this.handlePlay());
+        this.pauseBtn.addEventListener("click", () => this.handlePause());
+        this.forwardBtn.addEventListener("click", () => this.handleForward());
+        this.reverseBtn.addEventListener("click", () => this.handleReverse());
+        this.repeatBtn.addEventListener("click", () => this.handleRepeat());
+        this.shuffleBtn.addEventListener("click", () => this.handleShuffle());
     }
 
     // Utility function to toggle play/pause buttons
@@ -36,38 +37,40 @@ class MusicControl {
         this.progress.style.animationPlayState = isPlaying ? "running" : "paused";
     }
 
-    play() {
-        if (!this.isPlaying) {
-            this.togglePlayPause(true);
-            this.isPlaying = true;
-        }
+    handlePlay() {
+        this.isPlaying = true;
+        this.togglePlayPause(this.isPlaying);
+        this.songHandler.playSong();
     }
 
-    pause() {
-        if (this.isPlaying) {
-            this.togglePlayPause(false);
-            this.isPlaying = false;
-        }
+    handlePause() {
+        this.isPlaying = false;
+        this.togglePlayPause(this.isPlaying);
+        this.songHandler.pauseSong();
     }
 
-    reverse() {
+    handleReverse() {
         const duration = this.songHandler.getCurrentSongDuration();
         this.progress.style.animation = "none";
         this.progress.offsetHeight; // Trigger reflow to restart animation
         this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
-        this.togglePlayPause(true);
+
         this.isPlaying = true;
+        this.togglePlayPause(this.isPlaying);
+        this.songHandler.playPrevious();
     }
 
-    forward() {
+    handleForward() {
         this.progress.style.animation = "none";
         this.progress.offsetHeight;
         this.progress.style.animation = "musicProgress 0s linear forwards";
-        this.togglePlayPause(false);
+        
         this.isPlaying = false;
+        this.togglePlayPause(this.isPlaying);
+        this.songHandler.playNext();
     }
 
-    shuffle() {
+    handleShuffle() {
         this.shuffleBtn.style.animation = "shuffleAnimation 0.5s forwards";
         this.shuffleBtn.addEventListener("animationend", () => {
             this.shuffleBtn.style.animation = "";
@@ -75,7 +78,7 @@ class MusicControl {
     }
 
     // Repeat functionality (Work in progress)
-    repeat() {
+    handleRepeat() {
         console.log("Repeat functionality not yet implemented.");
     }
 }
@@ -276,7 +279,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const songHandler = new SongHandler();
     const musicControl = new MusicControl(".playbar", songHandler);
-    songHandler.bindToMusicControl(musicControl);
 
     const volumeSlider = new VolumeSlider(".volume-control-bar");
     const volumeIcons = document.querySelector(".volume").getElementsByTagName("i");
