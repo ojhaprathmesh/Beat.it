@@ -27,7 +27,7 @@ Beat.it/
 │   │   │   │   ├── DJ Girl.webp           # DJ girl image for signup
 │   │   │   │   ├── Graphic Design.webp    # Graphic design element for signup
 │   │   │   │   ├── Singing Boy.webp       # Singing boy image for signup
-│   │   │   ├── Beat.it Logo.png           # Project logo image
+│   │   │   ├── Beat.it Logo.webp           # Project logo image
 │   │   │   ├── Beat.it White Logo.webp    # Project white logo image
 │   │   │   ├── bg-graphic.webp            # Background graphic image
 │   │   ├── components/
