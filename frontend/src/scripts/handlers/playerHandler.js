@@ -247,21 +247,36 @@ class VolumeSlider {
     }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-    await insertPlayer(".player");
-
-    // Like button functionality
-    const likeBtn = document.querySelector(".like-btn");
-    const checkbox = document.getElementById("like-check");
+// Function to toggle the like state
+function toggleLike(likeBtnSelector, checkboxSelector) {
+    const likeBtn = document.querySelector(likeBtnSelector);
+    const checkbox = document.getElementById(checkboxSelector);
 
     likeBtn.addEventListener("click", () => {
         checkbox.checked = !checkbox.checked; // Toggle the like state
         likeBtn.classList.toggle("liked", checkbox.checked);
     });
+}
+
+const updateVolumeIcons = (currentVolume) => {
+    const [muteIcon, lowVolumeIcon, midVolumeIcon, highVolumeIcon] = volumeIcons;
+
+    muteIcon.style.display = currentVolume === 0 ? "block" : "none";
+    lowVolumeIcon.style.display = currentVolume > 0 && currentVolume < 30 ? "block" : "none";
+    midVolumeIcon.style.display = currentVolume >= 30 && currentVolume < 70 ? "block" : "none";
+    highVolumeIcon.style.display = currentVolume >= 70 ? "block" : "none";
+};
+
+document.addEventListener("DOMContentLoaded", async () => {
+    await insertPlayer(".player");
+
+    toggleLike(".like-btn", "like-check");
 
     const musicControl = new MusicControl(".playbar", ".controls");
+    const songHandler = new SongHandler();
 
-    const songHandler = new SongHandler(musicControl);
+    songHandler.bindToMusicControl(musicControl);
+
 
     const volumeSlider = new VolumeSlider(".volume-control-bar");
 
@@ -271,15 +286,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     Array.from(volumeIcons).forEach(icon => {
         icon.style.width = "20px";
     });
-
-    const updateVolumeIcons = (currentVolume) => {
-        const [muteIcon, lowVolumeIcon, midVolumeIcon, highVolumeIcon] = volumeIcons;
-
-        muteIcon.style.display = currentVolume === 0 ? "block" : "none";
-        lowVolumeIcon.style.display = currentVolume > 0 && currentVolume < 30 ? "block" : "none";
-        midVolumeIcon.style.display = currentVolume >= 30 && currentVolume < 70 ? "block" : "none";
-        highVolumeIcon.style.display = currentVolume >= 70 ? "block" : "none";
-    };
 
     volumeSlider.volControl.addEventListener('volumeChange', (event) => {
         updateVolumeIcons(event.detail);
