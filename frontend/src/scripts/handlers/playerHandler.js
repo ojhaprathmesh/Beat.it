@@ -247,7 +247,6 @@ class VolumeSlider {
     }
 }
 
-// Function to toggle the like state
 function toggleLike(likeBtnSelector, checkboxSelector) {
     const likeBtn = document.querySelector(likeBtnSelector);
     const checkbox = document.getElementById(checkboxSelector);
