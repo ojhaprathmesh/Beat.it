@@ -1,13 +1,13 @@
 ## File Structure
 
 ```plaintext
-Beat.it/                                 # Project documentation
+Beat.it/                                       
 ├── backend/                                   # Backend-related files
 ├── database/                                  # Database-related files
 │   ├── data/                                  # Data files
-│   │   ├── songsData.json                    # JSON file containing song details
+│   │   ├── songsData.json                     # JSON file containing song details
 │   ├── uploads/                               # Uploaded files
-│   │   ├── main-yahaan-hoon.mp3              # Main audio file
+│   │   ├── main-yahaan-hoon.mp3               # Main audio file
 ├── frontend/                                  # Frontend-related files
 │   ├── public/                                # Public assets
 │   │   ├── index.html                         # Main HTML file for frontend
@@ -51,31 +51,31 @@ Beat.it/                                 # Project documentation
 │   │   ├── scripts/                           # Script files
 │   │   │   ├── apis/                          # API-related scripts
 │   │   │   │   ├── fetchSongData.js           # Script to fetch song data
-│   │   │   ├── classes/                        # Class files
+│   │   │   ├── classes/                       # Class files
 │   │   │   │   ├── MusicControl.js            # Music control class
-│   │   │   │   ├── SongControl.js              # Song control class
-│   │   │   │   ├── VolumeSlider.js             # Volume slider class
-│   │   │   ├── components/                     # Component scripts
-│   │   │   │   ├── navbarElements.js           # Script for navbar elements
-│   │   │   │   ├── playerElements.js           # Script for player elements
-│   │   │   ├── handlers/                       # Handler scripts
-│   │   │   │   ├── navbarHandler.js            # Navbar handler script
-│   │   │   │   ├── playerHandler.js            # Player handler script
+│   │   │   │   ├── SongControl.js             # Song control class
+│   │   │   │   ├── VolumeSlider.js            # Volume slider class
+│   │   │   ├── components/                    # Component scripts
+│   │   │   │   ├── navbarElements.js          # Script for navbar elements
+│   │   │   │   ├── playerElements.js          # Script for player elements
+│   │   │   ├── handlers/                      # Handler scripts
+│   │   │   │   ├── navbarHandler.js           # Navbar handler script
+│   │   │   │   ├── playerHandler.js           # Player handler script
 │   │   ├── styles/                            # Style files
-│   │   │   ├── background.css                  # Styles for background
-│   │   │   ├── colors.css                      # Styles for colors
-│   │   │   ├── font.css                        # Styles for fonts
-│   │   │   ├── form.css                        # Styles for forms
-│   │   │   ├── logo.css                        # Styles for logo
-│   │   │   ├── navbar.css                      # Styles for navbar
-│   │   │   ├── player.css                      # Styles for player
-│   │   │   ├── profile.css                     # Styles for profile
+│   │   │   ├── background.css                 # Styles for background
+│   │   │   ├── colors.css                     # Styles for colors
+│   │   │   ├── font.css                       # Styles for fonts
+│   │   │   ├── form.css                       # Styles for forms
+│   │   │   ├── logo.css                       # Styles for logo
+│   │   │   ├── navbar.css                     # Styles for navbar
+│   │   │   ├── player.css                     # Styles for player
+│   │   │   ├── profile.css                    # Styles for profile
 │   │   │   ├── song-album.css                 # Styles for song and album
 ├── .gitattributes                             # Git attributes file
 ├── .gitignore                                 # Git ignore file
 ├── LICENSE                                    # License for the project
 ├── package-lock.json                          # Lock file for package dependencies
-├── README.md 
+├── README.md                                  # Project documentation
 ```
 
 ## Contributors ✨
