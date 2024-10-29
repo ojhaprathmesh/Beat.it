@@ -38,6 +38,11 @@ class MusicControl {
     }
 
     handlePlay() {
+        if (!this.hasStarted) {
+            const duration = this.songControl.getCurrentSongDuration();
+            this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
+            this.hasStarted = true;
+        } // This prevents reset of animation
         this.isPlaying = true;
         this.togglePlayPause(this.isPlaying);
         this.songControl.playSong();
