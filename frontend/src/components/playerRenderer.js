@@ -41,8 +41,8 @@ function extendFooter() {
             <i class="fas fa-volume-mute" id="volume-mute" style="display: none;"></i> <!-- Mute -->
             <i class="fas fa-volume-down" id="volume-one" style="display: none;"></i> <!-- Low Volume -->
             <i class="fas fa-volume-up" id="volume-three" style="display: block;"></i> <!-- High Volume -->
-            <div class="progress-bar">
-                <div class="progress"></div>
+            <div class="volume-control-bar"> <!-- Volume Progress Bar -->
+                <div class="volume-progress"></div> <!-- Volume Progress -->
             </div>
         </div>
     </div>

@@ -121,7 +121,7 @@
     gap: 10px;
 }
 
-.other-controls .progress-bar {
+.other-controls .volume-control-bar {
     display: flex;
     width: 100px;
     height: 10px;
@@ -129,7 +129,7 @@
     background-color: var(--grey);
 }
 
-.other-controls .progress-bar .progress {
+.volume-control-bar .volume-progress {
     width: 80%;
     height: 10px;
     max-width: 100%;

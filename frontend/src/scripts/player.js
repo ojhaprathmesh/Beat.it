@@ -82,11 +82,11 @@ class VolumeSlider {
         this.circleWidth = 0;
         this.circleDimensions = null;
 
-        this.volumeBar = document.querySelector(volumeSelector);
-        this.volumeBarDimensions = this.volumeBar.getBoundingClientRect();
-        this.progress = this.volumeBar.querySelector(".progress")
-        this.progressDimensions = this.progress.getBoundingClientRect();
-        this.outputVolume = this.progressDimensions.width;
+        this.volControl = document.querySelector(volumeSelector);
+        this.volControlDimensions = this.volControl.getBoundingClientRect();
+        this.volProgress = this.volControl.querySelector(".volume-progress")
+        this.volProgressDimensions = this.volProgress.getBoundingClientRect();
+        this.outputVolume = this.volProgressDimensions.width;
 
         this.minPosition = 0;
         this.maxPosition = 0;
@@ -96,9 +96,9 @@ class VolumeSlider {
     }
 
     bindEvents() {
-        this.volumeBar.addEventListener("mouseenter", () => this.onMouseEnter());
-        this.volumeBar.addEventListener("mouseleave", () => this.onMouseLeave());
-        this.volumeBar.addEventListener("mousedown", (e) => this.onMouseDown(e));
+        this.volControl.addEventListener("mouseenter", () => this.onMouseEnter());
+        this.volControl.addEventListener("mouseleave", () => this.onMouseLeave());
+        this.volControl.addEventListener("mousedown", (e) => this.onMouseDown(e));
 
         // Track mouse movements and releases globally
         document.addEventListener("mousemove", (e) => this.onMouseMove(e));
@@ -110,15 +110,15 @@ class VolumeSlider {
             this.circleDimensions = this.circle.getBoundingClientRect();
             this.circleWidth = this.circleDimensions.width;
 
-            this.minPosition = this.progressDimensions.left;
-            this.maxPosition = this.progressDimensions.right - this.circleWidth;
+            this.minPosition = this.volProgressDimensions.left;
+            this.maxPosition = this.volProgressDimensions.right - this.circleWidth;
         }
     }
 
     updateCirclePosition(mouseX) {
         const halfCircleWidth = this.circleWidth / 2;
         const currentPosition = mouseX - halfCircleWidth;
-        this.maxPosition = this.volumeBarDimensions.right - this.circleWidth;
+        this.maxPosition = this.volControlDimensions.right - this.circleWidth;
         const newPosition = Math.max(this.minPosition, Math.min(currentPosition, this.maxPosition));
         this.circle.style.left = `${newPosition}px`;
 
@@ -133,7 +133,7 @@ class VolumeSlider {
 
             this.circle.style.transform = "translateY(-50%)"; // Vertically center the circle
 
-            this.volumeBar.appendChild(this.circle);
+            this.volControl.appendChild(this.circle);
 
             requestAnimationFrame(() => {
                 this.acquireCircleDimensions(); // Acquire dimensions after the circle is rendered
@@ -184,7 +184,7 @@ class VolumeSlider {
                 this.circle.style.cursor = "grab";
             }
 
-            if (!this.volumeBar.contains(e.target)) {
+            if (!this.volControl.contains(e.target)) {
                 if (this.circle) {
                     this.circle.classList.remove("show");
                     setTimeout(() => {
@@ -208,28 +208,32 @@ class VolumeSlider {
     updateOutputVolume(mouseX) {
         const newMin = 0;
         const newMax = 100;
-        const offsetX = mouseX - this.volumeBarDimensions.x;
-        const originalMin = this.minPosition - this.volumeBarDimensions.x;
-        const originalMax = this.maxPosition - this.volumeBarDimensions.x;
+        const offsetX = mouseX - this.volControlDimensions.x;
+        const originalMin = this.minPosition - this.volControlDimensions.x;
+        const originalMax = this.maxPosition - this.volControlDimensions.x;
 
         const newVolume = ((offsetX - originalMin) * (newMax - newMin)) / (originalMax - originalMin); // y = ((x-a)*(d-c))/(b-a) + c
 
         this.outputVolume = Math.round((newVolume) * 2) / 2;
-        this.setVolume(this.progress.style);
+        this.setVolume(this.volProgress.style);
     }
 
-    setVolume(progress) {
-        if (progress && typeof this.outputVolume === "number") {
-            if (this.outputVolume < 30) {
-                progress.borderTopRightRadius = 0;
-                progress.borderBottomRightRadius = 0;
+    setVolume(volProgress) {
+        if (volProgress && typeof this.outputVolume === "number") {
+            if (this.outputVolume < 55) {
+                volProgress.borderTopRightRadius = 0;
+                volProgress.borderBottomRightRadius = 0;
             }
-            if (this.outputVolume > 70) {
-                progress.borderTopRightRadius = `5px`;
-                progress.borderBottomRightRadius = `5px`;
+            if (this.outputVolume > 95) {
+                volProgress.borderTopRightRadius = `5px`;
+                volProgress.borderBottomRightRadius = `5px`;
             }
-            progress.width = `${this.outputVolume}%`;
+            volProgress.width = `${this.outputVolume}%`;
         }
+    }
+
+    getVolume() {
+        return this.outputVolume;
     }
 }
 
@@ -246,5 +250,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const musicControl = new MusicControl(".playbar", ".controls");
-    const volumeSlider = new VolumeSlider(".volume .progress-bar");
+    const volumeSlider = new VolumeSlider(".volume-control-bar");
 });
