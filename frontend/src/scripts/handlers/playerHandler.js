@@ -2,9 +2,9 @@ import { insertPlayer } from "../components/playerElements.js";
 import { SongHandler } from "./songHandler.js";
 
 class MusicControl {
-    constructor(playbarSelector, controlsSelector) {
+    constructor(playbarSelector) {
         this.progress = document.querySelector(`${playbarSelector} .progress`);
-        this.songControl = document.querySelector(controlsSelector);
+        this.songControl = document.querySelector(`${playbarSelector} .controls`);
 
         this.playBtn = this.songControl.querySelector(".play");
         this.pauseBtn = this.songControl.querySelector(".pause");
@@ -51,7 +51,7 @@ class MusicControl {
     reverse() {
         this.progress.style.animation = "none";
         this.progress.offsetHeight; // Trigger reflow to restart animation
-        this.progress.style.animation = "musicProgress 30s linear forwards";
+        this.progress.style.animation = `musicProgress 30s linear forwards`;
         this.togglePlayPause(true);
         this.isPlaying = true;
     }
@@ -272,15 +272,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     toggleLike(".like-btn", "like-check");
 
-    const musicControl = new MusicControl(".playbar", ".controls");
+    const musicControl = new MusicControl(".playbar");
     const songHandler = new SongHandler();
-
     songHandler.bindToMusicControl(musicControl);
 
-
     const volumeSlider = new VolumeSlider(".volume-control-bar");
-
-    // Update volume icons according to current volume
     const volumeIcons = document.querySelector(".volume").getElementsByTagName("i");
 
     Array.from(volumeIcons).forEach(icon => {
