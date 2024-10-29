@@ -73,16 +73,6 @@ class SongHandler {
 
         this.audio.addEventListener("ended", () => this.playNext()); // Play next song when current ends
     }
-
-    getCurrentSongDuration() {
-        const song = this.songList[this.currentSongIndex];
-        return song ? this.convertDurationToSeconds(song.duration) : 0; // Return duration in seconds
-    }
-
-    convertDurationToSeconds(duration) {
-        const [minutes, seconds] = duration.split(':').map(Number);
-        return minutes * 60 + seconds; // Convert to total seconds
-    }
 }
 
 export { SongHandler };
