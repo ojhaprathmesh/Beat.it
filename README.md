@@ -17,6 +17,7 @@ Beat.it/
 │   │   │   │   ├── Search.webp            # Search image
 │   │   │   │   ├── Song Cover - 1.webp    # Song cover image 1
 │   │   │   │   ├── Song Cover - 2.webp    # Song cover image 2
+│   │   │   │   ├── volume.webp            # Medium volume icon
 │   │   │   ├── login/
 │   │   │   │   ├── Background.webp        # Login background image
 │   │   │   ├── profile/
@@ -27,7 +28,7 @@ Beat.it/
 │   │   │   │   ├── DJ Girl.webp           # DJ girl image for signup
 │   │   │   │   ├── Graphic Design.webp    # Graphic design element for signup
 │   │   │   │   ├── Singing Boy.webp       # Singing boy image for signup
-│   │   │   ├── Beat.it Logo.webp           # Project logo image
+│   │   │   ├── Beat.it Logo.webp          # Project logo image
 │   │   │   ├── Beat.it White Logo.webp    # Project white logo image
 │   │   │   ├── bg-graphic.webp            # Background graphic image
 │   │   ├── components/
