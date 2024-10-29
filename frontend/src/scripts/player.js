@@ -137,7 +137,7 @@ class VolumeSlider {
 
             requestAnimationFrame(() => {
                 this.acquireCircleDimensions(); // Acquire dimensions after the circle is rendered
-                this.circle.style.left = `${this.maxPosition}px`;
+                this.circle.style.left = `${Math.max(this.volControlDimensions.x, Math.min(this.outputVolume + (this.volControlDimensions.x - this.circleWidth / 2), this.outputVolume + (this.volControlDimensions.x - this.circleWidth)))}px`;
 
                 // Animate the circle's appearance
                 if (this.circle) {
@@ -158,6 +158,8 @@ class VolumeSlider {
 
             setTimeout(() => {
                 if (this.circle) {
+                    this.volProgress.style.borderTopRightRadius = `5px`;
+                    this.volProgress.style.borderBottomRightRadius = `5px`;
                     this.circle.remove();
                     this.circle = null;
                 }
@@ -189,6 +191,8 @@ class VolumeSlider {
                     this.circle.classList.remove("show");
                     setTimeout(() => {
                         if (this.circle) {
+                            this.volProgress.style.borderTopRightRadius = `5px`;
+                            this.volProgress.style.borderBottomRightRadius = `5px`;
                             this.circle.remove();
                             this.circle = null;
                         }
@@ -220,7 +224,7 @@ class VolumeSlider {
 
     setVolume(volProgress) {
         if (volProgress && typeof this.outputVolume === "number") {
-            if (this.outputVolume < 55) {
+            if (this.outputVolume < 25) {
                 volProgress.borderTopRightRadius = 0;
                 volProgress.borderBottomRightRadius = 0;
             }
