@@ -1,4 +1,5 @@
 import { insertPlayer } from "../components/playerElements.js";
+import { SongHandler } from "./songHandler.js";
 
 class MusicControl {
     constructor(playbarSelector, controlsSelector) {
@@ -260,8 +261,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const musicControl = new MusicControl(".playbar", ".controls");
 
+    const songHandler = new SongHandler(musicControl);
+
     const volumeSlider = new VolumeSlider(".volume-control-bar");
 
+    // Update volume icons according to current volume
     const volumeIcons = document.querySelector(".volume").getElementsByTagName("i");
 
     Array.from(volumeIcons).forEach(icon => {
@@ -281,3 +285,5 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateVolumeIcons(event.detail);
     });
 });
+
+export { MusicControl };
