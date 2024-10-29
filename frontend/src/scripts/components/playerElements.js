@@ -1,10 +1,4 @@
-async function fetchSongData() {
-    const response = await fetch('../../../database/data/songsData.json');
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    return await response.json();
-}
+import { fetchSongData } from "../apis/fetchSongData.js";
 
 function renderAlbumInfo(song) {
     return `
