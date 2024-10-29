@@ -78,19 +78,24 @@ class MusicControl {
 
 class VolumeSlider {
     constructor(volumeSelector) {
-        this.volumeBar = document.querySelector(volumeSelector);
         this.circle = null;
-        this.isDragging = false;
-
         this.circleWidth = 0;
+        this.circleDimensions = null;
+
+        this.volumeBar = document.querySelector(volumeSelector);
+        this.volumeBarDimensions = this.volumeBar.getBoundingClientRect();
+        this.progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
+        this.outputVolume = this.progressDimensions.width;
+
         this.minPosition = 0;
         this.maxPosition = 0;
+        this.isDragging = false;
 
         this.bindEvents();
     }
 
     bindEvents() {
-        this.volumeBar.addEventListener("mouseenter", (e) => this.onMouseEnter(e));
+        this.volumeBar.addEventListener("mouseenter", () => this.onMouseEnter());
         this.volumeBar.addEventListener("mouseleave", () => this.onMouseLeave());
         this.volumeBar.addEventListener("mousedown", (e) => this.onMouseDown(e));
 
@@ -99,26 +104,37 @@ class VolumeSlider {
         document.addEventListener("mouseup", (e) => this.onMouseUp(e));
     }
 
-    updateCirclePosition(clientX) {
-        const halfCircleWidth = this.circleWidth / 2; // Dynamically calculate half the width
-        const currentPosition = clientX - halfCircleWidth;
+    updateOutputVolume(mouseX) {
+        const offsetX = mouseX - this.volumeBarDimensions.left;
+
+        const newVolume = ((offsetX - Math.round(this.minPosition)) * (100)) / (this.maxPosition - this.minPosition);
+        // y = ((x-a)*(d-c))/(b-a) + c
+
+        this.outputVolume = Math.round((newVolume + this.volumeBarDimensions.right) * 2) / 2;
+        console.log(this.outputVolume);
+    }
+
+    updateCirclePosition(mouseX) {
+        const halfCircleWidth = this.circleWidth / 2;
+        const currentPosition = mouseX - halfCircleWidth;
+        this.maxPosition = this.volumeBarDimensions.right - this.circleWidth;
         const newPosition = Math.max(this.minPosition, Math.min(currentPosition, this.maxPosition));
         this.circle.style.left = `${newPosition}px`;
+
+        this.updateOutputVolume(newPosition);
     }
 
     acquireCircleDimensions() {
         if (this.circle) {
-            // Acquiring the circle's actual width after it is rendered
-            this.circleWidth = this.circle.offsetWidth;
+            this.circleDimensions = this.circle.getBoundingClientRect();
+            this.circleWidth = this.circleDimensions.width;
 
-            // Cache the min and max positions based on the circle's dimensions
-            const progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
-            this.minPosition = progressDimensions.left;
-            this.maxPosition = this.minPosition + progressDimensions.width - this.circleWidth;
+            this.minPosition = this.progressDimensions.left;
+            this.maxPosition = this.progressDimensions.right - this.circleWidth;
         }
     }
 
-    onMouseEnter(e) {
+    onMouseEnter() {
         // Create the circle indicator if it doesn't exist and if not dragging
         if (!this.circle && !this.isDragging) {
             this.circle = document.createElement("div");
@@ -128,7 +144,6 @@ class VolumeSlider {
 
             this.volumeBar.appendChild(this.circle);
 
-            // Wait until the circle is added to the DOM to acquire its dimensions
             requestAnimationFrame(() => {
                 this.acquireCircleDimensions(); // Acquire dimensions after the circle is rendered
                 this.circle.style.left = `${this.maxPosition}px`;
@@ -193,7 +208,6 @@ class VolumeSlider {
     }
 
     onMouseMove(e) {
-        // Only update the circle position if dragging
         if (this.isDragging && this.circle) {
             this.updateCirclePosition(e.clientX);
             e.preventDefault(); // Prevent other default actions
@@ -212,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
         checkbox.checked = !checkbox.checked; // Toggle the like state
         likeBtn.classList.toggle("liked", checkbox.checked);
     });
-    
+
     const musicControl = new MusicControl(".playbar", ".controls");
     const volumeSlider = new VolumeSlider(".volume .progress-bar");
 });
