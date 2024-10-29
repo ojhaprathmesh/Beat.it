@@ -84,7 +84,8 @@ class VolumeSlider {
 
         this.volumeBar = document.querySelector(volumeSelector);
         this.volumeBarDimensions = this.volumeBar.getBoundingClientRect();
-        this.progressDimensions = this.volumeBar.querySelector(".progress").getBoundingClientRect();
+        this.progress = this.volumeBar.querySelector(".progress")
+        this.progressDimensions = this.progress.getBoundingClientRect();
         this.outputVolume = this.progressDimensions.width;
 
         this.minPosition = 0;
@@ -104,19 +105,14 @@ class VolumeSlider {
         document.addEventListener("mouseup", (e) => this.onMouseUp(e));
     }
 
-    updateOutputVolume(mouseX) {
-        const newMin = 0;
-        const newMax = 100;
-        const offsetX = mouseX - this.volumeBarDimensions.x;
-        const originalMin = this.minPosition - this.volumeBarDimensions.x;
-        const originalMax = this.maxPosition - this.volumeBarDimensions.x;
-        console.log(originalMin, originalMax, this.volumeBarDimensions.x);
+    acquireCircleDimensions() {
+        if (this.circle) {
+            this.circleDimensions = this.circle.getBoundingClientRect();
+            this.circleWidth = this.circleDimensions.width;
 
-        const newVolume = ((offsetX - originalMin) * (newMax - newMin)) / (originalMax - originalMin);
-        // y = ((x-a)*(d-c))/(b-a) + c
-
-        this.outputVolume = Math.round((newVolume) * 2) / 2;
-        console.log(this.outputVolume);
+            this.minPosition = this.progressDimensions.left;
+            this.maxPosition = this.progressDimensions.right - this.circleWidth;
+        }
     }
 
     updateCirclePosition(mouseX) {
@@ -127,16 +123,6 @@ class VolumeSlider {
         this.circle.style.left = `${newPosition}px`;
 
         this.updateOutputVolume(newPosition);
-    }
-
-    acquireCircleDimensions() {
-        if (this.circle) {
-            this.circleDimensions = this.circle.getBoundingClientRect();
-            this.circleWidth = this.circleDimensions.width;
-
-            this.minPosition = this.progressDimensions.left;
-            this.maxPosition = this.progressDimensions.right - this.circleWidth;
-        }
     }
 
     onMouseEnter() {
@@ -216,6 +202,33 @@ class VolumeSlider {
         if (this.isDragging && this.circle) {
             this.updateCirclePosition(e.clientX);
             e.preventDefault(); // Prevent other default actions
+        }
+    }
+
+    updateOutputVolume(mouseX) {
+        const newMin = 0;
+        const newMax = 100;
+        const offsetX = mouseX - this.volumeBarDimensions.x;
+        const originalMin = this.minPosition - this.volumeBarDimensions.x;
+        const originalMax = this.maxPosition - this.volumeBarDimensions.x;
+
+        const newVolume = ((offsetX - originalMin) * (newMax - newMin)) / (originalMax - originalMin); // y = ((x-a)*(d-c))/(b-a) + c
+
+        this.outputVolume = Math.round((newVolume) * 2) / 2;
+        this.setVolume(this.progress.style);
+    }
+
+    setVolume(progress) {
+        if (progress && typeof this.outputVolume === "number") {
+            if (this.outputVolume < 30) {
+                progress.borderTopRightRadius = 0;
+                progress.borderBottomRightRadius = 0;
+            }
+            if (this.outputVolume > 70) {
+                progress.borderTopRightRadius = `5px`;
+                progress.borderBottomRightRadius = `5px`;
+            }
+            progress.width = `${this.outputVolume}%`;
         }
     }
 }
