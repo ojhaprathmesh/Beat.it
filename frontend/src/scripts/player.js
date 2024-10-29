@@ -139,8 +139,6 @@ class VolumeSlider {
                 this.acquireCircleDimensions(); // Acquire dimensions after the circle is rendered
                 this.circle.style.left = `${Math.max(this.volControlDimensions.x, Math.min(this.outputVolume + (this.volControlDimensions.x - this.circleWidth / 2), this.volControlDimensions.right - this.circleWidth))}px`;
 
-                console.log(this.volControlDimensions.x, this.outputVolume + (this.volControlDimensions.x - this.circleWidth / 2), this.volControlDimensions.x - this.circleWidth)
-
                 // Animate the circle's appearance
                 if (this.circle) {
                     this.circle.classList.add("show");
@@ -223,6 +221,10 @@ class VolumeSlider {
 
         this.outputVolume = Math.round((newVolume) * 2) / 2;
         this.setVolume(this.volProgress.style);
+
+        // This emits a custom event whenever volume is updated
+        const volumeEvent = new CustomEvent('volumeChange', { detail: this.outputVolume });
+        this.volControl.dispatchEvent(volumeEvent);
     }
 
     setVolume(volProgress) {
@@ -257,5 +259,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const musicControl = new MusicControl(".playbar", ".controls");
+
     const volumeSlider = new VolumeSlider(".volume-control-bar");
+
+    const volumeIcons = document.querySelector(".volume").getElementsByTagName("i");
+
+    Array.from(volumeIcons).forEach(icon => {
+        icon.style.width = "20px";
+    });
+
+    const updateVolumeIcons = (currentVolume) => {
+        const [muteIcon, lowVolumeIcon, highVolumeIcon] = volumeIcons;
+
+        muteIcon.style.display = currentVolume === 0 ? "block" : "none";
+        lowVolumeIcon.style.display = currentVolume > 0 && currentVolume < 50 ? "block" : "none";
+        highVolumeIcon.style.display = currentVolume >= 50 ? "block" : "none";
+    };
+
+    volumeSlider.volControl.addEventListener('volumeChange', (event) => {
+        updateVolumeIcons(event.detail);
+    });
 });
