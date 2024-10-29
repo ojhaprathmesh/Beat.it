@@ -62,7 +62,6 @@ class SongControl {
         }
     }
 
-
     playPrevious() {
         const previousIndex = (this.currentSongIndex - 1 + this.songList.length) % this.songList.length;
         this.loadSong(previousIndex);
