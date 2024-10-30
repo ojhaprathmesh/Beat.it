@@ -14,7 +14,7 @@ class SongControl {
             this.songList = await fetchSongData(); // Fetch song data from JSON
             this.loadSong(this.currentSongIndex); // Load the first song after fetching data
         } catch (error) {
-            console.error('Error fetching song data:', error);
+            console.error("Error fetching song data:", error);
         }
     }
 
@@ -26,7 +26,7 @@ class SongControl {
 
         this.currentSongIndex = index;
         const song = this.songList[index];
-        this.audio.src = song.filePath; // Set the audio source to the selected song's file path
+        this.audio.src = song.filePath; // Set the audio source to the selected song"s file path
         this.audio.load();
 
         this.updateSongUI(song);
@@ -69,7 +69,7 @@ class SongControl {
     }
 
     convertDurationToSeconds(duration) {
-        const [minutes, seconds] = duration.split(':').map(Number);
+        const [minutes, seconds] = duration.split(":").map(Number);
         return minutes * 60 + seconds;
     }
 

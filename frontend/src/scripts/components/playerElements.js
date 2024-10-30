@@ -83,7 +83,7 @@ async function insertPlayer(containerSelector) {
             const song = songData[0];
             container.innerHTML += createPlayer(song);
         } catch (error) {
-            console.error('Error fetching song data:', error);
+            console.error("Error fetching song data:", error);
         }
     }
 }

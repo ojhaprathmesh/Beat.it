@@ -48,7 +48,7 @@ class ProgressSlider {
     }
 
     onMouseEnter() {
-        // Create the circle indicator if it doesn't exist and if not dragging
+        // Create the circle indicator if it doesn"t exist and if not dragging
         if (!this.circle && !this.isDragging) {
             this.circle = document.createElement("div");
             this.circle.classList.add("circle");
@@ -62,7 +62,7 @@ class ProgressSlider {
                 this.circle.style.left = `${Math.max(this.volControlDimensions.x, Math.min(this.outputVolume + (this.volControlDimensions.x - this.circleWidth / 2), this.volControlDimensions.right - this.circleWidth))}px`;
 
                 if (this.circle) {
-                    this.circle.classList.add("show"); // Animate the circle's appearance
+                    this.circle.classList.add("show"); // Animate the circle"s appearance
                 }
             });
         }
@@ -136,7 +136,7 @@ class ProgressSlider {
         this.setVolume(this.volProgress.style);
 
         // This emits a custom event whenever volume is updated
-        const volumeEvent = new CustomEvent('volumeChange', { detail: this.outputVolume });
+        const volumeEvent = new CustomEvent("volumeChange", { detail: this.outputVolume });
         this.volControl.dispatchEvent(volumeEvent);
     }
 
