@@ -64,10 +64,17 @@ class MusicControl {
         this.progress.style.animation = "none";
         this.progress.offsetHeight; // Trigger reflow
         this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
+        
+        const isNextAvailable = this.songControl.playNext();
+        if (!isNextAvailable) {
+            this.progress.style.animation = "none";
+            this.progress.offsetHeight; // Trigger reflow
+            this.progress.style.animation = `musicProgress 0s linear forwards`;
+            console.log("Ok")
+        }
 
-        this.isPlaying = true;
+        this.isPlaying = isNextAvailable;
         this.togglePlayPause(this.isPlaying);
-        this.songControl.playNext();
     }
 
     // Shuffle functionality (Work in progress)

@@ -74,7 +74,6 @@ class SongControl {
             : (this.endCurrentSong(), false);
     }
 
-
     /*
     // Cyclic forward
     if (nextIndex !== this.currentSongIndex) {
