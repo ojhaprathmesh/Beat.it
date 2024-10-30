@@ -23,7 +23,7 @@ function renderAlbumInfo(song) {
 function renderPlayBar() {
     return `
         <div class="playbar">
-            <div class="progress-bar">
+            <div class="music-progress-bar">
                 <div class="progress"></div>
             </div>
 

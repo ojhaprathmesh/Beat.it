@@ -65,14 +65,14 @@
     row-gap: 20px;
 }
 
-.playbar .progress-bar {
+.playbar .music-progress-bar {
     width: 500px;
     height: 10px;
     border-radius: 5px;
     background-color: var(--grey);
 }
 
-.playbar .progress-bar .progress {
+.music-progress-bar .progress {
     width: 0%;
     height: 10px;
     max-width: 100%;
