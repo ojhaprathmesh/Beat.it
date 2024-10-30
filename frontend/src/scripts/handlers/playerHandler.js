@@ -62,13 +62,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         icon.style.width = "20px";
         icon.addEventListener("click", () => {
             if (icon.id != "volume-mute") {
-                storedVolume = volumeSlider.getVolume(); // Stores current volume
+                storedVolume = volumeSlider.getVolume();
                 updateVolumeIcons(updateVolSlider(0), volumeIcons);
             } else {
                 if (storedVolume === null) {
                     updateVolumeIcons(updateVolSlider(5), volumeIcons);
                 } else {
                     updateVolumeIcons(updateVolSlider(storedVolume), volumeIcons);
+                    storedVolume = null;
                 }
             }
         });
