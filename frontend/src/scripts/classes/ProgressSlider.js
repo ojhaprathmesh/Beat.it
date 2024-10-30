@@ -1,12 +1,12 @@
 class ProgressSlider {
-    constructor(volumeSelector) {
+    constructor(bar, progress) {
         this.circle = null;
         this.circleWidth = 0;
         this.circleDimensions = null;
 
-        this.volControl = document.querySelector(volumeSelector);
+        this.volControl = document.querySelector(bar);
         this.volControlDimensions = this.volControl.getBoundingClientRect();
-        this.volProgress = this.volControl.querySelector(".volume-progress")
+        this.volProgress = this.volControl.querySelector(progress)
         this.volProgressDimensions = this.volProgress.getBoundingClientRect();
         this.outputVolume = this.volProgressDimensions.width;
 

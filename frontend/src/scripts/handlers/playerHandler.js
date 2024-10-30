@@ -30,11 +30,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const songControl = new SongControl();
     const musicControl = new MusicControl(".playbar", songControl);
-    const volumeSlider = new ProgressSlider(".volume-control-bar");
+    const volumeSlider = new ProgressSlider(".volume-control-bar", ".volume-progress");
     const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
     volumeIcons.forEach(icon => icon.style.width = "20px");
-
+    
     volumeSlider.volControl.addEventListener('volumeChange', (event) => {
         updateVolumeIcons(volumeIcons, event.detail);
     });
