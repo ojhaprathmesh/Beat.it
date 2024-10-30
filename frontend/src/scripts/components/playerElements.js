@@ -24,7 +24,7 @@ function renderPlayBar() {
     return `
         <div class="playbar">
             <div class="music-progress-bar">
-                <div class="progress"></div>
+                <div class="music-progress"></div>
             </div>
 
             <div class="controls">

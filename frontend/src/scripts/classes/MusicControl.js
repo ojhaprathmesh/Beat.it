@@ -1,6 +1,6 @@
 class MusicControl {
     constructor(playbarSelector, songControlInstance) {
-        this.progress = document.querySelector(`${playbarSelector} .progress`);
+        this.progress = document.querySelector(`${playbarSelector} .music-progress`);
         this.controls = document.querySelector(`${playbarSelector} .controls`);
 
         this.songControl = songControlInstance; // Reference to SongControl object
