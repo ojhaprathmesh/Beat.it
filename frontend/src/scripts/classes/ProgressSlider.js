@@ -31,8 +31,6 @@ class ProgressSlider {
 
             this.minPosition = this.volProgressDimensions.left;
             this.maxPosition = this.volProgressDimensions.right - this.circleWidth;
-
-
         }
     }
 
