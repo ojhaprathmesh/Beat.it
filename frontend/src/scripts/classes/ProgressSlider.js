@@ -94,7 +94,7 @@ class ProgressSlider {
 
     onMouseDown(event) {
         // Start dragging if the left mouse button is pressed
-        if (event.button === 0) {
+        if (event.button === 0 && this.circle) {
             this.isDragging = true;
             this.circle.style.cursor = "grabbing";
             event.preventDefault();
