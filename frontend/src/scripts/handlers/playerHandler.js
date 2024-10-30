@@ -1,7 +1,7 @@
 import { insertPlayer } from "../components/playerElements.js";
 import { SongControl } from "../classes/SongControl.js";
 import { MusicControl } from "../classes/MusicControl.js";
-import { VolumeSlider } from "../classes/VolumeSlider.js";
+import { ProgressSlider } from "../classes/ProgressSlider.js";
 
 const toggleLike = (likeBtnSelector, checkboxSelector) => {
     const likeBtn = document.querySelector(likeBtnSelector);
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const songControl = new SongControl();
     const musicControl = new MusicControl(".playbar", songControl);
-    const volumeSlider = new VolumeSlider(".volume-control-bar");
+    const volumeSlider = new ProgressSlider(".volume-control-bar");
     const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
     volumeIcons.forEach(icon => icon.style.width = "20px");

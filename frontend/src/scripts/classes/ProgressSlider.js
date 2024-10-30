@@ -1,4 +1,4 @@
-class VolumeSlider {
+class ProgressSlider {
     constructor(volumeSelector) {
         this.circle = null;
         this.circleWidth = 0;
@@ -154,4 +154,4 @@ class VolumeSlider {
     }
 }
 
-export { VolumeSlider };
+export { ProgressSlider };
