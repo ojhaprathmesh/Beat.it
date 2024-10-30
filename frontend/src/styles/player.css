@@ -66,10 +66,12 @@
 }
 
 .playbar .music-progress-bar {
+    display: flex;
     width: 500px;
     height: 10px;
     border-radius: 5px;
     background-color: var(--grey);
+    align-items: center;
 }
 
 .music-progress-bar .music-progress {
@@ -130,6 +132,7 @@
     height: 10px;
     border-radius: 5px;
     background-color: var(--grey);
+    align-items: center;
 }
 
 .volume-control-bar .volume-progress {

@@ -1,5 +1,5 @@
 class ProgressSlider {
-    constructor(bar, progress) {
+    constructor(bar, progress, offsetY) {
         this.circle = null;
         this.circleDimensions = null;
 
@@ -10,25 +10,25 @@ class ProgressSlider {
         this.outputVolume = this.volProgressDimensions.width;
 
         this.isDragging = false;
-
+        
         this.bindEvents();
     }
-
+    
     bindEvents() {
         this.volControl.addEventListener("mouseenter", () => this.onMouseEnter());
         this.volControl.addEventListener("mouseleave", () => this.onMouseLeave());
         this.volControl.addEventListener("mousedown", (event) => this.onMouseDown(event));
-
+        
         // Track mouse movements and releases globally
         document.addEventListener("mousemove", (event) => this.onMouseMove(event));
         document.addEventListener("mouseup", (event) => this.onMouseUp(event));
     }
-
+    
     acquireCircleDimensions() {
         if (this.circle) {
             this.circleDimensions = this.circle.getBoundingClientRect();
             this.circleWidth = this.circleDimensions.width;
-
+            
             this.minPosition = this.volProgressDimensions.left;
             this.maxPosition = this.volProgressDimensions.right - this.circleWidth;
         }
@@ -40,19 +40,19 @@ class ProgressSlider {
         this.maxPosition = this.volControlDimensions.right - this.circleWidth;
         const newPosition = Math.max(this.minPosition, Math.min(currentPosition, this.maxPosition));
         this.circle.style.left = `${newPosition}px`;
-
+        
         this.updateOutputVolume(newPosition);
     }
-
+    
     onMouseEnter() {
         // Create the circle indicator if it doesn"t exist and if not dragging
         if (!this.circle && !this.isDragging) {
             this.circle = document.createElement("div");
             this.circle.classList.add("circle");
             this.circle.style.transform = "translateY(-50%)"; // Vertically center the circle
-
+            
             this.volControl.appendChild(this.circle);
-
+            
             // Wait for the circle to render
             requestAnimationFrame(() => {
                 this.acquireCircleDimensions();
