@@ -1,7 +1,6 @@
 class ProgressSlider {
     constructor(bar, progress) {
         this.circle = null;
-        this.circleWidth = 0;
         this.circleDimensions = null;
 
         this.volControl = document.querySelector(bar);
@@ -10,8 +9,6 @@ class ProgressSlider {
         this.volProgressDimensions = this.volProgress.getBoundingClientRect();
         this.outputVolume = this.volProgressDimensions.width;
 
-        this.minPosition = 0;
-        this.maxPosition = 0;
         this.isDragging = false;
 
         this.bindEvents();
@@ -34,6 +31,8 @@ class ProgressSlider {
 
             this.minPosition = this.volProgressDimensions.left;
             this.maxPosition = this.volProgressDimensions.right - this.circleWidth;
+
+
         }
     }
 
