@@ -48,8 +48,8 @@ function renderVolumeControls() {
                 <img src="../assets/home/volume.png" width="20px">
             </i> <!-- Med Volume -->
             <i class="fas fa-volume-up" id="volume-three" style="display: block;"></i> <!-- High Volume -->
-            <div class="volume-control-bar"> <!-- Volume Progress Bar -->
-                <div class="volume-progress"></div> <!-- Volume Progress -->
+            <div class="volume-control-bar">
+                <div class="volume-progress"></div>
             </div>
         </div>
     `;
