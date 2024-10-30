@@ -54,7 +54,7 @@ Beat.it/
 │   │   │   ├── classes/                       # Class files
 │   │   │   │   ├── MusicControl.js            # Music control class
 │   │   │   │   ├── SongControl.js             # Song control class
-│   │   │   │   ├── ProgressSlider.js            # Volume slider class
+│   │   │   │   ├── ProgressSlider.js          # Progress slider class
 │   │   │   ├── components/                    # Component scripts
 │   │   │   │   ├── navbarElements.js          # Script for navbar elements
 │   │   │   │   ├── playerElements.js          # Script for player elements
