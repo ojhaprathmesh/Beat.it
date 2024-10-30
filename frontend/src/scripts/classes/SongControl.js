@@ -26,16 +26,22 @@ class SongControl {
 
         this.currentSongIndex = index;
         const song = this.songList[index];
-        this.audio.src = song.filePath; // Set the audio source to the selected song"s file path
+        this.audio.src = song.filePath;
         this.audio.load();
 
         this.updateSongUI(song);
     }
 
     updateSongUI(song) {
-        const songTitleElement = document.querySelector(".song-title");
+        const songTitleElement = document.querySelector(".player-songname");
+        const songArtistElement = document.querySelector(".player-artistname");
+
         if (songTitleElement) {
             songTitleElement.textContent = song.title; // Update the song title
+        }
+
+        if (songArtistElement) {
+            songArtistElement.textContent = song.artist; // Update the song artist
         }
     }
 
@@ -74,8 +80,7 @@ class SongControl {
     }
 
     getCurrentSongDuration() {
-        const song = this.songList[this.currentSongIndex];
-        return song ? this.convertDurationToSeconds(song.duration) : 0;
+        return this.audio.duration;
     }
 }
 
