@@ -14,9 +14,8 @@ const toggleLike = (likeBtnSelector, checkboxSelector) => {
     });
 };
 
-const updateVolumeIcons = (currentVolume, volumeIcons, sliderInstance) => {
+const updateVolumeIcons = (volume, volumeIcons) => {
     const [muteIcon, lowVolumeIcon, midVolumeIcon, highVolumeIcon] = volumeIcons;
-    let storedVolume = null; // To store the previous volume before muting
 
     const setIconVisibility = (mute, low, mid, high) => {
         muteIcon.style.display = mute ? "block" : "none";
@@ -36,29 +35,46 @@ const updateVolumeIcons = (currentVolume, volumeIcons, sliderInstance) => {
     };
 
     // Icon update
-    updateIcons(currentVolume);
+    updateIcons(volume);
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await insertPlayer(".player");
+    await insertPlayer(".player"); // Waits for the player to be placed
 
     toggleLike(".like-btn", "like-check");
 
-    const songControl = new SongControl();
-    const musicControl = new MusicControl(".playbar", songControl);
-    const volumeSlider = new ProgressSlider(".volume-control-bar", ".volume-progress");
+    let songControl = new SongControl();
+    let musicControl = new MusicControl(".playbar", songControl);
+    let volumeSlider = new ProgressSlider(".volume-control-bar", ".volume-progress");
     const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
+    let storedVolume = null;
     volumeIcons.forEach(icon => {
+
+        function updateVolSlider(newVolume) {
+            Object.assign(volumeSlider, {
+                outputVolume: newVolume
+            });
+            volumeSlider.setVolume();
+            return newVolume;
+        }
+
         icon.style.width = "20px";
         icon.addEventListener("click", () => {
             if (icon.id != "volume-mute") {
-                console.log(icon)
+                storedVolume = volumeSlider.getVolume(); // Stores current volume
+                updateVolumeIcons(updateVolSlider(0), volumeIcons);
+            } else {
+                if (storedVolume === null) {
+                    updateVolumeIcons(updateVolSlider(5), volumeIcons);
+                } else {
+                    updateVolumeIcons(updateVolSlider(storedVolume), volumeIcons);
+                }
             }
         });
     });
 
-    volumeSlider.volControl.addEventListener("volumeChange", (event) => {
-        updateVolumeIcons(event.detail, volumeIcons, volumeSlider);
+    volumeSlider.volControl.addEventListener("volumeChange", (currentVol) => {
+        updateVolumeIcons(currentVol.detail.magnitude, volumeIcons);
     });
 });

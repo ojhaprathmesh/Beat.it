@@ -133,19 +133,23 @@ class ProgressSlider {
         const newVolume = ((offsetX - originalMin) * (newMax - newMin)) / (originalMax - originalMin) + newMin; // y = ((x-a)*(d-c))/(b-a) + c
 
         this.outputVolume = Math.round((newVolume) * 2) / 2;
-        this.setVolume(this.volProgress.style);
+        this.setVolume();
 
         // This emits a custom event whenever volume is updated
-        const volumeEvent = new CustomEvent("volumeChange", { detail: this.outputVolume });
+        const volumeEvent = new CustomEvent("volumeChange", {
+            detail: {
+                magnitude: this.outputVolume
+            }
+        });
         this.volControl.dispatchEvent(volumeEvent);
     }
 
-    setVolume(volProgress) {
-        if (volProgress && typeof this.outputVolume === "number") {
+    setVolume() {
+        if (this.volProgress && typeof this.outputVolume === "number") {
             const radius = this.outputVolume < 25 ? 0 : (this.outputVolume > 95 ? `5px` : `5px`);
-            volProgress.borderTopRightRadius = radius;
-            volProgress.borderBottomRightRadius = radius;
-            volProgress.width = `${this.outputVolume}%`;
+            this.volProgress.style.borderTopRightRadius = radius;
+            this.volProgress.style.borderBottomRightRadius = radius;
+            this.volProgress.style.width = `${this.outputVolume}%`;
         }
     }
 
