@@ -4,7 +4,8 @@ class SongControl {
     constructor() {
         this.songList = [];
         this.currentSongIndex = 0;
-        this.audio = new Audio(); // Audio element to play the song
+        this.audio = new Audio();
+        this.loadSongCallCount = 0;
 
         this.init();
     }
@@ -19,6 +20,7 @@ class SongControl {
     }
 
     loadSong(index) {
+
         if (index < 0 || index >= this.songList.length) {
             console.error("Error: next song not found!");
             return;
@@ -30,6 +32,13 @@ class SongControl {
         this.audio.load();
 
         this.updateSongUI(song);
+        if (this.loadSongCallCount == 0) {
+            this.pauseSong();
+        } else {
+            this.playSong();
+        }
+
+        this.loadSongCallCount++;
     }
 
     updateSongUI(song) {
@@ -58,20 +67,37 @@ class SongControl {
     }
 
     playNext() {
-        const nextIndex = (this.currentSongIndex + 1) % this.songList.length;
+        const nextIndex = this.currentSongIndex + 1;
 
-        if (nextIndex !== this.currentSongIndex) {
-            this.loadSong(nextIndex);
-            this.playSong();
-        } else {
-            this.pauseSong();
-        }
+        return nextIndex < this.songList.length
+            ? (this.loadSong(nextIndex), true)
+            : (this.endCurrentSong(), false);
+    }
+
+
+    /*
+    // Cyclic forward
+    if (nextIndex !== this.currentSongIndex) {
+        return true;
+    } else {
+        return false
+    }*/
+
+    endCurrentSong() {
+        this.audio.currentTime = this.audio.duration;
+        this.pauseSong();
     }
 
     playPrevious() {
-        const previousIndex = (this.currentSongIndex - 1 + this.songList.length) % this.songList.length;
+        const previousIndex = this.audio.currentTime < 5 ? (this.currentSongIndex - 1 < 0 ? 0 : this.currentSongIndex - 1) : this.currentSongIndex;
+
         this.loadSong(previousIndex);
         this.playSong();
+
+        /*
+        // Cyclic reverse
+        const previousIndex = (this.currentSongIndex - 1 + this.songList.length) % this.songList.length;
+        */
     }
 
     convertDurationToSeconds(duration) {

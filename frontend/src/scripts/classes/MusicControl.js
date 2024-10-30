@@ -35,11 +35,8 @@ class MusicControl {
     }
 
     handlePlay() {
-        if (!this.hasStarted) {
-            const duration = this.songControl.getCurrentSongDuration();
-            this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
-            this.hasStarted = true;
-        } // This prevents reset of animation
+        const duration = this.songControl.getCurrentSongDuration();
+        this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
         this.isPlaying = true;
         this.togglePlayPause(this.isPlaying);
         this.songControl.playSong();
@@ -63,20 +60,22 @@ class MusicControl {
     }
 
     handleForward() {
+        const duration = this.songControl.getCurrentSongDuration();
         this.progress.style.animation = "none";
-        this.progress.offsetHeight;
-        this.progress.style.animation = "musicProgress 0s linear forwards";
+        this.progress.offsetHeight; // Trigger reflow
+        this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
 
-        this.isPlaying = false;
+        this.isPlaying = true;
         this.togglePlayPause(this.isPlaying);
         this.songControl.playNext();
     }
 
+    // Shuffle functionality (Work in progress)
     handleShuffle() {
         this.shuffleBtn.style.animation = "shuffleAnimation 0.5s forwards";
         this.shuffleBtn.addEventListener("animationend", () => {
             this.shuffleBtn.style.animation = "";
-        }, { once: true }); // Ensure this listener runs only once
+        }, { once: true }); // Ensuring this listener runs only once
     }
 
     // Repeat functionality (Work in progress)
