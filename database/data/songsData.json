@@ -7,5 +7,14 @@
         "genre": "Bollywood",
         "duration": "4:54",
         "filePath": "../../../database/uploads/main-yahaan-hoon.mp3"
+    },
+    {
+        "id": 2,
+        "title": "Kabhi Kabhi Aditi",
+        "artist": "A.R. Rahman",
+        "album": "Jaane Tu... Ya Jaane Na",
+        "genre": "Bollywood",
+        "duration": "3:38",
+        "filePath": "../../../database/uploads/kabhi-kabhi-aditi.mp3"
     }
 ]
