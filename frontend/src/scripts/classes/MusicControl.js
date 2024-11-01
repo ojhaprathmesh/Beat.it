@@ -1,6 +1,6 @@
 class MusicControl {
     constructor(playbarSelector, songControlInstance) {
-        this.progress = document.querySelector(`${playbarSelector} .music-progress`);
+        // this.progress = document.querySelector(`${playbarSelector} .music-progress`);
         this.controls = document.querySelector(`${playbarSelector} .controls`);
 
         this.songControl = songControlInstance; // Reference to SongControl object
@@ -31,12 +31,12 @@ class MusicControl {
     togglePlayPause(isPlaying) {
         this.playBtn.style.display = isPlaying ? "none" : "block";
         this.pauseBtn.style.display = isPlaying ? "block" : "none";
-        this.progress.style.animationPlayState = isPlaying ? "running" : "paused";
+        // this.progress.style.animationPlayState = isPlaying ? "running" : "paused";
     }
 
     handlePlay() {
-        const duration = this.songControl.getCurrentSongDuration();
-        this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
+        // const duration = this.songControl.getCurrentSongDuration();
+        // this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
         this.isPlaying = true;
         this.togglePlayPause(this.isPlaying);
         this.songControl.playSong();
@@ -49,10 +49,10 @@ class MusicControl {
     }
 
     handleReverse() {
-        const duration = this.songControl.getCurrentSongDuration();
-        this.progress.style.animation = "none";
-        this.progress.offsetHeight; // Trigger reflow to restart animation
-        this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
+        // const duration = this.songControl.getCurrentSongDuration();
+        // this.progress.style.animation = "none";
+        // this.progress.offsetHeight; // Trigger reflow to restart animation
+        // this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
 
         this.isPlaying = true;
         this.togglePlayPause(this.isPlaying);
@@ -60,20 +60,21 @@ class MusicControl {
     }
 
     handleForward() {
-        const duration = this.songControl.getCurrentSongDuration();
-        this.progress.style.animation = "none";
-        this.progress.offsetHeight; // Trigger reflow
-        this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
-        
-        const isNextAvailable = this.songControl.playNext();
-        if (!isNextAvailable) {
-            this.progress.style.animation = "none";
-            this.progress.offsetHeight; // Trigger reflow
-            this.progress.style.animation = `musicProgress 0s linear forwards`;
-            console.log("Ok")
-        }
+        // const duration = this.songControl.getCurrentSongDuration();
+        // this.progress.style.animation = "none";
+        // this.progress.offsetHeight; // Trigger reflow
+        // this.progress.style.animation = `musicProgress ${duration}s linear forwards`;
 
-        this.isPlaying = isNextAvailable;
+        // const isNextAvailable = this.songControl.playNext();
+        // if (!isNextAvailable) {
+        //     this.progress.style.animation = "none";
+        //     this.progress.offsetHeight; // Trigger reflow
+        //     this.progress.style.animation = `musicProgress 0s linear forwards`;
+        //     console.log("Ok")
+        // }
+
+        // this.isPlaying = isNextAvailable;
+        this.isPlaying = this.songControl.playNext();
         this.togglePlayPause(this.isPlaying);
     }
 

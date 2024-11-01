@@ -23,8 +23,9 @@ function renderAlbumInfo(song) {
 function renderPlayBar() {
     return `
         <div class="playbar">
+            <audio id="songPlayer" src="main-yahaan-hoon.mp3"></audio>
             <div class="music-progress-bar">
-                <div class="music-progress"></div>
+                <input type="range" id="seekBar" min="0" max="100" value=" 0">
             </div>
 
             <div class="controls">
