@@ -162,31 +162,45 @@
 }
 
 #seekBar {
-    -webkit-appearance: none;
     appearance: none;
     width: 100%;
     cursor: pointer;
     outline: none;
-    overflow: hidden;
     border-radius: 5px;
+    background: var(--grey);
 }
 
 #seekBar::-webkit-slider-runnable-track {
     height: 10px;
     background: var(--grey);
     border-radius: 5px;
+    position: relative;
+    /* overflow: hidden; */
 }
 
 #seekBar::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    height: 10px;
-    width: 10px;
+    height: 14px; /* Slightly larger to avoid overflow */
+    width: 14px;
+    margin-top: -2px; /* Adjust to center thumb on the track */
     background-color: var(--white);
     border-radius: 50%;
     border: 1.5px solid var(--white);
-    box-shadow: -405px 0 0 400px var(--white);
+    position: relative;
+    z-index: 1;
 }
+
+#seekBar::before {
+    content: '';
+    height: 10px;
+    width: calc(var(--progress) / 100 * 500px + 5px);
+    background-color: var(--white);
+    position: absolute;
+    z-index: 1;
+    border-radius: 5px;
+}
+
 /* 
 @keyframes musicProgress {
     0% {

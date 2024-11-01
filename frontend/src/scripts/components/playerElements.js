@@ -25,7 +25,7 @@ function renderPlayBar() {
         <div class="playbar">
             <audio id="songPlayer" src="main-yahaan-hoon.mp3"></audio>
             <div class="music-progress-bar">
-                <input type="range" id="seekBar" min="0" max="100" value=" 0">
+                <input type="range" id="seekBar" min="0" max="100" value="0" step="0.01">
             </div>
 
             <div class="controls">

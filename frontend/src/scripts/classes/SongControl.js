@@ -1,10 +1,10 @@
-import { fetchSongData } from "../apis/fetchSongData.js"; // Import the fetch function
+import { fetchSongData } from "../apis/fetchSongData.js";
 
 class SongControl {
     constructor() {
         this.songList = [];
         this.currentSongIndex = 0;
-        this.audio = document.getElementById("songPlayer");  // Assuming "songPlayer" is your audio element ID
+        this.audio = document.getElementById("songPlayer");
         this.seekBar = document.getElementById("seekBar");
         this.loadSongCallCount = 0;
 
@@ -16,9 +16,15 @@ class SongControl {
             this.songList = await fetchSongData(); // Fetch song data from JSON
             this.loadSong(this.currentSongIndex); // Load the first song after fetching data
 
-            // Add event listeners for seek bar after initialization
-            this.audio.addEventListener("timeupdate", this.updateSeekBar.bind(this));
-            this.seekBar.addEventListener("input", this.seekAudio.bind(this));
+            const bindAfterMetaDataLoads = () => {
+                this.updateSeekBar();
+                this.audio.addEventListener("timeupdate", this.updateSeekBar.bind(this));
+                this.seekBar.addEventListener("input", this.seekAudio.bind(this));
+                this.audio.removeEventListener("loadedmetadata", bindAfterMetaDataLoads);
+            };
+
+            this.audio.addEventListener("loadedmetadata", bindAfterMetaDataLoads);
+
         } catch (error) {
             console.error("Error fetching song data:", error);
         }
@@ -74,18 +80,16 @@ class SongControl {
 
     // Updates the seek bar as the song plays
     updateSeekBar() {
-        this.seekBar.style.width = "100%";
-
         const progress = (this.audio.currentTime / this.audio.duration) * 100;
-        this.seekBar.value = progress;
-        console.log(progress);
+        this.seekBar.value = parseFloat(progress.toFixed(2));
+        this.seekBar.style.setProperty('--progress', progress);
+        console.log(this.audio.currentTime, this.audio.duration)
     }
 
     // Allows the user to seek to a different part of the song
     seekAudio() {
-        const seekTime = (this.seekBar.value / 100) * this.audio.duration;
+        const seekTime = (parseFloat(this.seekBar.value / 100)) * this.audio.duration;
         this.audio.currentTime = seekTime;
-        console.log(seekTime);
     }
 
     playNext() {
