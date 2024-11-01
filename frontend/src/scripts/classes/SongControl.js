@@ -64,19 +64,6 @@ class SongControl {
         }
     }
 
-    playSong() {
-        if (this.audio.paused) {
-            this.audio.play();
-        }
-    }
-
-    pauseSong() {
-        if (!this.audio.paused) {
-            this.audio.pause();
-        }
-    }
-
-    // Updates the seek bar as the song plays
     updateSeekBar() {
         if (isNaN(this.audio.duration) || this.audio.duration === 0) {
             console.assert(!isNaN(this.audio.duration), "Waiting for audio duration to be set...");
@@ -94,11 +81,22 @@ class SongControl {
         this.seekBar.style.setProperty('--color', color);
     }
 
-
     // Allows the user to seek to a different part of the song
     seekAudio() {
         const seekTime = (parseFloat(this.seekBar.value / 100)) * this.audio.duration;
         this.audio.currentTime = seekTime;
+    }
+
+    playSong() {
+        if (this.audio.paused) {
+            this.audio.play();
+        }
+    }
+
+    pauseSong() {
+        if (!this.audio.paused) {
+            this.audio.pause();
+        }
     }
 
     playNext() {
@@ -108,11 +106,6 @@ class SongControl {
             : (this.endCurrentSong(), false);
     }
 
-    endCurrentSong() {
-        this.audio.currentTime = this.audio.duration;
-        this.pauseSong();
-    }
-
     playPrevious() {
         const previousIndex = this.audio.currentTime < 5
             ? (this.currentSongIndex - 1 < 0 ? 0 : this.currentSongIndex - 1)
@@ -120,6 +113,11 @@ class SongControl {
 
         this.loadSong(previousIndex);
         this.playSong();
+    }
+
+    endCurrentSong() {
+        this.audio.currentTime = this.audio.duration;
+        this.pauseSong();
     }
 }
 
