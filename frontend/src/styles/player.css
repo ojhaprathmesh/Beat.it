@@ -74,15 +74,6 @@
     align-items: center;
 }
 
-/* .music-progress-bar .music-progress {
-    width: 0%;
-    height: 10px;
-    max-width: 100%;
-    border-radius: 5px;
-    background-color: var(--white);
-    animation: musicProgress 30s linear forwards;
-} */
-
 .playbar .controls {
     display: flex;
     font-size: 25px;
@@ -175,15 +166,14 @@
     background: var(--grey);
     border-radius: 5px;
     position: relative;
-    /* overflow: hidden; */
 }
 
 #seekBar::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    height: 14px; /* Slightly larger to avoid overflow */
+    height: 14px;
     width: 14px;
-    margin-top: -2px; /* Adjust to center thumb on the track */
+    margin-top: -2px;
     background-color: var(--white);
     border-radius: 50%;
     border: 1.5px solid var(--white);
