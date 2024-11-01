@@ -59,3 +59,14 @@
         top: 100px;
     }
 }
+
+#error-messages{
+    color: #f06272
+}
+
+form .form-inputs .incorrect label{
+    background-color: #f06272;
+}
+form .form-inputs .incorrect input{
+    border-color: #f06272;
+}
