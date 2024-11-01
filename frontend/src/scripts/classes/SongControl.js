@@ -4,10 +4,9 @@ class SongControl {
     constructor() {
         this.songList = [];
         this.currentSongIndex = 0;
+        this.loadSongCallCount = 0;
         this.audio = document.getElementById("songPlayer");
         this.seekBar = document.getElementById("seekBar");
-        this.loadSongCallCount = 0;
-
         this.init();
     }
 
@@ -40,9 +39,8 @@ class SongControl {
         const song = this.songList[index];
         this.audio.src = song.filePath;
         this.audio.load();
-        this.seekBar.value = 0;
-
         this.updateSongUI(song);
+
 
         if (this.loadSongCallCount === 0) {
             this.pauseSong();
@@ -80,10 +78,15 @@ class SongControl {
 
     // Updates the seek bar as the song plays
     updateSeekBar() {
+        if (isNaN(this.audio.duration) || this.audio.duration === 0) {
+            console.assert(!isNaN(this.audio.duration), "Waiting for audio duration to be set...");
+            console.error(this.audio.duration === 0 ? "ZeroAudioDurationError!" : "");
+            return;
+        }
+
         const progress = (this.audio.currentTime / this.audio.duration) * 100;
         this.seekBar.value = parseFloat(progress.toFixed(2));
         this.seekBar.style.setProperty('--progress', progress);
-        console.log(this.audio.currentTime, this.audio.duration)
     }
 
     // Allows the user to seek to a different part of the song
