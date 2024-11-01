@@ -5,11 +5,12 @@ class ProgressSlider {
 
         this.volControl = document.querySelector(bar);
         this.volControlDimensions = this.volControl.getBoundingClientRect();
+
         this.volProgress = this.volControl.querySelector(progress)
         this.volProgressDimensions = this.volProgress.getBoundingClientRect();
-        this.outputVolume = this.volProgressDimensions.width;
 
         this.isDragging = false;
+        this.outputVolume = this.volProgressDimensions.width;
 
         this.bindEvents();
     }
