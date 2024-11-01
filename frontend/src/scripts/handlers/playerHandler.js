@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let songControl = new SongControl();
     let musicControl = new MusicControl(".playbar", songControl);
-    let musicSlider = new ProgressSlider(".music-progress-bar", ".music-progress");
     let volumeSlider = new ProgressSlider(".volume-control-bar", ".volume-progress");
     const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
