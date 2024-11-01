@@ -1,5 +1,5 @@
 class ProgressSlider {
-    constructor(bar, progress, offsetY) {
+    constructor(bar, progress) {
         this.circle = null;
         this.circleDimensions = null;
 
