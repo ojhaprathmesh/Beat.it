@@ -108,7 +108,7 @@
 
 /* Repeat Password label width */
 .repeat-password label {
-    width: calc(76.7875px + 70px);
+    width: calc(136.7875px + 15px);
 }
 
 /* Form button styling */
