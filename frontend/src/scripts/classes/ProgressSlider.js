@@ -134,12 +134,13 @@ class ProgressSlider {
         this.setVolume();
 
         // This emits a custom event whenever volume is updated
-        const volumeEvent = new CustomEvent("volumeChange", {
-            detail: {
-                magnitude: this.outputVolume
-            }
-        });
-        this.volControl.dispatchEvent(volumeEvent);
+        this.volControl.dispatchEvent(
+            new CustomEvent("volumeChange", {
+                detail: {
+                    magnitude: this.outputVolume
+                }
+            })
+        );
     }
 
     setVolume() {
