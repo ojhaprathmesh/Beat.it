@@ -86,8 +86,14 @@ class SongControl {
 
         const progress = (this.audio.currentTime / this.audio.duration) * 100;
         this.seekBar.value = parseFloat(progress.toFixed(2));
-        this.seekBar.style.setProperty('--progress', progress);
+
+        const width = progress < 50 ? `calc(${5 * progress}px + 5px)` : `${5 * progress}px`;
+        this.seekBar.style.setProperty('--width', width);
+
+        const color = this.audio.currentTime <= 1 ? 'var(--grey)' : 'var(--white)';
+        this.seekBar.style.setProperty('--color', color);
     }
+
 
     // Allows the user to seek to a different part of the song
     seekAudio() {

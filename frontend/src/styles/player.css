@@ -163,32 +163,27 @@
 
 #seekBar::-webkit-slider-runnable-track {
     height: 10px;
-    background: var(--grey);
-    border-radius: 5px;
-    position: relative;
 }
 
 #seekBar::-webkit-slider-thumb {
-    -webkit-appearance: none;
+    position: relative;
+    top: -2px;
     appearance: none;
     height: 14px;
     width: 14px;
-    margin-top: -2px;
     background-color: var(--white);
     border-radius: 50%;
-    border: 1.5px solid var(--white);
-    position: relative;
     z-index: 1;
 }
 
 #seekBar::before {
+    position: absolute;
     content: '';
     height: 10px;
-    width: calc(var(--progress) / 100 * 500px + 5px);
-    background-color: var(--white);
-    position: absolute;
-    z-index: 1;
+    width: var(--width);
+    background-color: var(--color);
     border-radius: 5px;
+    z-index: 1;
 }
 
 @keyframes shuffleAnimation {
