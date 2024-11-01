@@ -24,6 +24,12 @@ class MusicControl {
         this.reverseBtn.addEventListener("click", () => this.handleReverse());
         this.repeatBtn.addEventListener("click", () => this.handleRepeat());
         this.shuffleBtn.addEventListener("click", () => this.handleShuffle());
+        this.songControl.seekBar.addEventListener("playNext", (event) => {
+            const { value } = event.detail;
+            if (Math.round(value) === 100) {
+                this.handleForward();
+            }
+        });
     }
 
     // Utility function to toggle play/pause buttons

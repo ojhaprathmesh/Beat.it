@@ -66,8 +66,10 @@ class SongControl {
 
     updateSeekBar() {
         if (isNaN(this.audio.duration) || this.audio.duration === 0) {
-            console.assert(!isNaN(this.audio.duration), "Waiting for audio duration to be set...");
-            console.error(this.audio.duration === 0 ? "ZeroAudioDurationError!" : "");
+            console.error(isNaN(this.audio.duration)
+                ? "Waiting for audio duration to be set..."
+                : "ZeroAudioDurationError!"
+            );
             return;
         }
 
@@ -79,12 +81,20 @@ class SongControl {
 
         const color = this.audio.currentTime <= 1 ? 'var(--grey)' : 'var(--white)';
         this.seekBar.style.setProperty('--color', color);
+
+        this.seekBar.dispatchEvent(new CustomEvent("playNext", {
+            detail: {
+                value: this.seekBar.value
+            }
+        }));
     }
 
     // Allows the user to seek to a different part of the song
     seekAudio() {
-        const seekTime = (parseFloat(this.seekBar.value / 100)) * this.audio.duration;
-        this.audio.currentTime = seekTime;
+        if (!isNaN(this.audio.duration)) {
+            const seekTime = (parseFloat(this.seekBar.value / 100)) * this.audio.duration;
+            this.audio.currentTime = seekTime;
+        }
     }
 
     playSong() {
@@ -116,8 +126,10 @@ class SongControl {
     }
 
     endCurrentSong() {
-        this.audio.currentTime = this.audio.duration;
-        this.pauseSong();
+        if (!isNaN(this.audio.duration)) {
+            this.audio.currentTime = this.audio.duration;
+            this.pauseSong();
+        }
     }
 }
 

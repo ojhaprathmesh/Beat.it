@@ -1,9 +1,14 @@
 async function fetchSongData() {
-    const response = await fetch("../../../database/data/songsData.json");
-    if (!response.ok) {
-        throw new Error("Network response was not ok");
+    try {
+        const response = await fetch('../../../database/data/songsData.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Failed to fetch song data:', error);
+        return []; // Returning an empty array to handle the error!
     }
-    return await response.json();
 }
 
-export { fetchSongData };
+export { fetchSongData }
