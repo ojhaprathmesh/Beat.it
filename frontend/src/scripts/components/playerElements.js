@@ -43,12 +43,16 @@ function renderPlayBar() {
 function renderVolumeControls() {
     return `
         <div class="volume">
-            <i class="fas fa-volume-mute" id="volume-mute" style="display: none;"></i> <!-- Mute -->
-            <i class="fas fa-volume-down" id="volume-one" style="display: none;"></i> <!-- Low Volume -->
+            <i class="fas fa-volume-mute" id="volume-mute" style="display: none;"></i>
+            
+            <i class="fas fa-volume-down" id="volume-one" style="display: none;"></i>
+            
             <i class="fas fa-volume" id="volume-two" style="display: none; filter: invert(1)">
                 <img src="../assets/home/volume.png" width="20px">
-            </i> <!-- Med Volume -->
-            <i class="fas fa-volume-up" id="volume-three" style="display: block;"></i> <!-- High Volume -->
+            </i>
+            
+            <i class="fas fa-volume-up" id="volume-three" style="display: block;"></i>
+            
             <div class="volume-control-bar">
                 <div class="volume-progress"></div>
             </div>
