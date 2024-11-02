@@ -16,5 +16,14 @@
         "genre": "Bollywood",
         "duration": "3:38",
         "filePath": "/uploads/kabhi-kabhi-aditi.mp3"
+    },
+    {
+        "id": 3,
+        "title": "Sooraj Ki Baahon Mein",
+        "artist": "Shankar-Ehsaan-Loy",
+        "album": "Zindagi Na Milegi Dobara",
+        "genre": "Bollywood",
+        "duration": "3:24",
+        "filePath": "/uploads/sooraj-ki-baahon-mein.mp3"
     }
 ]

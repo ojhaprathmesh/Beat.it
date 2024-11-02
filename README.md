@@ -7,20 +7,18 @@ Beat.it/
 │   ├── data/                                  # Data files
 │   │   ├── songsData.json                     # JSON file containing song details
 │   ├── uploads/                               # Uploaded files
-│   │   ├── main-yahaan-hoon.mp3               # Main audio file
+│   │   ├── main-yahaan-hoon.mp3               # Song-1
+│   │   ├── kabhi-kabhi-aditi.mp3              # Song-2
+│   │   ├── sooraj-ki-baahon-mein.mp3          # Song-3
 ├── frontend/                                  # Frontend-related files
 │   ├── public/                                # Public assets
 │   │   ├── index.html                         # Main HTML file for frontend
 │   ├── src/                                   # Source files
 │   │   ├── assets/                            # Asset files
-│   │   │   ├── Beat.it Logo.webp              # Project logo image
-│   │   │   ├── Beat.it White Logo.webp        # Project white logo image
-│   │   │   ├── bg-graphic.webp                # Background graphic image
 │   │   │   ├── home/                          # Home-related images
 │   │   │   │   ├── Album Cover - 1.webp       # Album cover image 1
 │   │   │   │   ├── Album Cover - 2.webp       # Album cover image 2
 │   │   │   │   ├── Album Cover - 3.webp       # Album cover image 3
-│   │   │   │   ├── Album Cover.webp           # Main album cover image
 │   │   │   │   ├── Search.webp                # Search image
 │   │   │   │   ├── Song Cover - 1.webp        # Song cover image 1
 │   │   │   │   ├── Song Cover - 2.webp        # Song cover image 2
@@ -35,6 +33,13 @@ Beat.it/
 │   │   │   │   ├── DJ Girl.webp               # DJ girl image for signup
 │   │   │   │   ├── Graphic Design.webp        # Graphic design element for signup
 │   │   │   │   ├── Singing Boy.webp           # Singing boy image for signup
+│   │   │   ├── song/                          # Album cover images
+│   │   │   │   ├── main-yahaan-hoon.webp      # Song-1 cover
+│   │   │   │   ├── kabhi-kabhi-aditi.webp     # Song-2 cover
+│   │   │   │   ├── sooraj-ki-baahon-mein.webp # Song-3 cover
+│   │   │   ├── Beat.it Logo.webp              # Project logo image
+│   │   │   ├── Beat.it White Logo.webp        # Project white logo image
+│   │   │   ├── bg-graphic.webp                # Background graphic image
 │   │   ├── pages/                             # Page-related files
 │   │   │   ├── AlbumPage.css                  # Styles for album page
 │   │   │   ├── AlbumPage.html                 # HTML for album page
@@ -61,6 +66,7 @@ Beat.it/
 │   │   │   ├── handlers/                      # Handler scripts
 │   │   │   │   ├── navbarHandler.js           # Navbar handler script
 │   │   │   │   ├── playerHandler.js           # Player handler script
+│   │   │   ├── validation.js                  # Form validation script
 │   │   ├── styles/                            # Style files
 │   │   │   ├── background.css                 # Styles for background
 │   │   │   ├── colors.css                     # Styles for colors
@@ -77,10 +83,10 @@ Beat.it/
 ├── README.md                                  # Project documentation
 ```
 
-## Contributors ✨
+<!-- ## Contributors ✨
 
 Thanks to these wonderful people for their contributions!
 
 <a href="https://github.com/ojhaprathmesh/Beat.it/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=ojhaprathmesh/Beat.it" />
-</a>
+</a> -->
