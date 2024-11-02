@@ -63,7 +63,6 @@
     <link rel="stylesheet" href="../styles/form.css">
     <link rel="stylesheet" href="../styles/colors.css">
     <link rel="stylesheet" href="SignupPage.css ">
-
 </head>
 
 <body>
@@ -91,10 +90,14 @@
                 <pre class="font-syne">Beat.it     Beat.it     Beat.it     Beat.it</pre>
             </div>
 
-            <form class="form font-inter" action="HomePage.html" method="POST">
+            <form id = "signup-form" class="form font-inter" action="HomePage.html" method="POST">
                 <section class="form-heading">
                     <h1 class="main-heading">Create Account</h1>
                 </section>
+
+                <p id="error-messages">
+                    
+                </p>
 
                 <section class="form-inputs">
                     <div class="input-container name-input first-name">
@@ -103,7 +106,7 @@
                     </div>
 
                     <div class="input-container name-input last-name">
-                        <input type="text" class="name box" id="last-name-label" required>
+                        <input type="text" class="name box" id="last-name-label">
                         <label for="last-name-label">Last Name</label>
                     </div>
 
@@ -115,6 +118,11 @@
                     <div class="input-container password">
                         <input type="password" class="box" id="password-label" required>
                         <label for="password-label">Password</label>
+                    </div>
+
+                    <div class="input-container repeat-password">
+                        <input type="password" class="box" id="repeat-password-label" required>
+                        <label for="repeat-password-label">Repeat Password</label>
                     </div>
 
                     <button class="form-btn font-inter" id="create-account" type="submit">
@@ -138,6 +146,7 @@
             });
         });
     </script>
+    <script type="text/javascript" src="validation.js" defer></script>
 </body>
 
 </html>
