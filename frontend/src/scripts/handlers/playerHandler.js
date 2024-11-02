@@ -28,9 +28,9 @@ const updateVolumeIcons = (volume, volumeIcons) => {
     const updateIcons = (volume) => {
         setIconVisibility(
             volume === 0,                 // Mute icon if volume is 0
-            volume > 0 && volume < 30,    // Low volume icon if volume is from 1 to 29
-            volume >= 30 && volume < 70,  // Mid volume icon if volume is from 30 to 69
-            volume >= 70                  // High volume icon if volume is 70 or above
+            volume > 0 && volume < 40,    // Low volume icon if volume is from 1 to 29
+            volume >= 40 && volume < 60,  // Mid volume icon if volume is from 30 to 69
+            volume >= 60                  // High volume icon if volume is 70 or above
         );
     };
 
