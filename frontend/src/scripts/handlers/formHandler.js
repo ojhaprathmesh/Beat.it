@@ -2,7 +2,7 @@ const handleNameInputRestriction = (nameInputs) => {
     const restrictInputToAlphabets = (event) => {
         const isControlKey = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"].includes(event.key);
 
-        if (!/^[a-zA-Z]$/.test(event.key) && !isControlKey) {
+        if (!/^[a-zA-Z]$/.test(event.key) && !isControlKey && validateCharacters(event.key)) {
             event.preventDefault();
         }
     };
@@ -33,22 +33,15 @@ const checkPasswordStrength = (passwordValue, passwordElement) => {
     const strengthIndicator = document.getElementById("strength-indicator") || document.createElement("p");
     strengthIndicator.id = "strength-indicator";
 
-    let strengthMessage;
-    if (passwordValue.length >= 8 && /[A-Z]/.test(passwordValue) && /[0-9]/.test(passwordValue) && /[^A-Za-z0-9]/.test(passwordValue)) {
-        strengthMessage = "Strong";
-        strengthIndicator.style.color = "green";
-    } else if (passwordValue.length >= 6) {
-        strengthMessage = "Moderate";
-        strengthIndicator.style.color = "orange";
-    } else if (passwordValue.length > 0) {
-        strengthMessage = "Weak";
-        strengthIndicator.style.color = "red";
-    } else { 
-        strengthMessage = "None";
-        strengthIndicator.style.color = "blue";
-    }
+    let strengthMessage = passwordValue.length >= 8 && /[A-Z]/.test(passwordValue) && /[0-9]/.test(passwordValue) && /[^A-Za-z0-9]/.test(passwordValue)
+        ? (strengthIndicator.style.color = "green", "Strong")
+        : passwordValue.length >= 6
+            ? (strengthIndicator.style.color = "orange", "Moderate")
+            : passwordValue.length > 0
+                ? (strengthIndicator.style.color = "red", "Weak")
+                : (strengthIndicator.style.color = "", "");
 
-    strengthIndicator.textContent = `Password strength: ${strengthMessage}`;
+    strengthIndicator.textContent = strengthMessage ? `Password strength: ${strengthMessage}` : "";
     passwordElement.parentElement.appendChild(strengthIndicator);
 };
 
@@ -65,23 +58,35 @@ const handlePasswordValidation = (form) => {
         if (validatePasswordMatch(passCreate, passRepeat, errorContainer)) {
             form.reset();
             errorContainer.textContent = "";
+
+            const strengthIndicator = document.getElementById("strength-indicator");
+            if (strengthIndicator) strengthIndicator.textContent = "";
+
+            document.querySelector(`label[for="${passCreate.id}"]`).style.color = "";
+            document.querySelector(`label[for="${passRepeat.id}"]`).style.color = "";
         } else {
             form.appendChild(errorContainer);
         }
     });
 
     passCreate.addEventListener("input", () => {
-        if (validatePasswordCharacters(passCreate.value)) {
+        // Check for forbidden characters and display strength if valid
+        if (validateCharacters(passCreate.value)) {
+            errorContainer.textContent = "";
             checkPasswordStrength(passCreate.value, passCreate);
         } else {
-            errorContainer.textContent = "Password contains invalid characters (\`, \', \", \$). Please remove them.";
+            errorContainer.textContent = "Password contains invalid characters (', \", ` , $ , \\). Please remove them.";
             form.appendChild(errorContainer);
+
+            const strengthIndicator = document.getElementById("strength-indicator");
+            if (strengthIndicator) strengthIndicator.textContent = "";
         }
     });
 };
 
-const validatePasswordCharacters = (password) => {
-    return !/[,'"`$]/.test(password);
+const validateCharacters = (password) => {
+    // This regex allows: a-z, A-Z, 0-9, no whitespaces and special characters except ', ", `, $, \
+    return !/[^\w\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>?]/.test(password) && !/\s/.test(password);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
