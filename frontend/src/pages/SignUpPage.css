@@ -60,10 +60,6 @@
     }
 }
 
-#error-messages{
-    color: red
-}
-
 form .form-inputs .incorrect label{
     background-color: red;
 }

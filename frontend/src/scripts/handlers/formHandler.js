@@ -1,22 +1,33 @@
+const restrictInputToAlphabets = (event) => {
+    const isControlKey = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"].includes(event.key);
+
+    if (!/^[a-zA-Z]$/.test(event.key) && !isControlKey) {
+        event.preventDefault();
+    }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("signup-form");
     const errorMessage = document.getElementById("error-messages");
+    const nameInputs = document.querySelectorAll(".name-input");
 
-    if (form) { // Check if the form is successfully retrieved
-        form.addEventListener("submit", async (event) => {
-            event.preventDefault();
+    nameInputs.forEach((nameInput) => {
+        nameInput.addEventListener("keydown", restrictInputToAlphabets);
+    });
 
-            const formData = new FormData(form);
-            const formDataMap = new Map(formData.entries());
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-            if (formDataMap.get("pass-create") !== formDataMap.get("pass-repeat")) {
-                errorMessage.textContent = "Passwords do not match. Please re-enter your password.";
-            } else {
-                errorMessage.textContent = "";
-                form.reset();
-            }
-        });
-    } else {
-        console.error("Form not found!");
-    }
+        const formDataMap = new Map(new FormData(form).entries());
+
+        if (formDataMap.get("pass-create") !== formDataMap.get("pass-repeat")) {
+            errorMessage.textContent = "Passwords do not match. Please re-enter your password.";
+        } else {
+            errorMessage.textContent = "";
+            form.reset();
+            nameInputs.forEach((nameInput) => {
+                nameInput.removeEventListener("keydown", restrictInputToAlphabets);
+            });
+        }
+    });
 });
