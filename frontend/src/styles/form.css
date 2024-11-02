@@ -4,6 +4,8 @@
     flex-direction: column;
     gap: 25px;
     height: 70%;
+    position: relative;
+    bottom: 30px;
 }
 
 /* Form heading */
