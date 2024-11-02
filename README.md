@@ -53,8 +53,8 @@ Beat.it/
 │   │   │   │   ├── fetchSongData.js           # Script to fetch song data
 │   │   │   ├── classes/                       # Class files
 │   │   │   │   ├── MusicControl.js            # Music control class
-│   │   │   │   ├── SongControl.js             # Song control class
 │   │   │   │   ├── ProgressSlider.js          # Progress slider class
+│   │   │   │   ├── SongControl.js             # Song control class
 │   │   │   ├── components/                    # Component scripts
 │   │   │   │   ├── navbarElements.js          # Script for navbar elements
 │   │   │   │   ├── playerElements.js          # Script for player elements
@@ -74,7 +74,6 @@ Beat.it/
 ├── .gitattributes                             # Git attributes file
 ├── .gitignore                                 # Git ignore file
 ├── LICENSE                                    # License for the project
-├── package-lock.json                          # Lock file for package dependencies
 ├── README.md                                  # Project documentation
 ```
 
