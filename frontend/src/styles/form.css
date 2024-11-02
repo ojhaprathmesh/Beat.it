@@ -128,11 +128,18 @@
     border-radius: 5px;
 }
 
-#error-messages{
-    color: red
+#error-messages {
+    color: red;
+    position: absolute;
+    bottom: 165px;
+}
+
+#strength-indicator {
+    position: absolute;
+    bottom: 350px;
 }
 
 /* Remove autofill background color */
-input:-webkit-autofill {
+input {
     box-shadow: 0 0 0 1000px white inset;
 }
