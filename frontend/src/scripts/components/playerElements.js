@@ -4,7 +4,7 @@ function renderAlbumInfo(song) {
     return `
         <div class="player-albuminfo">
             <div class="player-songcover">
-                <img src="../assets/home/Album Cover.webp" alt="Player Album Cover" width="75px" height="75px">
+                <img src="${song.imagePath}" alt="Player Album Cover" width="75px" height="75px" style="border-radius: 10px">
             </div>
 
             <div class="player-songdetails font-inter" style="font-weight: 500;">
@@ -88,7 +88,7 @@ async function insertPlayer(containerSelector) {
             const song = songData[0];
             container.innerHTML += createPlayer(song);
         } catch (error) {
-            console.error("Error fetching song data:", error);
+            console.warn("Error fetching song data:", error);
         }
     }
 }

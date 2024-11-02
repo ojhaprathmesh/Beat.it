@@ -25,13 +25,13 @@ class SongControl {
             this.audio.addEventListener("loadedmetadata", bindAfterMetaDataLoads);
 
         } catch (error) {
-            console.error("Error fetching song data:", error);
+            console.warn("Error fetching song data:", error);
         }
     }
 
     loadSong(index) {
         if (index < 0 || index >= this.songList.length) {
-            console.error("Error: next song not found!");
+            console.warn("Error: next song not found!");
             return;
         }
 
@@ -54,6 +54,7 @@ class SongControl {
     updateSongUI(song) {
         const songTitleElement = document.querySelector(".player-songname");
         const songArtistElement = document.querySelector(".player-artistname");
+        const songAlbumElement = document.querySelector(".player-songcover img");
 
         if (songTitleElement) {
             songTitleElement.textContent = song.title; // Update the song title
@@ -62,11 +63,15 @@ class SongControl {
         if (songArtistElement) {
             songArtistElement.textContent = song.artist; // Update the song artist
         }
+        
+        if (songAlbumElement) {
+            songAlbumElement.src = song.imagePath;
+        }
     }
 
     updateSeekBar() {
         if (isNaN(this.audio.duration) || this.audio.duration === 0) {
-            console.error(isNaN(this.audio.duration)
+            console.warn(isNaN(this.audio.duration)
                 ? "Waiting for audio duration to be set..."
                 : "ZeroAudioDurationError!"
             );
@@ -77,10 +82,10 @@ class SongControl {
         this.seekBar.value = parseFloat(progress.toFixed(2));
 
         const width = progress < 50 ? `calc(${5 * progress}px + 5px)` : `${5 * progress}px`;
-        this.seekBar.style.setProperty('--width', width);
+        this.seekBar.style.setProperty("--width", width);
 
-        const color = this.audio.currentTime <= 1 ? 'var(--grey)' : 'var(--white)';
-        this.seekBar.style.setProperty('--color', color);
+        const color = this.audio.currentTime <= 1 ? "var(--grey)" : "var(--white)";
+        this.seekBar.style.setProperty("--color", color);
 
         this.seekBar.dispatchEvent(new CustomEvent("playNext", {
             detail: {

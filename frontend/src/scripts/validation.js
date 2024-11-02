@@ -6,7 +6,7 @@ const password_input = document.getElementById("password-label");
 const repeatPassword_input = document.getElementById("repeat-password-label");
 const error_message = document.getElementById("error-messages");
 
-form.addEventListener('submit', (e) => {
+form.addEventListener("submit", (e) => {
     // e.preventDefault() prevent submit
     let errors = []
 

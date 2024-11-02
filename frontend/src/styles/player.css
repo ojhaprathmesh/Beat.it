@@ -178,7 +178,7 @@
 
 #seekBar::before {
     position: absolute;
-    content: '';
+    content: "";
     height: 10px;
     width: var(--width);
     background-color: var(--color);
