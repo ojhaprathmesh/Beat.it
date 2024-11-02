@@ -131,3 +131,8 @@
 #error-messages{
     color: red
 }
+
+/* Remove autofill background color */
+input:-webkit-autofill {
+    box-shadow: 0 0 0 1000px white inset;
+}
