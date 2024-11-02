@@ -48,9 +48,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     let volumeSlider = new ProgressSlider(".volume-control-bar", ".volume-progress");
     const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
-    let storedVolume = null;
-    volumeIcons.forEach(icon => {
+    function setVolume(volume) {
+        musicControl.songControl.audio.volume = volume / 100; // Adjust audio volume
+        volumeSlider.setVolume(volume);                       // Set slider position
+        updateVolumeIcons(volume, volumeIcons);               // Update the volume icons
+    }
 
+    let storedVolume = 50;
+
+    volumeIcons.forEach(icon => {
         function updateVolSlider(newVolume) {
             Object.assign(volumeSlider, {
                 outputVolume: newVolume
@@ -63,12 +69,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         icon.addEventListener("click", () => {
             if (icon.id != "volume-mute") {
                 storedVolume = volumeSlider.getVolume();
-                updateVolumeIcons(updateVolSlider(0), volumeIcons);
+                setVolume(updateVolSlider(0));
             } else {
                 if (storedVolume === null) {
-                    updateVolumeIcons(updateVolSlider(5), volumeIcons);
+                    setVolume(updateVolSlider(5));
                 } else {
-                    updateVolumeIcons(updateVolSlider(storedVolume), volumeIcons);
+                    setVolume(updateVolSlider(storedVolume));
                     storedVolume = null;
                 }
             }
@@ -76,6 +82,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     volumeSlider.volControl.addEventListener("volumeChange", (currentVol) => {
-        updateVolumeIcons(currentVol.detail.magnitude, volumeIcons);
+        const volMagnitude = currentVol.detail.magnitude
+        updateVolumeIcons(volMagnitude, volumeIcons);
+        musicControl.songControl.audio.volume = volMagnitude / 100;
     });
 });
