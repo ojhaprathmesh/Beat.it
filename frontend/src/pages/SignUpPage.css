@@ -61,12 +61,12 @@
 }
 
 #error-messages{
-    color: #f06272
+    color: red
 }
 
 form .form-inputs .incorrect label{
-    background-color: #f06272;
+    background-color: red;
 }
 form .form-inputs .incorrect input{
-    border-color: #f06272;
+    border-color: red; /*#f06272*/
 }

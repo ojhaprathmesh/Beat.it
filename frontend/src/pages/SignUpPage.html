@@ -69,8 +69,7 @@
     <main class="signup">
         <section class="graphics-signup">
             <div class="image-container" id="image-container-1">
-                <img src="../assets/signup/Graphic Design.webp" alt="Graphic Design Blob" width="725px"
-                    height="1024px">
+                <img src="../assets/signup/Graphic Design.webp" alt="Graphic Design Blob" width="725px" height="1024px">
             </div>
 
             <div class="font-syne-mono" id="brand-tag"">
@@ -90,38 +89,36 @@
                 <pre class="font-syne">Beat.it     Beat.it     Beat.it     Beat.it</pre>
             </div>
 
-            <form id = "signup-form" class="form font-inter" action="HomePage.html" method="POST">
+            <form id="signup-form" class="form font-inter" method="POST">
                 <section class="form-heading">
                     <h1 class="main-heading">Create Account</h1>
                 </section>
 
-                <p id="error-messages">
-                    
-                </p>
+                <p id="error-messages"></p>
 
                 <section class="form-inputs">
                     <div class="input-container name-input first-name">
-                        <input type="text" class="name box" id="first-name-label" required>
+                        <input type="text" class="name box" id="first-name-label" name="firstName" required>
                         <label for="first-name-label">First Name</label>
                     </div>
 
                     <div class="input-container name-input last-name">
-                        <input type="text" class="name box" id="last-name-label">
+                        <input type="text" class="name box" id="last-name-label" name="lastName">
                         <label for="last-name-label">Last Name</label>
                     </div>
 
                     <div class="input-container email">
-                        <input type="email" class="box" id="email-label" required>
+                        <input type="email" class="box" id="email-label" name="email" required>
                         <label for="email-label">Email</label>
                     </div>
 
                     <div class="input-container password">
-                        <input type="password" class="box" id="password-label" required>
+                        <input type="password" class="box" id="password-label" name="pass-create" required>
                         <label for="password-label">Password</label>
                     </div>
 
                     <div class="input-container repeat-password">
-                        <input type="password" class="box" id="repeat-password-label" required>
+                        <input type="password" class="box" id="repeat-password-label" name="pass-repeat" required>
                         <label for="repeat-password-label">Repeat Password</label>
                     </div>
 
@@ -140,13 +137,13 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const login = document.querySelector(".redirect p:nth-child(2)");
-
             login.addEventListener("click", () => {
                 window.location.href = "LoginPage.html";
             });
         });
     </script>
-    <script type="text/javascript" src="validation.js" defer></script>
+    <script src="../scripts/handlers/formHandler.js"></script>
+    <!-- <script type="text/javascript" src="validation.js" defer></script> -->
 </body>
 
 </html>
