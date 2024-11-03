@@ -89,4 +89,4 @@ Thanks to these wonderful people for their contributions!
 
 <a href="https://github.com/ojhaprathmesh/Beat.it/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=ojhaprathmesh/Beat.it" />
-</a> -->
+</a> --> 
