@@ -1,3 +1,5 @@
+const profile = [];
+
 const handleNameInputRestriction = (nameInputs) => {
     const restrictInputToAlphabets = (event) => {
         const isControlKey = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"].includes(event.key);
@@ -51,26 +53,52 @@ const handlePasswordValidation = (form) => {
 
     const passCreate = form.querySelector("#password-label");
     const passRepeat = form.querySelector("#repeat-password-label");
+    const firstNameInput = form.querySelector("#first-name-label");
+    const lastNameInput = form.querySelector("#last-name-label");
+    const emailInput = form.querySelector("#email-label");
 
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         if (validatePasswordMatch(passCreate, passRepeat, errorContainer)) {
-            form.reset();
-            errorContainer.textContent = "";
+            const profileData = {
+                firstName: firstNameInput.value,
+                lastName: lastNameInput.value,
+                email: emailInput.value,
+                password: passCreate.value,
+            };
 
-            const strengthIndicator = document.getElementById("strength-indicator");
-            if (strengthIndicator) strengthIndicator.textContent = "";
+            try {
+                const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(profileData),
+                });
 
-            document.querySelector(`label[for="${passCreate.id}"]`).style.color = "";
-            document.querySelector(`label[for="${passRepeat.id}"]`).style.color = "";
+                const result = await response.json();
+                profileData.id = result.id; // Unique identifier
+
+                profile.push(profileData);
+                localStorage.setItem("profile", JSON.stringify(profile));
+
+                form.reset();
+                errorContainer.textContent = "";
+                const strengthIndicator = document.getElementById("strength-indicator");
+                if (strengthIndicator) strengthIndicator.textContent = "";
+                document.querySelector(`label[for="${passCreate.id}"]`).style.color = "";
+                document.querySelector(`label[for="${passRepeat.id}"]`).style.color = "";
+
+                window.location.href = "HomePage.html";
+            } catch (error) {
+                console.error("Error saving profile:", error);
+                errorContainer.textContent = "Failed to save profile. Please try again.";
+            }
         } else {
             form.appendChild(errorContainer);
         }
     });
 
     passCreate.addEventListener("input", () => {
-        // Check for forbidden characters and display strength if valid
         if (validateCharacters(passCreate.value)) {
             errorContainer.textContent = "";
             checkPasswordStrength(passCreate.value, passCreate);
