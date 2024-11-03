@@ -65,18 +65,30 @@ const handleProfileDataIO = async (profileData, errorContainer) => {
         //
         // const result = await response.json();
 
-        let currentId = parseInt(localStorage.getItem("currentProfileId")) || 0;
+        let isDuplicate = false;
+        const profiles = JSON.parse(localStorage.getItem("profiles"))
+        let currentId = parseInt(profiles[profiles.length - 1].id) || 0;
         currentId += 1;
         profileData.id = currentId; // Use timestamp as a unique ID for local storage
 
-        // Retrieve existing profiles from localStorage
-        const existingProfiles = JSON.parse(localStorage.getItem("profiles")) || [];
-        existingProfiles.push(profileData);
+        profiles.forEach(profile => {
+            if (profile.email === profileData.email) {
+                isDuplicate = true;
+            };
+        });
 
-        // Save the updated profiles array in localStorage
-        localStorage.setItem("profiles", JSON.stringify(existingProfiles));
+        if (!isDuplicate) {
+            // Retrieve existing profiles from localStorage
+            const existingProfiles = profiles || [];
+            existingProfiles.push(profileData);
 
-        return true;
+            // Save the updated profiles array in localStorage
+            localStorage.setItem("profiles", JSON.stringify(existingProfiles));
+
+            return true;
+        } else {
+            return false;
+        }
     } catch (error) {
         console.error("Error saving profile:", error);
         errorContainer.textContent = "Failed to save profile. Please try again.";
@@ -120,6 +132,9 @@ const handlePasswordValidation = (form) => {
                 document.querySelector(`label[for="${passRepeat.id}"]`).style.color = "";
 
                 window.location.href = "HomePage.html";
+            } else {
+                errorContainer.textContent = "This email is already associated with another account.";
+                form.appendChild(errorContainer);
             }
         } else {
             form.appendChild(errorContainer); // Displays error if password validation fails
