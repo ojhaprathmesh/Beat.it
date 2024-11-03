@@ -7,7 +7,6 @@
     <meta name="description"
         content="Join the music revolution with Beat.it! Login now to enjoy an amazing experience.">
     <title>Beat.it</title>
-    <script type="text/javascript" src="validation.js" defer></script>
 
     <style>
         * {
@@ -50,7 +49,7 @@
                 <img src="../assets/Beat.it Logo.webp" alt="Beat.it" width="115px" height="115px">
             </div>
 
-            <form class="form font-inter" action="HomePage.html" method="POST">
+            <form class="form font-inter" id="login-form" method="POST">
                 <section class="form-heading">
                     <h1 class="main-heading">Welcome back!</h1>
                     <h2 class="sub-heading">Please enter your details</h2>
@@ -79,6 +78,35 @@
             </form>
         </section>
     </main>
+    <script type="module">
+        import { fetchProfileData } from "../scripts/apis/fetchProfileData.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const profileData = fetchProfileData();
+            const form = document.getElementById("login-form");
+
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+                const emailInput = form.querySelector("#email-label");
+                const passCreate = form.querySelector("#password-label");
+
+                if (emailInput.value !== profileData[0].email) {
+                    alert("Email not found!");
+                    form.reset();
+                }
+
+                else if (passCreate.value !== profileData[0].password) {
+                    alert("Password didn't match!");
+                    form.reset();
+                }
+
+                else {
+                    form.reset();
+                    window.location.href = "HomePage.html";
+                }
+            });
+        });
+    </script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const login = document.querySelector(".redirect p:nth-child(2)");
