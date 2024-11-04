@@ -72,7 +72,7 @@
                 </section>
 
                 <div class="font-inter redirect" id="redirect-login">
-                    <p>Don"t have an account? </p>
+                    <p>Don't have an account? </p>
                     <p>Sign up</p>
                 </div>
             </form>
@@ -100,6 +100,13 @@
 
                 if (isMatched) {
                     window.location.href = "HomePage.html";
+                } else {
+                    const form = document.getElementById("login-form");
+                    const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
+                    errorContainer.className = "error-messages";
+                    errorContainer.textContent = "Invalid Credentials! Please try again."
+                    errorContainer.style.bottom = "120px";
+                    form.appendChild(errorContainer);
                 }
             });
 
