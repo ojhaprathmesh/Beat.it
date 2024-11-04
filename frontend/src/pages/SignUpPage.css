@@ -35,10 +35,3 @@
 #beatit-text pre {
     font-size: 40px;
 }
-
-form .form-inputs .incorrect label{
-    background-color: red;
-}
-form .form-inputs .incorrect input{
-    border-color: red; /*#f06272*/
-}
