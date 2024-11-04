@@ -61,8 +61,8 @@ Beat.it/
 │   │   │   │   ├── ProgressSlider.js          # Progress slider class
 │   │   │   │   ├── SongControl.js             # Song control class
 │   │   │   ├── components/                    # Component scripts
-│   │   │   │   ├── navbarElements.js          # Script for navbar elements
-│   │   │   │   ├── playerElements.js          # Script for player elements
+│   │   │   │   ├── navbar.js          # Script for navbar elements
+│   │   │   │   ├── player.js          # Script for player elements
 │   │   │   ├── handlers/                      # Handler scripts
 │   │   │   │   ├── navbarHandler.js           # Navbar handler script
 │   │   │   │   ├── playerHandler.js           # Player handler script
