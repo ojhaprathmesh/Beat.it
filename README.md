@@ -1,10 +1,11 @@
 ## File Structure
 
 ```plaintext
-Beat.it/                                       
+Beat.it/
 ├── backend/                                   # Backend-related files
 ├── database/                                  # Database-related files
 │   ├── data/                                  # Data files
+│   │   ├── profileData.json                   # JSON file containing profile details
 │   │   ├── songsData.json                     # JSON file containing song details
 │   ├── uploads/                               # Uploaded files
 │   │   ├── main-yahaan-hoon.mp3               # Song-1
@@ -33,7 +34,7 @@ Beat.it/
 │   │   │   │   ├── DJ Girl.webp               # DJ girl image for signup
 │   │   │   │   ├── Graphic Design.webp        # Graphic design element for signup
 │   │   │   │   ├── Singing Boy.webp           # Singing boy image for signup
-│   │   │   ├── song/                          # Album cover images
+│   │   │   ├── songs/                         # Song cover images
 │   │   │   │   ├── main-yahaan-hoon.webp      # Song-1 cover
 │   │   │   │   ├── kabhi-kabhi-aditi.webp     # Song-2 cover
 │   │   │   │   ├── sooraj-ki-baahon-mein.webp # Song-3 cover
@@ -51,8 +52,8 @@ Beat.it/
 │   │   │   ├── ProfilePage.html               # HTML for profile page
 │   │   │   ├── SearchPage.css                 # Styles for search page
 │   │   │   ├── SearchPage.html                # HTML for search page
-│   │   │   ├── SignupPage.css                 # Styles for signup page
-│   │   │   ├── SignupPage.html                # HTML for signup page
+│   │   │   ├── SignUpPage.css                 # Styles for signup page
+│   │   │   ├── SignUpPage.html                # HTML for signup page
 │   │   ├── scripts/                           # Script files
 │   │   │   ├── apis/                          # API-related scripts
 │   │   │   │   ├── fetchSongData.js           # Script to fetch song data
@@ -64,9 +65,9 @@ Beat.it/
 │   │   │   │   ├── navbar.js                  # Script for navbar elements
 │   │   │   │   ├── player.js                  # Script for player elements
 │   │   │   ├── handlers/                      # Handler scripts
+│   │   │   │   ├── formHandler.js             # Form handler script
 │   │   │   │   ├── navbarHandler.js           # Navbar handler script
 │   │   │   │   ├── playerHandler.js           # Player handler script
-│   │   │   ├── validation.js                  # Form validation script
 │   │   ├── styles/                            # Style files
 │   │   │   ├── background.css                 # Styles for background
 │   │   │   ├── colors.css                     # Styles for colors
