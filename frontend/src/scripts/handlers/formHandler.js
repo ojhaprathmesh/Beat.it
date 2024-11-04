@@ -35,7 +35,8 @@ const validatePasswordMatch = (passCreate, passRepeat, errorContainer) => {
 };
 
 const checkPasswordStrength = (passwordValue, passwordElement) => {
-    const strengthIndicator = document.getElementById("strength-indicator");
+    const strengthIndicator = document.getElementById("strength-indicator") || document.createElement("p");
+    strengthIndicator.id = "strength-indicator";
 
     // Sets strength level with respective color feedback
     let strengthMessage = passwordValue.length >= 8 && /[A-Z]/.test(passwordValue) && /[0-9]/.test(passwordValue) && /[^A-Za-z0-9]/.test(passwordValue)
@@ -49,9 +50,8 @@ const checkPasswordStrength = (passwordValue, passwordElement) => {
     strengthIndicator.textContent = strengthMessage ? `Password strength: ${strengthMessage}` : "";
     passwordElement.parentElement.appendChild(strengthIndicator);
 };
-const handleProfileDataIO = async (profileData, errorContainer) => {
 
-    // Handles data storage in localStorage and sends data to an external API
+const handleProfileDataIO = async (profileData, errorContainer) => {
     try {
         /*
         // This is to simulate API calls in later stages
@@ -152,7 +152,10 @@ const handlePasswordValidation = (form) => {
             errorContainer.textContent = "";
             checkPasswordStrength(passCreate.value, passCreate);
         } else {
-            errorContainer.textContent = "Password contains invalid characters (', \", ` , $ , \\). Please remove them.";
+            errorContainer.textContent = passCreate.value != 0
+                ? "Password contains invalid characters. Please remove them."
+                : "No characters found. Please enter a password.";
+
             form.appendChild(errorContainer);
 
             if (strengthIndicator) strengthIndicator.textContent = "";
