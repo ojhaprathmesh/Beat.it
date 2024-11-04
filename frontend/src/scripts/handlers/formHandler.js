@@ -112,6 +112,7 @@ const handlePasswordValidation = (form) => {
     strengthIndicator.id = "strength-indicator";
     const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
     errorContainer.className = "error-messages";
+    errorContainer.style.bottom = "165px";
 
     // Form submission event handler
     form.addEventListener("submit", async (event) => {

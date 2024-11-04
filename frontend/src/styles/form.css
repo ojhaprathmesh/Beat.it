@@ -131,7 +131,6 @@
 .error-messages {
     color: red;
     position: absolute;
-    bottom: 165px;
 }
 
 /* Remove autofill background color */
