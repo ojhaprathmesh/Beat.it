@@ -14,6 +14,10 @@ class MusicControl {
         this.isPlaying = false;
         this.togglePlayPause(this.isPlaying);
 
+        this.isRepeating = false;
+        this.isSingleRepeat = false;
+        this.isMultiRepeat = false;
+
         this.bindEvents();
     }
 
@@ -71,7 +75,22 @@ class MusicControl {
 
     // Repeat functionality (Work in progress)
     handleRepeat() {
-        console.log("Repeat functionality not yet implemented.");
+        if (this.isSingleRepeat || this.isMultiRepeat) {
+            this.isRepeating = true;
+        } else {
+            this.isRepeating = false
+        }
+        if (this.isRepeating && !this.isSingleRepeat) {
+            this.isSingleRepeat = true;
+            this.isMultiRepeat = false;
+        } else if (this.isRepeating && !this.isMultiRepeat) {
+            this.isMultiRepeat = true;
+            this.isSingleRepeat = false;
+        } else if (this.isRepeating && !this.isSingleRepeat && this.isMultiRepeat) {
+            this.isMultiRepeat = false;
+            this.isSingleRepeat = false;
+        }
+        console.log(this.isRepeating, this.isSingleRepeat, this.isMultiRepeat)
     }
 }
 

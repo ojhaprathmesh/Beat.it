@@ -35,6 +35,17 @@ function renderPlayBar() {
                 <i class="fas fa-pause pause" style="display: block; padding: 0 7px;"></i> <!-- Pause -->
                 <i class="fas fa-step-forward forward"></i> <!-- Forward -->
                 <i class="fa-solid fa-repeat repeat"></i> <!-- Repeat -->
+                <p style="
+                        display: none;
+                        color: var(--white);
+                        position: absolute;
+                        left: 811px;
+                        bottom: 22.1px;
+                        font-size: 12px;
+                        font-weight: bold;
+                        font-family: 'Segoe UI';
+                    ">1
+                </p>
             </div>
         </div>
     `;

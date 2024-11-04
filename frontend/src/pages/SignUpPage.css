@@ -36,30 +36,6 @@
     font-size: 40px;
 }
 
-/* Media queries for responsive design on smaller screens */
-@media screen and (max-width: 768px) {
-    .signup {
-        flex-direction: column;
-        justify-content: flex-start;
-    }
-
-    .whiteFrame-signup {
-        padding-left: 40px;
-        border-radius: 0;
-        width: 100%;
-    }
-
-    #beatit-text {
-        font-size: 30px;
-    }
-
-    #brand-tag {
-        font-size: 30px;
-        left: 20px;
-        top: 100px;
-    }
-}
-
 form .form-inputs .incorrect label{
     background-color: red;
 }
