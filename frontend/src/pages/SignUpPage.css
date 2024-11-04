@@ -35,3 +35,8 @@
 #beatit-text pre {
     font-size: 40px;
 }
+
+#strength-indicator {
+    position: absolute;
+    bottom: 350px;
+}

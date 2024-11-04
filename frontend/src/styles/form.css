@@ -134,11 +134,6 @@
     bottom: 165px;
 }
 
-.strength-indicator {
-    position: absolute;
-    bottom: 350px;
-}
-
 /* Remove autofill background color */
 input {
     box-shadow: 0 0 0 1000px white inset;

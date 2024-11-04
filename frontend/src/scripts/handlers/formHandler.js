@@ -35,8 +35,7 @@ const validatePasswordMatch = (passCreate, passRepeat, errorContainer) => {
 };
 
 const checkPasswordStrength = (passwordValue, passwordElement) => {
-    const strengthIndicator = document.querySelector(".strength-indicator") || document.createElement("p");
-    strengthIndicator.className = "strength-indicator";
+    const strengthIndicator = document.getElementById("strength-indicator");
 
     // Sets strength level with respective color feedback
     let strengthMessage = passwordValue.length >= 8 && /[A-Z]/.test(passwordValue) && /[0-9]/.test(passwordValue) && /[^A-Za-z0-9]/.test(passwordValue)
@@ -109,7 +108,8 @@ const handlePasswordValidation = (form) => {
     const lastNameInput = form.querySelector("#last-name-label");
     const emailInput = form.querySelector("#email-label");
 
-    const strengthIndicator = document.getElementById("strength-indicator");
+    const strengthIndicator = document.getElementById("strength-indicator") || document.createElement("p");
+    strengthIndicator.id = "strength-indicator";
     const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
     errorContainer.className = "error-messages";
 
