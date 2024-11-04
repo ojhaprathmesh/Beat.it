@@ -132,15 +132,15 @@
             </form>
         </section>
     </main>
-    <script>
+    <script defer>
         document.addEventListener("DOMContentLoaded", () => {
-            const login = document.querySelector(".redirect p:nth-child(2)");
-            login.addEventListener("click", () => {
+            const redirect = document.querySelector(".redirect p:nth-child(2)");
+            redirect.addEventListener("click", () => {
                 window.location.href = "LoginPage.html";
             });
         });
     </script>
-    <script type="module" src="../scripts/handlers/formHandler.js"></script>
+    <script type="module" src="../scripts/handlers/formHandler.js" defer></script>
 </body>
 
 </html>

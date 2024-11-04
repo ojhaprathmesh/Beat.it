@@ -78,15 +78,16 @@
             </form>
         </section>
     </main>
-    <script type="module">
+    <script>
         document.addEventListener("DOMContentLoaded", () => {
             const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
-            const form = document.getElementById("login-form");
+            const loginForm = document.getElementById("login-form");
+            const redirect = document.querySelector(".redirect p:nth-child(2)");
 
-            form.addEventListener("submit", (event) => {
+            loginForm.addEventListener("submit", (event) => {
                 event.preventDefault();
-                const email = form.querySelector("#email-label").value;
-                const password = form.querySelector("#password-label").value;
+                const email = loginForm.querySelector("#email-label").value;
+                const password = loginForm.querySelector("#password-label").value;
 
                 let isMatched = false;
                 profiles.forEach((profile) => {
@@ -95,19 +96,14 @@
                     }
                 });
 
-                form.reset();
+                loginForm.reset();
 
                 if (isMatched) {
                     window.location.href = "HomePage.html";
                 }
             });
-        });
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const login = document.querySelector(".redirect p:nth-child(2)");
 
-            login.addEventListener("click", () => {
+            redirect.addEventListener("click", () => {
                 window.location.href = "SignupPage.html";
             });
         });
