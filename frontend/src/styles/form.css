@@ -128,13 +128,13 @@
     border-radius: 5px;
 }
 
-#error-messages {
+.error-messages {
     color: red;
     position: absolute;
     bottom: 165px;
 }
 
-#strength-indicator {
+.strength-indicator {
     position: absolute;
     bottom: 350px;
 }
