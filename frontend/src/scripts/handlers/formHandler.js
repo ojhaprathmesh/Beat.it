@@ -1,5 +1,3 @@
-import { fetchProfileData } from "../apis/fetchProfileData.js";
-
 // Restricts input for name fields to alphabets only
 const handleNameInputRestriction = (nameInputs) => {
     const restrictInputToAlphabets = (event) => {
@@ -37,8 +35,8 @@ const validatePasswordMatch = (passCreate, passRepeat, errorContainer) => {
 };
 
 const checkPasswordStrength = (passwordValue, passwordElement) => {
-    const strengthIndicator = document.getElementById("strength-indicator") || document.createElement("p");
-    strengthIndicator.id = "strength-indicator";
+    const strengthIndicator = document.querySelector(".strength-indicator") || document.createElement("p");
+    strengthIndicator.className = "strength-indicator";
 
     // Sets strength level with respective color feedback
     let strengthMessage = passwordValue.length >= 8 && /[A-Z]/.test(passwordValue) && /[0-9]/.test(passwordValue) && /[^A-Za-z0-9]/.test(passwordValue)
@@ -52,35 +50,42 @@ const checkPasswordStrength = (passwordValue, passwordElement) => {
     strengthIndicator.textContent = strengthMessage ? `Password strength: ${strengthMessage}` : "";
     passwordElement.parentElement.appendChild(strengthIndicator);
 };
-
-// Handles data storage in localStorage and sends data to an external API
 const handleProfileDataIO = async (profileData, errorContainer) => {
+
+    // Handles data storage in localStorage and sends data to an external API
     try {
+        /*
         // This is to simulate API calls in later stages
-        // const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
-        //     method: "POST",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify(profileData),
-        // });
-        //
-        // const result = await response.json();
-
-        let isDuplicate = false;
-        const profiles = JSON.parse(localStorage.getItem("profiles"))
-        let currentId = parseInt(profiles[profiles.length - 1].id) || 0;
-        currentId += 1;
-        profileData.id = currentId; // Use timestamp as a unique ID for local storage
-
-        profiles.forEach(profile => {
-            if (profile.email === profileData.email) {
-                isDuplicate = true;
-            };
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(profileData),
         });
+        const result = await response.json();
+        */
+
+        let isDuplicate, currentId;
+        const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
+
+        if (profiles.length != 0) {
+            currentId = parseInt(profiles[profiles.length - 1].id);
+            currentId += 1;
+
+            profiles.forEach(profile => {
+                if (profile.email === profileData.email) {
+                    isDuplicate = true;
+                };
+            });
+        } else {
+            currentId = 1;
+            isDuplicate = false;
+        }
+
+        profileData.id = currentId;
 
         if (!isDuplicate) {
             // Retrieve existing profiles from localStorage
-            const existingProfiles = profiles || [];
-            existingProfiles.push(profileData);
+            profiles.push(profileData);
 
             // Save the updated profiles array in localStorage
             localStorage.setItem("profiles", JSON.stringify(existingProfiles));
@@ -98,14 +103,15 @@ const handleProfileDataIO = async (profileData, errorContainer) => {
 
 // Main form handler that validates password and submits data
 const handlePasswordValidation = (form) => {
-    const errorContainer = document.getElementById("error-messages") || document.createElement('p');
-    errorContainer.id = "error-messages";
-
     const passCreate = form.querySelector("#password-label");
     const passRepeat = form.querySelector("#repeat-password-label");
     const firstNameInput = form.querySelector("#first-name-label");
     const lastNameInput = form.querySelector("#last-name-label");
     const emailInput = form.querySelector("#email-label");
+
+    const strengthIndicator = document.getElementById("strength-indicator");
+    const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
+    errorContainer.className = "error-messages";
 
     // Form submission event handler
     form.addEventListener("submit", async (event) => {
@@ -126,7 +132,6 @@ const handlePasswordValidation = (form) => {
             if (isSaved) {
                 form.reset();
                 errorContainer.textContent = "";
-                const strengthIndicator = document.getElementById("strength-indicator");
                 if (strengthIndicator) strengthIndicator.textContent = "";
                 document.querySelector(`label[for="${passCreate.id}"]`).style.color = "";
                 document.querySelector(`label[for="${passRepeat.id}"]`).style.color = "";
@@ -150,15 +155,14 @@ const handlePasswordValidation = (form) => {
             errorContainer.textContent = "Password contains invalid characters (', \", ` , $ , \\). Please remove them.";
             form.appendChild(errorContainer);
 
-            const strengthIndicator = document.getElementById("strength-indicator");
             if (strengthIndicator) strengthIndicator.textContent = "";
         }
     });
 };
 
 const validateCharacters = (password) => {
-    // Only allows a-z, A-Z, 0-9, and certain special characters
-    return !/[^\w\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>?]/.test(password) && !/\s/.test(password);
+    // Allows alphanumeric characters and specific special characters only, disallowing spaces
+    return /^[\w!@#$%^&*()_+\-=\[\]{};':"\\|,.<>?]+$/.test(password);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
