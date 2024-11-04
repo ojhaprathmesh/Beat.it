@@ -79,29 +79,25 @@
         </section>
     </main>
     <script type="module">
-        import { fetchProfileData } from "../scripts/apis/fetchProfileData.js";
-
         document.addEventListener("DOMContentLoaded", () => {
-            const profileData = fetchProfileData();
+            const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
             const form = document.getElementById("login-form");
 
             form.addEventListener("submit", (event) => {
                 event.preventDefault();
-                const emailInput = form.querySelector("#email-label");
-                const passCreate = form.querySelector("#password-label");
+                const email = form.querySelector("#email-label").value;
+                const password = form.querySelector("#password-label").value;
 
-                if (emailInput.value !== profileData[0].email) {
-                    alert("Email not found!");
-                    form.reset();
-                }
+                let isMatched = false;
+                profiles.forEach((profile) => {
+                    if (email === profile.email && password === profile.password) {
+                        isMatched = true;
+                    }
+                });
 
-                else if (passCreate.value !== profileData[0].password) {
-                    alert("Password didn't match!");
-                    form.reset();
-                }
+                form.reset();
 
-                else {
-                    form.reset();
+                if (isMatched) {
                     window.location.href = "HomePage.html";
                 }
             });
