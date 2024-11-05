@@ -1,0 +1,22 @@
+{
+  "name": "beat.it",
+  "version": "1.0.0",
+  "description": "🎶 Beat.it: Your Ultimate Music Player 🎶 Welcome to Beat.it—a user-friendly music player that lets you enjoy your favorite tracks seamlessly! This project is a full-stack application designed for music lovers.",
+  "main": "index.html",
+  "scripts": {
+    "start": ""
+  },
+  "authors": [
+    "Prathmesh Ojha",
+    "Shrey Jaiswal",
+    "Shashwat Gaur"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "mongoose": "^8.8.0"
+  },
+  "devDependencies": {
+    "nodeman": "^1.1.2"
+  }
+}
