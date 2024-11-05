@@ -1,3 +1,4 @@
 *.txt
 *.py
 /.idea
+/example.html
