@@ -15,6 +15,11 @@ class SongControl {
             this.songList = await fetchSongData(); // Fetch song data from JSON
             this.loadSong(this.currentSongIndex); // Load the first song after fetching data
 
+            const savedState = this.loadState();
+            if (savedState) {
+                this.applySavedState(savedState);
+            }
+
             const bindAfterMetaDataLoads = () => {
                 this.updateSeekBar();
                 this.audio.addEventListener("timeupdate", this.updateSeekBar.bind(this));
@@ -49,6 +54,21 @@ class SongControl {
         }
 
         this.loadSongCallCount++;
+    }
+
+    applySavedState(savedState) {
+        this.currentSongIndex = savedState.songIndex;
+        this.loadSong(this.currentSongIndex);
+
+        this.audio.currentTime = savedState.ellapsedTime || 0;
+        this.loadSongCallCount = savedState.loadSongCallCount || 0;
+
+        // Play or pause based on saved state
+        if (savedState.isPaused) {
+            this.pauseSong();
+        } else {
+            this.playSong();
+        }
     }
 
     updateSongUI(song) {
@@ -92,6 +112,8 @@ class SongControl {
                 value: this.seekBar.value
             }
         }));
+
+        this.saveState();
     }
 
     // Allows the user to seek to a different part of the song
@@ -139,7 +161,7 @@ class SongControl {
 
     loadState() {
         const songState = JSON.parse(localStorage.getItem("songState"));
-        return songState
+        return songState;
     }
 
     saveState() {
