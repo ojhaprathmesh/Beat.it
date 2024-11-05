@@ -90,6 +90,21 @@
             const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
             const loginForm = document.getElementById("login-form");
             const redirect = document.querySelector(".redirect p:nth-child(2)");
+            const forgot = document.querySelector(".redirect > p");
+
+            forgot.addEventListener("click", () => {
+                const email = loginForm.querySelector("#email-label").value;
+                let found = false;
+                profiles.forEach((profile) => {
+                    if (email === profile.email) {
+                        alert(profile.password);
+                        found = true;
+                    }
+                });
+                if (!found) {
+                    alert("Email not associated with any account!")
+                }
+            });
 
             loginForm.addEventListener("submit", (event) => {
                 event.preventDefault();
