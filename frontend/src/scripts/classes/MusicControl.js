@@ -1,6 +1,6 @@
 class MusicControl {
-    constructor(playbarSelector, songControlInstance) {
-        this.controls = document.querySelector(`${playbarSelector} .controls`);
+    constructor(playbackSelector, songControlInstance) {
+        this.controls = document.querySelector(`${playbackSelector} .controls`);
 
         this.songControl = songControlInstance; // Reference to SongControl object
 
@@ -13,10 +13,6 @@ class MusicControl {
 
         this.isPlaying = false;
         this.togglePlayPause(this.isPlaying);
-
-        this.isRepeating = false;
-        this.isSingleRepeat = false;
-        this.isMultiRepeat = false;
 
         this.bindEvents();
     }
@@ -75,22 +71,16 @@ class MusicControl {
 
     // Repeat functionality (Work in progress)
     handleRepeat() {
-        if (this.isSingleRepeat || this.isMultiRepeat) {
-            this.isRepeating = true;
-        } else {
-            this.isRepeating = false
-        }
-        if (this.isRepeating && !this.isSingleRepeat) {
-            this.isSingleRepeat = true;
-            this.isMultiRepeat = false;
-        } else if (this.isRepeating && !this.isMultiRepeat) {
-            this.isMultiRepeat = true;
-            this.isSingleRepeat = false;
-        } else if (this.isRepeating && !this.isSingleRepeat && this.isMultiRepeat) {
-            this.isMultiRepeat = false;
-            this.isSingleRepeat = false;
-        }
-        console.log(this.isRepeating, this.isSingleRepeat, this.isMultiRepeat)
+        const states = ['isnotRepeating', 'isSingleRepeat', 'isMultiRepeat'];
+        this.stateIndex = 0; // Start with 'isnotRepeating'
+
+        this[states[this.stateIndex]] = false; // Disable current state
+        this.stateIndex = (this.stateIndex + 1) % states.length; // Move to next state
+        this[states[this.stateIndex]] = true; // Enable next state
+
+        console.log(this[states[0]])
+        console.log(this[states[1]])
+        console.log(this[states[2]])
     }
 }
 
