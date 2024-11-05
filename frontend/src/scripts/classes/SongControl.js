@@ -63,7 +63,7 @@ class SongControl {
         if (songArtistElement) {
             songArtistElement.textContent = song.artist; // Update the song artist
         }
-        
+
         if (songAlbumElement) {
             songAlbumElement.src = song.imagePath;
         }
@@ -87,7 +87,7 @@ class SongControl {
         const color = this.audio.currentTime <= 1 ? "var(--grey)" : "var(--white)";
         this.seekBar.style.setProperty("--color", color);
 
-        this.seekBar.dispatchEvent(new CustomEvent("playNext", {
+        this.seekBar.dispatchEvent(new CustomEvent("updatedSeekbar", {
             detail: {
                 value: this.seekBar.value
             }
@@ -135,6 +135,21 @@ class SongControl {
             this.audio.currentTime = this.audio.duration;
             this.pauseSong();
         }
+    }
+
+    loadState() {
+        const songState = JSON.parse(localStorage.getItem("songState"));
+        return songState
+    }
+
+    saveState() {
+        const songState = {
+            songIndex: this.currentSongIndex,
+            ellapsedTime: this.audio.currentTime,
+            isPaused: this.audio.paused,
+            loadSongCallCount: this.loadSongCallCount,
+        };
+        localStorage.setItem("songState", JSON.stringify(songState));
     }
 }
 
