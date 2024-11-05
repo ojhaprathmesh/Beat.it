@@ -44,9 +44,11 @@
 
 /* Styles for redirection link to login page */
 .redirect {
+    display: flex;
     position: relative;
     bottom: 20px;
     text-decoration: none;
+    gap: 4px;
 }
 
 .redirect p {
