@@ -24,7 +24,7 @@ class MusicControl {
         this.reverseBtn.addEventListener("click", () => this.handleReverse());
         this.repeatBtn.addEventListener("click", () => this.handleRepeat());
         this.shuffleBtn.addEventListener("click", () => this.handleShuffle());
-        this.songControl.seekBar.addEventListener("playNext", (event) => {
+        this.songControl.seekBar.addEventListener("updatedSeekbar", (event) => {
             const { value } = event.detail;
             if (Math.round(value) === 100) {
                 this.handleForward();
