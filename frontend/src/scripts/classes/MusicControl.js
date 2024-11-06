@@ -239,16 +239,16 @@ class MusicControl {
             p.style.display = "block";
 
             this.repeatInterval = setInterval(() => {
-                if (!this.repeatBtn.classList.contains("rotate-center")) {
-                    this.repeatBtn.classList.add("rotate-center");
+                if (this.repeatBtn.style.animation != "") {
+                    this.repeatBtn.style.animation = "";
                 } else {
-                    this.repeatBtn.classList.remove("rotate-center");
+                    this.repeatBtn.style.animation = "rotateClockwise 500ms linear forwards";
                 }
             }, 500);
         } else {
             p.style.display = "none";
             setTimeout(() => {
-                this.repeatBtn.classList.remove("rotate-center");
+                this.repeatBtn.style.animation = "";
             }, 500);
         }
     }

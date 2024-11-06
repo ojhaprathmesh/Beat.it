@@ -186,17 +186,13 @@
     z-index: 1;
 }
 
-.rotate-center {
-    animation: rotateClockwise 500ms linear forwards;
-}
-
 @keyframes shuffleAnimation {
     0% {
         color: var(--white);
     }
 
     50% {
-        color: yellow;
+        color: #430095;
     }
 
     100% {
