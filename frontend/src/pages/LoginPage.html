@@ -31,6 +31,26 @@
             background-position: center;
         }
 
+        .whiteFrame-login {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 35%;
+            height: 65%;
+            background-color: white;
+            border: none;
+            border-radius: 20px;
+        }
+
+        .form {
+            width: 80%;
+        }
+
+        .form-heading {
+            text-align: center;
+        }
+
         .sub-heading {
             font-size: medium;
         }
@@ -43,7 +63,6 @@
     <link rel="stylesheet" href="../styles/font.css">
     <link rel="stylesheet" href="../styles/form.css">
     <link rel="stylesheet" href="../styles/colors.css">
-    <link rel="stylesheet" href="LoginPage.css">
 </head>
 
 <body>
@@ -111,8 +130,11 @@
                 const email = loginForm.querySelector("#email-label").value;
                 const password = loginForm.querySelector("#password-label").value;
 
-                let isMatched = false;
+                let isMatched = false, isFound = false;
                 profiles.forEach((profile) => {
+                    if (email === profile.email) {
+                        isFound = true;
+                    }
                     if (email === profile.email && password === profile.password) {
                         isMatched = true;
                     }
@@ -126,7 +148,11 @@
                     const form = document.getElementById("login-form");
                     const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
                     errorContainer.className = "error-messages";
-                    errorContainer.textContent = "Invalid Credentials! Please try again."
+                    if (isFound) {
+                        errorContainer.textContent = "Invalid Credentials! Please try again."
+                    } else {
+                        errorContainer.textContent = "This email is not associated with any account."
+                    }
                     errorContainer.style.bottom = "120px";
                     form.appendChild(errorContainer);
                 }
