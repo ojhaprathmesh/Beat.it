@@ -3,6 +3,7 @@
 ```plaintext
 Beat.it/
 ├── backend/                                   # Backend-related files
+│   ├── server.js                              # Server app
 ├── database/                                  # Database-related files
 │   ├── data/                                  # Data files
 │   │   ├── profileData.json                   # JSON file containing profile details
@@ -42,17 +43,11 @@ Beat.it/
 │   │   │   ├── Beat.it White Logo.webp        # Project white logo image
 │   │   │   ├── bg-graphic.webp                # Background graphic image
 │   │   ├── pages/                             # Page-related files
-│   │   │   ├── AlbumPage.css                  # Styles for album page
 │   │   │   ├── AlbumPage.html                 # HTML for album page
-│   │   │   ├── HomePage.css                   # Styles for home page
 │   │   │   ├── HomePage.html                  # HTML for home page
-│   │   │   ├── LoginPage.css                  # Styles for login page
 │   │   │   ├── LoginPage.html                 # HTML for login page
-│   │   │   ├── ProfilePage.css                # Styles for profile page
 │   │   │   ├── ProfilePage.html               # HTML for profile page
-│   │   │   ├── SearchPage.css                 # Styles for search page
 │   │   │   ├── SearchPage.html                # HTML for search page
-│   │   │   ├── SignUpPage.css                 # Styles for signup page
 │   │   │   ├── SignUpPage.html                # HTML for signup page
 │   │   ├── scripts/                           # Script files
 │   │   │   ├── apis/                          # API-related scripts
@@ -81,6 +76,7 @@ Beat.it/
 ├── .gitattributes                             # Git attributes file
 ├── .gitignore                                 # Git ignore file
 ├── LICENSE                                    # License for the project
+├── package.json                               # Project configuration and dependencies file
 ├── README.md                                  # Project documentation
 ```
 
