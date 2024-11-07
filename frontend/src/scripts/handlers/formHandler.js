@@ -1,3 +1,6 @@
+const strengthIndicator = document.getElementById("strength-indicator") || document.createElement("p");
+strengthIndicator.id = "strength-indicator";
+
 // Restricts input for name fields to alphabets only
 const handleNameInputRestriction = (nameInputs) => {
     const restrictInputToAlphabets = (event) => {
@@ -34,20 +37,23 @@ const validatePasswordMatch = (passCreate, passRepeat, errorContainer) => {
     return true;
 };
 
-const checkPasswordStrength = (passwordValue, passwordElement) => {
-    const strengthIndicator = document.getElementById("strength-indicator") || document.createElement("p");
-    strengthIndicator.id = "strength-indicator";
+const checkPasswordStrength = (passwordElement) => {
+    const passwordValue = passwordElement.value;
 
     // Sets strength level with respective color feedback
     let strengthMessage = passwordValue.length >= 8 && /[A-Z]/.test(passwordValue) && /[0-9]/.test(passwordValue) && /[^A-Za-z0-9]/.test(passwordValue)
         ? (strengthIndicator.style.color = "green", "Strong")
         : passwordValue.length >= 6
             ? (strengthIndicator.style.color = "orange", "Moderate")
-            : passwordValue.length > 0
-                ? (strengthIndicator.style.color = "red", "Weak")
-                : (strengthIndicator.style.color = "", "");
+            : (strengthIndicator.style.color = "red", "Weak");
 
-    strengthIndicator.textContent = strengthMessage ? `Password strength: ${strengthMessage}` : "";
+    strengthIndicator.textContent = `Password strength: ${strengthMessage}`;
+
+    const isEmpty = passwordElement.validity.valueMissing;
+    if (isEmpty) {
+        strengthIndicator.textContent = "";
+    }
+
     passwordElement.parentElement.appendChild(strengthIndicator);
 };
 
@@ -105,8 +111,6 @@ const handlePasswordValidation = (form) => {
     const lastNameInput = form.querySelector("#last-name-label");
     const emailInput = form.querySelector("#email-label");
 
-    const strengthIndicator = document.getElementById("strength-indicator") || document.createElement("p");
-    strengthIndicator.id = "strength-indicator";
     const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
     errorContainer.className = "error-messages";
     errorContainer.style.bottom = "165px";
@@ -130,7 +134,7 @@ const handlePasswordValidation = (form) => {
             if (isSaved) {
                 form.reset();
                 errorContainer.textContent = "";
-                if (strengthIndicator) strengthIndicator.textContent = "";
+                strengthIndicator.textContent = "";
                 document.querySelector(`label[for="${passCreate.id}"]`).style.color = "";
                 document.querySelector(`label[for="${passRepeat.id}"]`).style.color = "";
 
@@ -146,17 +150,16 @@ const handlePasswordValidation = (form) => {
 
     // Updates password strength as user types and checks for invalid characters
     passCreate.addEventListener("input", () => {
+        checkPasswordStrength(passCreate);
+
         if (validateCharacters(passCreate.value)) {
             errorContainer.textContent = "";
-            checkPasswordStrength(passCreate.value, passCreate);
         } else {
             errorContainer.textContent = passCreate.value != 0
                 ? "Password contains invalid characters. Please remove them."
                 : "No characters found. Please enter a password.";
 
             form.appendChild(errorContainer);
-
-            if (strengthIndicator) strengthIndicator.textContent = "";
         }
     });
 };
