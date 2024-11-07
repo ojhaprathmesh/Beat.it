@@ -64,13 +64,13 @@ const handleProfileDataIO = async (profileData, errorContainer) => {
         */
 
         let isDuplicate, currentId;
-        const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
+        const existingProfiles = JSON.parse(localStorage.getItem("profiles")) || [];
 
-        if (profiles.length != 0) {
-            currentId = parseInt(profiles[profiles.length - 1].id);
+        if (existingProfiles.length != 0) {
+            currentId = parseInt(existingProfiles[existingProfiles.length - 1].id);
             currentId += 1;
 
-            profiles.forEach(profile => {
+            existingProfiles.forEach(profile => {
                 if (profile.email === profileData.email) {
                     isDuplicate = true;
                 };
@@ -83,10 +83,7 @@ const handleProfileDataIO = async (profileData, errorContainer) => {
         profileData.id = currentId;
 
         if (!isDuplicate) {
-            // Retrieve existing profiles from localStorage
-            profiles.push(profileData);
-
-            // Save the updated profiles array in localStorage
+            existingProfiles.push(profileData);
             localStorage.setItem("profiles", JSON.stringify(existingProfiles));
 
             return true;
