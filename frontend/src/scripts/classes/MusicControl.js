@@ -16,8 +16,13 @@ class MusicControl {
         this.currentSongIndex = 0;
         this.loadSongCallCount = 0;
         this.isPlaying = false;
-        this.stateIndex = 0; // Initialize here to persist state across calls
+        this.stateIndex = 0;
         this.repeatStates = ['isNotRepeating', 'isSingleRepeat', 'isMultiRepeat'];
+        this.repeatStates.forEach((state) => this[state] = false);
+
+        this.userInteracted = false;
+        document.addEventListener("click", () => this.userInteracted = true);
+        document.addEventListener("keydown", () => this.userInteracted = true);
 
         this.init();
     }
@@ -83,21 +88,6 @@ class MusicControl {
         this.loadSongCallCount++;
     }
 
-    applySavedState(savedState) {
-        this.currentSongIndex = savedState.songIndex;
-        this.loadSong(this.currentSongIndex);
-
-        this.audio.currentTime = savedState.ellapsedTime || 0;
-        this.loadSongCallCount = savedState.loadSongCallCount || 0;
-
-        // Play or pause based on saved state
-        if (savedState.isPaused) {
-            this.pauseSong();
-        } else {
-            this.playSong();
-        }
-    }
-
     updateSongUI(song) {
         const songTitleElement = document.querySelector(".player-songname");
         const songArtistElement = document.querySelector(".player-artistname");
@@ -151,7 +141,7 @@ class MusicControl {
     }
 
     playSong() {
-        if (this.audio.paused) {
+        if (this.audio.paused && this.userInteracted) {
             this.audio.play();
         }
     }
@@ -214,14 +204,13 @@ class MusicControl {
     }
 
     handleShuffle() {
-        this.shuffleBtn.style.animation = "shuffleAnimation 0.5s forwards";
+        this.shuffleBtn.style.animation = "shuffleAnimation 750ms forwards ease-in-out";
         this.shuffleBtn.addEventListener("animationend", () => {
             this.shuffleBtn.style.animation = "";
         }, { once: true });
     }
 
     handleRepeat() {
-        this.repeatStates.forEach((state) => this[state] = false);
         this.stateIndex = (this.stateIndex + 1) % this.repeatStates.length;
         this[this.repeatStates[this.stateIndex]] = true;
 
@@ -264,8 +253,32 @@ class MusicControl {
             ellapsedTime: this.audio.currentTime,
             isPaused: this.audio.paused,
             loadSongCallCount: this.loadSongCallCount,
+            stateIndex: this.stateIndex,
+            isNotRepeating: this.isNotRepeating,
+            isSingleRepeat: this.isSingleRepeat,
+            isMultiRepeat: this.isMultiRepeat
         };
         localStorage.setItem("songState", JSON.stringify(songState));
+    }
+
+    applySavedState(savedState) {
+        this.currentSongIndex = savedState.songIndex;
+        this.loadSong(this.currentSongIndex);
+
+        this.audio.currentTime = savedState.ellapsedTime || 0;
+        this.loadSongCallCount = savedState.loadSongCallCount || 0;
+
+        this.stateIndex = savedState.stateIndex;
+        this.isNotRepeating = savedState.isNotRepeating;
+        this.isSingleRepeat = savedState.isSingleRepeat;
+        this.isMultiRepeat = savedState.isMultiRepeat;
+
+        // Play or pause based on saved state
+        if (savedState.isPaused) {
+            this.pauseSong();
+        } else {
+            this.playSong();
+        }
     }
 
     togglePlayPause(isPlaying) {
