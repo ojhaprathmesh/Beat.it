@@ -20,10 +20,7 @@ class MusicControl {
         this.repeatStates = ['isNotRepeating', 'isSingleRepeat', 'isMultiRepeat'];
         this.repeatStates.forEach((state) => this[state] = false);
 
-        this.userInteracted = false;
-        document.addEventListener("click", () => this.userInteracted = true);
-        document.addEventListener("keydown", () => this.userInteracted = true);
-
+        this.togglePlayPause(this.isPlaying);
         this.init();
     }
 
@@ -141,7 +138,7 @@ class MusicControl {
     }
 
     playSong() {
-        if (this.audio.paused && this.userInteracted) {
+        if (this.audio.paused) {
             this.audio.play();
         }
     }
@@ -251,7 +248,7 @@ class MusicControl {
         const songState = {
             songIndex: this.currentSongIndex,
             ellapsedTime: this.audio.currentTime,
-            isPaused: this.audio.paused,
+            isPlaying: !this.audio.paused,
             loadSongCallCount: this.loadSongCallCount,
             stateIndex: this.stateIndex,
             isNotRepeating: this.isNotRepeating,
@@ -273,8 +270,10 @@ class MusicControl {
         this.isSingleRepeat = savedState.isSingleRepeat;
         this.isMultiRepeat = savedState.isMultiRepeat;
 
-        // Play or pause based on saved state
-        if (savedState.isPaused) {
+        this.isPlaying = savedState.isPlaying;
+        this.togglePlayPause(savedState.isPlaying);
+
+        if (this.isPlaying) {
             this.pauseSong();
         } else {
             this.playSong();
