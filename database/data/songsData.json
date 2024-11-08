@@ -26,7 +26,7 @@
         "album": "Zindagi Na Milegi Dobara",
         "genre": "Bollywood",
         "duration": "3:24",
-        "filePath": "/uploads/sooraj-ki-baahon-mein.mp3",
+        "filePath": "../uploads/sooraj-ki-baahon-mein.mp3",
         "imagePath": "../assets/songs/sooraj-ki-baahon-mein.webp"
     }
 ]
