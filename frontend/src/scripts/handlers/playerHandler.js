@@ -1,5 +1,4 @@
 import { insertPlayer } from "../components/player.js";
-import { SongControl } from "../classes/SongControl.js";
 import { MusicControl } from "../classes/MusicControl.js";
 import { ProgressSlider } from "../classes/ProgressSlider.js";
 
@@ -39,21 +38,18 @@ const updateVolumeIcons = (volume, volumeIcons) => {
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await insertPlayer(".player"); // Waits for the player to be placed
+    await insertPlayer(".player");        // Waits for the player to be placed
 
     toggleLike(".like-btn", "like-check");
 
-    // let songControl = new SongControl();
-    // let musicControl = new MusicControl(".playbar", songControl);
     let musicControl = new MusicControl(".playbar");
     let volumeSlider = new ProgressSlider(".volume-control-bar", ".volume-progress");
     const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
     function setVolume(volume) {
-        // musicControl.songControl.audio.volume = volume / 100; // Adjust audio volume
         musicControl.audio.volume = volume / 100; // Adjust audio volume
-        volumeSlider.setVolume(volume);                       // Set slider position
-        updateVolumeIcons(volume, volumeIcons);               // Update the volume icons
+        volumeSlider.setVolume(volume);           // Set slider position
+        updateVolumeIcons(volume, volumeIcons);   // Update the volume icons
     }
 
     let storedVolume = 50;
@@ -86,7 +82,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     volumeSlider.volControl.addEventListener("volumeChange", (currentVol) => {
         const volMagnitude = currentVol.detail.magnitude
         updateVolumeIcons(volMagnitude, volumeIcons);
-        // musicControl.songControl.audio.volume = volMagnitude / 100;
         musicControl.audio.volume = volMagnitude / 100;
     });
 });

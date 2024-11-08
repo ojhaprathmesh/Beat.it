@@ -21,17 +21,6 @@ const handleNameInputRestriction = (nameInputs) => {
 const validatePasswordMatch = (passCreate, passRepeat, errorContainer) => {
     if (passCreate.value !== passRepeat.value) {
         errorContainer.textContent = "Passwords do not match. Please re-enter your password.";
-
-        /*document.querySelector(`label[for="${passCreate.id}"]`).style.color = "red";
-        document.querySelector(`label[for="${passRepeat.id}"]`).style.color = "red";
-
-        // Clears error and resets color on input change, triggering only once
-        [passCreate, passRepeat].forEach(input => {
-            input.addEventListener("input", () => {
-                document.querySelector(`label[for="${input.id}"]`).style.color = "";
-                errorContainer.textContent = "";
-            }, { once: true });
-        });*/
         return false;
     }
     return true;
@@ -135,8 +124,6 @@ const handlePasswordValidation = (form) => {
                 form.reset();
                 errorContainer.textContent = "";
                 strengthIndicator.textContent = "";
-                /*document.querySelector(`label[for="${passCreate.id}"]`).style.color = "";
-                document.querySelector(`label[for="${passRepeat.id}"]`).style.color = "";*/
 
                 window.location.href = "HomePage.html";
             } else {
