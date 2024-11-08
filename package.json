@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "🎶 Beat.it: Your Ultimate Music Player 🎶 Welcome to Beat.it—a user-friendly music player that lets you enjoy your favorite tracks seamlessly! This project is a full-stack application designed for music lovers.",
   "main": "index.html",
-  "type": "module",
   "scripts": {
     "start": ""
   },
