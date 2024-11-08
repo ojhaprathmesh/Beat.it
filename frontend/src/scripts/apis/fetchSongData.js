@@ -1,6 +1,6 @@
 async function fetchSongData() {
     try {
-        const response = await fetch("data/songsData.json");
+        const response = await fetch("../data/songsData.json");
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
