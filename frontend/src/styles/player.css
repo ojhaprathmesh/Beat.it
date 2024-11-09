@@ -152,7 +152,7 @@
     transform: scale(1);
 }
 
-#seekBar {
+#seekMusic {
     appearance: none;
     width: 100%;
     cursor: pointer;
@@ -161,11 +161,11 @@
     background: var(--grey);
 }
 
-#seekBar::-webkit-slider-runnable-track {
+#seekMusic::-webkit-slider-runnable-track {
     height: 10px;
 }
 
-#seekBar::-webkit-slider-thumb {
+#seekMusic::-webkit-slider-thumb {
     position: relative;
     top: -2px;
     appearance: none;
@@ -176,7 +176,7 @@
     z-index: 1;
 }
 
-#seekBar::before {
+#seekMusic::before {
     position: absolute;
     content: "";
     height: 10px;

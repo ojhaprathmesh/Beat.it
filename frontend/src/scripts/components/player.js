@@ -25,7 +25,7 @@ function renderPlayBar() {
         <div class="playbar">
             <audio id="songPlayer" src="../../../database/uploads/main-yahaan-hoon.mp3"></audio>
             <div class="music-progress-bar">
-                <input type="range" id="seekBar" min="0" max="100" value="0" step="0.01">
+                <input type="range" id="seekMusic" class="seekbar" min="0" max="100" value="0" step="0.01">
             </div>
 
             <div class="controls">
@@ -67,7 +67,7 @@ function renderVolumeControls() {
             <i class="fas fa-volume-up" id="volume-three" style="display: block;"></i>
             
             <div class="volume-control-bar">
-                <div class="volume-progress"></div>
+                <input type="range" id="seekVolume" min="0" max="100" value="50" step="1">
             </div>
         </div>
     `;

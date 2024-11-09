@@ -9,7 +9,7 @@ class MusicControl {
         this.forwardBtn = this.controls.querySelector(".forward");
         this.shuffleBtn = this.controls.querySelector(".shuffle");
         this.repeatBtn = this.controls.querySelector(".repeat");
-        this.seekBar = document.getElementById("seekBar");
+        this.seekBar = document.getElementById("seekMusic");
         this.audio = document.getElementById("songPlayer");
 
         this.songList = [];
