@@ -13,7 +13,13 @@ const toggleLike = (likeBtnSelector, checkboxSelector) => {
     });
 };
 
-const updateVolumeIcons = (volume, volumeIcons) => {
+const updateVolumeUI = (volume, volumeIcons, audioElement, sliderElement) => {
+    // Set audio volume
+    audioElement.volume = volume / 100;
+    sliderElement.value = volume;
+    sliderElement.style.setProperty("--width-v", `${volume}px`);
+
+    // Update icons based on volume level
     const [muteIcon, lowVolumeIcon, midVolumeIcon, highVolumeIcon] = volumeIcons;
 
     const setIconVisibility = (mute, low, mid, high) => {
@@ -25,14 +31,14 @@ const updateVolumeIcons = (volume, volumeIcons) => {
 
     setIconVisibility(
         volume == 0,                 // Show mute icon if volume is 0
-        volume > 0 && volume < 30,    // Show low volume icon if volume is from 1 to 29
-        volume >= 30 && volume < 70,  // Show mid volume icon if volume is from 30 to 69
-        volume >= 70                  // Show high volume icon if volume is 70 or above
+        volume > 0 && volume < 30,   // Show low volume icon if volume is from 1 to 29
+        volume >= 30 && volume < 70, // Show mid volume icon if volume is from 30 to 69
+        volume >= 70                 // Show high volume icon if volume is 70 or above
     );
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await insertPlayer(".player"); // Wait for the player to be placed
+    await insertPlayer(".player");   // Wait for the player to be placed
 
     toggleLike(".like-btn", "like-check");
 
@@ -42,14 +48,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let currentVol = 50;
     let storedVolume = currentVol;
-    volumeSlider.style.setProperty("--width-v", `${currentVol}px`);
 
-    function updateVolSlider() {
-        currentVol = volumeSlider.value;
-        musicControl.audio.volume = currentVol / 100;
-        volumeSlider.style.setProperty("--width-v", `${currentVol}px`);
-        updateVolumeIcons(currentVol, volumeIcons);
-    }
+    // Initialize volume level and update icons
+    updateVolumeUI(currentVol, volumeIcons, musicControl.audio, volumeSlider);
 
     volumeIcons.forEach(icon => {
         icon.style.width = "20px";
@@ -61,24 +62,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         icon.addEventListener("click", () => {
             if (musicControl.audio.volume === 0) {
-                // If muted, restore volume to stored value and update icons
-                musicControl.audio.volume = storedVolume / 100;
+                // If muted, restore volume to stored value
                 currentVol = storedVolume;
-                volumeSlider.value = currentVol;
-                updateVolumeIcons(currentVol, volumeIcons);
             } else {
-                // If not muted, store current volume, mute audio, and update icons
+                // If not muted, store current volume, then mute
                 storedVolume = currentVol;
-                musicControl.audio.volume = 0;
                 currentVol = 0;
-                volumeSlider.value = currentVol;
-                updateVolumeIcons(0, volumeIcons);
             }
-            volumeSlider.style.setProperty("--width-v", `${currentVol}px`);
+            updateVolumeUI(currentVol, volumeIcons, musicControl.audio, volumeSlider);
         });
     });
 
     volumeSlider.addEventListener("input", () => {
-        updateVolSlider();
+        currentVol = volumeSlider.value;
+        updateVolumeUI(currentVol, volumeIcons, musicControl.audio, volumeSlider);
     });
 });
