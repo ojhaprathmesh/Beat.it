@@ -56,7 +56,7 @@ class MusicControl {
         this.forwardBtn.addEventListener("click", () => this.handleForward());
         this.reverseBtn.addEventListener("click", () => this.handleReverse());
         this.repeatBtn.addEventListener("click", () => this.handleRepeat());
-        this.shuffleBtn.addEventListener("click", () => this.handleShuffle());
+        this.shuffleBtn.addEventListener("click", () => this.handleShuffle(this.songList));
 
         this.seekBar.addEventListener("updatedSeekbar", (event) => {
             const { value } = event.detail;
@@ -209,11 +209,22 @@ class MusicControl {
         }
     }
 
-    handleShuffle() {
+    handleShuffle(array) {
         this.shuffleBtn.style.animation = "shuffleAnimation 750ms forwards ease-in-out";
         this.shuffleBtn.addEventListener("animationend", () => {
             this.shuffleBtn.style.animation = "";
         }, { once: true });
+
+        // Fisher-Yates (or Knuth) shuffle algorithm
+        for (let i = array.length - 1; i > 0; i--) {
+            // Generate a random index between 0 and i
+            const j = Math.floor(Math.random() * (i + 1));
+
+            // Swap elements at indices i and j
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+
+        this.playNext();
     }
 
     handleRepeat() {
