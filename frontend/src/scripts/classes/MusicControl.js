@@ -262,8 +262,8 @@ class MusicControl {
         this.currentSongIndex = savedState.songIndex;
         this.loadSong(this.currentSongIndex);
 
-        this.audio.currentTime = savedState.ellapsedTime || 0;
-        this.loadSongCallCount = savedState.loadSongCallCount || 0;
+        this.audio.currentTime = savedState.ellapsedTime;
+        this.loadSongCallCount = savedState.loadSongCallCount;
 
         this.stateIndex = savedState.stateIndex;
         this.isNotRepeating = savedState.isNotRepeating;
@@ -271,7 +271,7 @@ class MusicControl {
         this.isMultiRepeat = savedState.isMultiRepeat;
 
         this.isPlaying = savedState.isPlaying;
-        this.togglePlayPause(savedState.isPlaying);
+        this.togglePlayPause(this.isPlaying);
 
         if (this.isPlaying) {
             this.pauseSong();
