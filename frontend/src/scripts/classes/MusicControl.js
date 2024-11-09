@@ -231,10 +231,14 @@ class MusicControl {
         this.repeatStates.forEach((state) => this[state] = false);
         this.stateIndex = (this.stateIndex + 1) % 3;
         this[this.repeatStates[this.stateIndex]] = true;
-        console.log(this.isNotRepeating, this.isSingleRepeat, this.isMultiRepeat);
 
+        this.updateRepeatIcon(); // Update the repeat icon based on the new state
+    }
+
+    updateRepeatIcon() {
         const p = this.controls.querySelector("p");
 
+        // Clear any previous animations or intervals
         if (this.repeatInterval) {
             clearInterval(this.repeatInterval);
         }
@@ -242,22 +246,17 @@ class MusicControl {
         if (this.isSingleRepeat) {
             p.textContent = "1";
             p.style.display = "block";
+            this.repeatBtn.style.animation = ""; // No animation for single repeat
         } else if (this.isMultiRepeat) {
             p.textContent = "";
             p.style.display = "block";
 
             this.repeatInterval = setInterval(() => {
-                if (this.repeatBtn.style.animation != "") {
-                    this.repeatBtn.style.animation = "";
-                } else {
-                    this.repeatBtn.style.animation = "rotateClockwise 500ms linear forwards";
-                }
+                this.repeatBtn.style.animation = this.repeatBtn.style.animation ? "" : "rotateClockwise 500ms linear forwards";
             }, 500);
         } else {
             p.style.display = "none";
-            setTimeout(() => {
-                this.repeatBtn.style.animation = "";
-            }, 500);
+            this.repeatBtn.style.animation = ""; // Clear animation for no repeat
         }
     }
 
@@ -290,6 +289,8 @@ class MusicControl {
         this.isNotRepeating = savedState.isNotRepeating;
         this.isSingleRepeat = savedState.isSingleRepeat;
         this.isMultiRepeat = savedState.isMultiRepeat;
+
+        this.updateRepeatIcon();
     }
 
     togglePlayPause(isPlaying) {
