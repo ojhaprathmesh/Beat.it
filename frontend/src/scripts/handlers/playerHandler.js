@@ -1,6 +1,5 @@
 import { insertPlayer } from "../components/player.js";
 import { MusicControl } from "../classes/MusicControl.js";
-import { ProgressSlider } from "../classes/ProgressSlider.js";
 
 const toggleLike = (likeBtnSelector, checkboxSelector) => {
     const likeBtn = document.querySelector(likeBtnSelector);
