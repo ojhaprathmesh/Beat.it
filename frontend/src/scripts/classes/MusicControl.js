@@ -62,6 +62,12 @@ class MusicControl {
                 this.handleForward();
             }
         });
+        document.addEventListener("keydown", (event) => {
+            if (event.code === "Space") {
+                event.preventDefault();
+                this.isPlaying ? this.handlePause() : this.handlePlay();
+            }
+        });
     }
 
     loadSong(index) {
@@ -116,7 +122,7 @@ class MusicControl {
         this.seekBar.value = parseFloat(progress.toFixed(2));
 
         const width = progress < 50 ? `calc(${5 * progress}px + 5px)` : `${5 * progress}px`;
-        this.seekBar.style.setProperty("--width", width);
+        this.seekBar.style.setProperty("--width-m", width);
 
         const color = this.audio.currentTime <= 1 ? "var(--grey)" : "var(--white)";
         this.seekBar.style.setProperty("--color", color);
