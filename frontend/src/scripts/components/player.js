@@ -4,7 +4,7 @@ function renderAlbumInfo(song) {
     return `
         <div class="player-albuminfo">
             <div class="player-songcover">
-                <img src="${song.imagePath}" alt="Player Album Cover" width="75px" height="75px" style="border-radius: 10px">
+                <img src="${song.albumCover}" alt="Player Album Cover" width="75px" height="75px" style="border-radius: 10px">
             </div>
 
             <div class="player-songdetails font-inter" style="font-weight: 500;">

@@ -81,7 +81,7 @@ class MusicControl {
 
         this.currentSongIndex = index;
         const song = this.songList[index];
-        this.audio.src = `../../../database/` + song.filePath;
+        this.audio.src = `../../../database/` + song.file;
         this.audio.load();
         this.updateSongUI(song);
 
@@ -104,11 +104,21 @@ class MusicControl {
         }
 
         if (songArtistElement) {
-            songArtistElement.textContent = song.artist; // Update the song artist
+            let finalName = '';
+
+            if (song.artist.length > 1) {
+                finalName = song.artist.map(name => name.split(' ')[0]).join(', ');
+                finalName = finalName.substring(0, 22) + '...';
+            } else {
+                finalName = song.artist[0];
+            }
+
+            songArtistElement.textContent = finalName; // Update the song artist
         }
 
+
         if (songAlbumElement) {
-            songAlbumElement.src = song.imagePath;
+            songAlbumElement.src = song.albumCover;
         }
     }
 
@@ -266,20 +276,27 @@ class MusicControl {
     }
 
     saveState() {
+        if (this.songList.length === 0 || this.currentSongIndex >= this.songList.length) {
+            console.warn("Cannot save state: Song list is empty or index is out of bounds.");
+            return;
+        }
+
+        const currentSong = this.songList[this.currentSongIndex];
         const songState = {
-            songIndex: this.currentSongIndex,
-            ellapsedTime: this.audio.currentTime,
+            lastSongPlayed: currentSong ? currentSong.id : null,
+            ellapsedTime: this.audio ? this.audio.currentTime : 0,
             loadSongCallCount: this.loadSongCallCount,
             stateIndex: this.stateIndex,
             isNotRepeating: this.isNotRepeating,
             isSingleRepeat: this.isSingleRepeat,
             isMultiRepeat: this.isMultiRepeat
         };
+
         localStorage.setItem("songState", JSON.stringify(songState));
     }
 
     applySavedState(savedState) {
-        this.currentSongIndex = savedState.songIndex;
+        this.currentSongIndex = savedState.lastSongPlayed - 1;
         this.loadSong(this.currentSongIndex);
 
         this.audio.currentTime = savedState.ellapsedTime;

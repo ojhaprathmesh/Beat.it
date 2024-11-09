@@ -1,32 +1,119 @@
 [
     {
         "id": 1,
-        "title": "Main Yahaan Hoon",
-        "artist": "Udit Narayan",
+        "title": "Do Pal",
+        "artist": [
+            "Lata Mangeshkar",
+            "Sonu Nigam",
+            "Madan Mohan",
+            "Javed Akhtar"
+        ],
         "album": "Veer-Zaara",
         "genre": "Bollywood",
-        "duration": "4:54",
-        "filePath": "../uploads/main-yahaan-hoon.mp3",
-        "imagePath": "../album-covers/main-yahaan-hoon.webp"
+        "file": "../uploads/do-pal.mp3",
+        "albumCover": "../album-covers/main-yahaan-hoon.webp"
     },
     {
         "id": 2,
-        "title": "Kabhi Kabhi Aditi",
-        "artist": "A.R. Rahman",
-        "album": "Jaane Tu... Ya Jaane Na",
+        "title": "Main Yahaan Hoon",
+        "artist": [
+            "Sonu Nigam",
+            "Madan Mohan",
+            "Javed Akhtar"
+        ],
+        "album": "Veer-Zaara",
         "genre": "Bollywood",
-        "duration": "3:38",
-        "filePath": "../uploads/kabhi-kabhi-aditi.mp3",
-        "imagePath": "../album-covers/kabhi-kabhi-aditi.webp"
+        "file": "../uploads/main-yahaan-hoon.mp3",
+        "albumCover": "../album-covers/main-yahaan-hoon.webp"
     },
     {
         "id": 3,
-        "title": "Sooraj Ki Baahon Mein",
-        "artist": "Shankar-Ehsaan-Loy",
+        "title": "Tere Liye",
+        "artist": [
+            "Lata Mangeshkar",
+            "Roopkumar Rathod",
+            "Salim-Sulaiman",
+            "Javed Akhtar"
+        ],
+        "album": "Veer-Zaara",
+        "genre": "Bollywood",
+        "file": "../uploads/tere-liye.mp3",
+        "albumCover": "../album-covers/main-yahaan-hoon.webp"
+    },
+    {
+        "id": 4,
+        "title": "Kabhi Kabhi Aditi",
+        "artist": [
+            "Rashid Ali"
+        ],
+        "album": "Jaane Tu... Ya Jaane Na",
+        "genre": "Bollywood",
+        "file": "../uploads/kabhi-kabhi-aditi.mp3",
+        "albumCover": "../album-covers/kabhi-kabhi-aditi.webp"
+    },
+    {
+        "id": 5,
+        "title": "Nazrein Milana Nazrein Churana",
+        "artist": [
+            "Benny Dayal",
+            "Satish Chakravarthy",
+            "Sayonara"
+        ],
+        "album": "Jaane Tu... Ya Jaane Na",
+        "genre": "Bollywood",
+        "file": "../uploads/nazrein-milaana-nazrein-churaana.mp3",
+        "albumCover": "../album-covers/kabhi-kabhi-aditi.webp"
+    },
+    {
+        "id": 6,
+        "title": "Pappu Can't Dance",
+        "artist": [
+            "Benny Dayal",
+            "Naresh Iyer",
+            "Satish Chakravarthy"
+        ],
+        "album": "Jaane Tu... Ya Jaane Na",
+        "genre": "Bollywood",
+        "file": "../uploads/pappu-cant-dance.mp3",
+        "albumCover": "../album-covers/kabhi-kabhi-aditi.webp"
+    },
+    {
+        "id": 7,
+        "title": "Dil Dhadakne Do",
+        "artist": [
+            "Shankar-Ehsaan-Loy",
+            "Suraj Jagan",
+            "Shankar Mahadevan"
+        ],
         "album": "Zindagi Na Milegi Dobara",
         "genre": "Bollywood",
-        "duration": "3:24",
-        "filePath": "../uploads/sooraj-ki-baahon-mein.mp3",
-        "imagePath": "../album-covers/sooraj-ki-baahon-mein.webp"
+        "file": "../uploads/dil-dhadakne-do.mp3",
+        "albumCover": "../album-covers/sooraj-ki-baahon-mein.webp"
+    },
+    {
+        "id": 8,
+        "title": "Senorita",
+        "artist": [
+            "Shankar-Ehsaan-Loy",
+            "Farhan Akhtar",
+            "Hrithik Roshan"
+        ],
+        "album": "Zindagi Na Milegi Dobara",
+        "genre": "Bollywood",
+        "file": "../uploads/senorita.mp3",
+        "albumCover": "../album-covers/sooraj-ki-baahon-mein.webp"
+    },
+    {
+        "id": 9,
+        "title": "Sooraj Ki Baahon Mein",
+        "artist": [
+            "Shankar-Ehsaan-Loy",
+            "Clinton Cerejo",
+            "Dominique Cerejo"
+        ],
+        "album": "Zindagi Na Milegi Dobara",
+        "genre": "Bollywood",
+        "file": "../uploads/sooraj-ki-baahon-mein.mp3",
+        "albumCover": "../album-covers/sooraj-ki-baahon-mein.webp"
     }
 ]
