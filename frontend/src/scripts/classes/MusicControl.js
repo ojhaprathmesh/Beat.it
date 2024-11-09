@@ -17,8 +17,8 @@ class MusicControl {
         this.loadSongCallCount = 0;
         this.isPlaying = false;
         this.stateIndex = 0;
+        this.isNotRepeating = true;
         this.repeatStates = ['isNotRepeating', 'isSingleRepeat', 'isMultiRepeat'];
-        this.repeatStates.forEach((state) => this[state] = false);
 
         this.togglePlayPause(this.isPlaying);
         this.init();
@@ -217,8 +217,10 @@ class MusicControl {
     }
 
     handleRepeat() {
-        this.stateIndex = (this.stateIndex + 1) % this.repeatStates.length;
+        this.repeatStates.forEach((state) => this[state] = false);
+        this.stateIndex = (this.stateIndex + 1) % 3;
         this[this.repeatStates[this.stateIndex]] = true;
+        console.log(this.isNotRepeating, this.isSingleRepeat, this.isMultiRepeat);
 
         const p = this.controls.querySelector("p");
 
