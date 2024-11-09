@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     toggleLike(".like-btn", "like-check");
 
-    let musicControl = new MusicControl(".playbar");
-    let volumeSlider = new ProgressSlider(".volume-control-bar", ".volume-progress");
+    const musicControl = new MusicControl(".playbar");
+    const volumeSlider = new ProgressSlider(".volume-control-bar", ".volume-progress");
     const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
     function setVolume(volume) {
