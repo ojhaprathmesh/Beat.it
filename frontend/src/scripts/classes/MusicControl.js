@@ -29,11 +29,6 @@ class MusicControl {
             this.songList = await fetchSongData(); // Fetch song data from JSON
             this.loadSong(this.currentSongIndex); // Load the first song after fetching data
 
-            const savedState = this.loadState();
-            if (savedState) {
-                this.applySavedState(savedState);
-            }
-
             const bindAfterMetaDataLoads = () => {
                 this.updateSeekBar();
                 this.audio.addEventListener("timeupdate", this.updateSeekBar.bind(this));
@@ -42,6 +37,12 @@ class MusicControl {
             };
 
             this.audio.addEventListener("loadedmetadata", bindAfterMetaDataLoads);
+
+            const savedState = this.loadState();
+            if (savedState) {
+                this.applySavedState(savedState);
+            }
+
             this.bindEvents();
 
         } catch (error) {
@@ -56,12 +57,14 @@ class MusicControl {
         this.reverseBtn.addEventListener("click", () => this.handleReverse());
         this.repeatBtn.addEventListener("click", () => this.handleRepeat());
         this.shuffleBtn.addEventListener("click", () => this.handleShuffle());
+
         this.seekBar.addEventListener("updatedSeekbar", (event) => {
             const { value } = event.detail;
             if (Math.round(value) === 100) {
                 this.handleForward();
             }
         });
+
         document.addEventListener("keydown", (event) => {
             if (event.code === "Space") {
                 event.preventDefault();
@@ -254,7 +257,6 @@ class MusicControl {
         const songState = {
             songIndex: this.currentSongIndex,
             ellapsedTime: this.audio.currentTime,
-            isPlaying: !this.audio.paused,
             loadSongCallCount: this.loadSongCallCount,
             stateIndex: this.stateIndex,
             isNotRepeating: this.isNotRepeating,
@@ -275,15 +277,6 @@ class MusicControl {
         this.isNotRepeating = savedState.isNotRepeating;
         this.isSingleRepeat = savedState.isSingleRepeat;
         this.isMultiRepeat = savedState.isMultiRepeat;
-
-        this.isPlaying = savedState.isPlaying;
-        this.togglePlayPause(this.isPlaying);
-
-        if (this.isPlaying) {
-            this.pauseSong();
-        } else {
-            this.playSong();
-        }
     }
 
     togglePlayPause(isPlaying) {

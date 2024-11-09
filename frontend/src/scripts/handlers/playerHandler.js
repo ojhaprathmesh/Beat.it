@@ -23,65 +23,62 @@ const updateVolumeIcons = (volume, volumeIcons) => {
         highVolumeIcon.style.display = high ? "block" : "none";
     };
 
-    // Updates icon visibility based on current volume
-    const updateIcons = (volume) => {
-        setIconVisibility(
-            volume === 0,                 // Mute icon if volume is 0
-            volume > 0 && volume < 30,    // Low volume icon if volume is from 1 to 29
-            volume >= 30 && volume < 70,  // Mid volume icon if volume is from 30 to 69
-            volume >= 70                  // High volume icon if volume is 70 or above
-        );
-    };
-
-    // Icon update
-    updateIcons(volume);
+    setIconVisibility(
+        volume == 0,                 // Show mute icon if volume is 0
+        volume > 0 && volume < 30,    // Show low volume icon if volume is from 1 to 29
+        volume >= 30 && volume < 70,  // Show mid volume icon if volume is from 30 to 69
+        volume >= 70                  // Show high volume icon if volume is 70 or above
+    );
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await insertPlayer(".player");        // Waits for the player to be placed
+    await insertPlayer(".player"); // Wait for the player to be placed
 
     toggleLike(".like-btn", "like-check");
 
     const musicControl = new MusicControl(".playbar");
-    const volumeSlider = new ProgressSlider(".volume-control-bar", ".volume-progress");
+    const volumeSlider = document.getElementById("seekVolume");
     const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
-    function setVolume(volume) {
-        musicControl.audio.volume = volume / 100; // Adjust audio volume
-        volumeSlider.setVolume(volume);           // Set slider position
-        updateVolumeIcons(volume, volumeIcons);   // Update the volume icons
+    let currentVol = 50;
+    let storedVolume = currentVol;
+    volumeSlider.style.setProperty("--width-v", `${currentVol}px`);
+
+    function updateVolSlider() {
+        currentVol = volumeSlider.value;
+        musicControl.audio.volume = currentVol / 100;
+        volumeSlider.style.setProperty("--width-v", `${currentVol}px`);
+        updateVolumeIcons(currentVol, volumeIcons);
     }
 
-    let storedVolume = 50;
-
     volumeIcons.forEach(icon => {
-        function updateVolSlider(newVolume) {
-            Object.assign(volumeSlider, {
-                outputVolume: newVolume
-            });
-            volumeSlider.setVolume();
-            return newVolume;
+        icon.style.width = "20px";
+
+        if (icon.id === "volume-two") {
+            icon.style.position = "relative";
+            icon.style.top = "1px";
         }
 
-        icon.style.width = "20px";
         icon.addEventListener("click", () => {
-            if (icon.id != "volume-mute") {
-                storedVolume = volumeSlider.getVolume();
-                setVolume(updateVolSlider(0));
+            if (musicControl.audio.volume === 0) {
+                // If muted, restore volume to stored value and update icons
+                musicControl.audio.volume = storedVolume / 100;
+                currentVol = storedVolume;
+                volumeSlider.value = currentVol;
+                updateVolumeIcons(currentVol, volumeIcons);
             } else {
-                if (storedVolume === null) {
-                    setVolume(updateVolSlider(5));
-                } else {
-                    setVolume(updateVolSlider(storedVolume));
-                    storedVolume = null;
-                }
+                // If not muted, store current volume, mute audio, and update icons
+                storedVolume = currentVol;
+                musicControl.audio.volume = 0;
+                currentVol = 0;
+                volumeSlider.value = currentVol;
+                updateVolumeIcons(0, volumeIcons);
             }
+            volumeSlider.style.setProperty("--width-v", `${currentVol}px`);
         });
     });
 
-    volumeSlider.volControl.addEventListener("volumeChange", (currentVol) => {
-        const volMagnitude = currentVol.detail.magnitude
-        updateVolumeIcons(volMagnitude, volumeIcons);
-        musicControl.audio.volume = volMagnitude / 100;
+    volumeSlider.addEventListener("input", () => {
+        updateVolSlider();
     });
 });
