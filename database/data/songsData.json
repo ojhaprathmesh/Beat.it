@@ -11,7 +11,7 @@
         "album": "Veer-Zaara",
         "genre": "Bollywood",
         "file": "../uploads/do-pal.mp3",
-        "albumCover": "../album-covers/main-yahaan-hoon.webp"
+        "albumCover": "../album-covers/veer-zaara.webp"
     },
     {
         "id": 2,
@@ -24,7 +24,7 @@
         "album": "Veer-Zaara",
         "genre": "Bollywood",
         "file": "../uploads/main-yahaan-hoon.mp3",
-        "albumCover": "../album-covers/main-yahaan-hoon.webp"
+        "albumCover": "../album-covers/veer-zaara.webp"
     },
     {
         "id": 3,
@@ -38,7 +38,7 @@
         "album": "Veer-Zaara",
         "genre": "Bollywood",
         "file": "../uploads/tere-liye.mp3",
-        "albumCover": "../album-covers/main-yahaan-hoon.webp"
+        "albumCover": "../album-covers/veer-zaara.webp"
     },
     {
         "id": 4,
