@@ -36,3 +36,7 @@ app.get("/home", (req, res) => {
 app.get("/profile", (req, res) => {
     res.sendFile("ProfilePage.html", { root: pagePath });
 });
+
+app.get("*", (req, res) => {
+    res.send("Page 404 Not Found")
+})
