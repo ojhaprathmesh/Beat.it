@@ -28,22 +28,17 @@
     font-weight: 500;
 }
 
-
-#song-list {
-    display: flex;
-    flex-direction: column;
-    row-gap: 20px;
-}
-
 .song-row {
     display: flex;
+    flex-wrap: wrap;
+    row-gap: 20px;
 }
 
 .song-row-item {
     display: flex;
     align-items: center;
     column-gap: 10px;
-    width: 20rem;
+    width: 215px;
 }
 
 .song-row-item:hover,
