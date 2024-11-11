@@ -14,7 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.21.1",
-    "mongoose": "^8.8.0"
+    "mongoose": "^8.8.0",
+    "music-metadata": "^10.5.1"
   },
   "devDependencies": {
     "nodeman": "^1.1.2"
