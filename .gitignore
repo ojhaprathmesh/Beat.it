@@ -3,3 +3,4 @@
 /.idea
 /example.html
 /node_modules
+/database/data/songsData.js
