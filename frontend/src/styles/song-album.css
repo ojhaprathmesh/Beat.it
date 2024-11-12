@@ -37,8 +37,9 @@
 .song-row-item {
     display: flex;
     align-items: center;
-    column-gap: 10px;
+    column-gap: 6px;
     width: 215px;
+    cursor: pointer;
 }
 
 .song-row-item:hover,
@@ -61,7 +62,7 @@
 }
 
 .title-artist .album-name {
-    font-size: smaller;
+    font-size: 11.5px;
 }
 
 .album-row {
@@ -86,6 +87,6 @@
 
 .song-title,
 .album-title {
-    font-size: 14px;
-    max-width: 12rem;
+    font-size: 13px;
+    max-width: 215px;
 }

@@ -72,6 +72,15 @@ class MusicControl {
                 this.isPlaying ? this.handlePause() : this.handlePlay();
             }
         });
+
+        document.addEventListener("songClicked", (event) => {
+            this.songList.forEach(song => {
+                const id = parseInt(event.detail);
+                if ((this.currentSongIndex != (id - 1)) && (song.id == id)) {
+                    this.loadSong(id - 1);
+                }
+            });
+        });
     }
 
     loadSong(index) {
