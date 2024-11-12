@@ -27,17 +27,16 @@ class MusicControl {
 
     async init() {
         try {
-            this.songList = await fetchSongData(); // Fetch song data from JSON
-            this.loadSong(this.currentSongIndex); // Load the first song after fetching data
-
             const bindAfterMetaDataLoads = () => {
                 this.updateSeekBar();
                 this.audio.addEventListener("timeupdate", this.updateSeekBar.bind(this));
                 this.seekBar.addEventListener("input", this.seekAudio.bind(this));
                 this.audio.removeEventListener("loadedmetadata", bindAfterMetaDataLoads);
             };
-
             this.audio.addEventListener("loadedmetadata", bindAfterMetaDataLoads);
+
+            this.songList = await fetchSongData(); // Fetch song data from JSON
+            this.loadSong(this.currentSongIndex); // Load the first song after fetching data
 
             const savedState = this.loadState();
             if (savedState) {
