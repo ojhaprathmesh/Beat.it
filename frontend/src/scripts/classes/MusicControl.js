@@ -11,6 +11,7 @@ class MusicControl {
         this.repeatBtn = this.controls.querySelector(".repeat");
         this.seekBar = document.getElementById("seekMusic");
         this.audio = document.getElementById("songPlayer");
+        this.audioSource = this.audio.querySelector("source");
 
         this.songList = [];
         this.currentSongIndex = 0;
@@ -81,7 +82,7 @@ class MusicControl {
 
         this.currentSongIndex = index;
         const song = this.songList[index];
-        this.audio.src = `../../../database/` + song.file;
+        this.audioSource.src = `../../../database/` + song.file;
         this.audio.load();
         this.updateSongUI(song);
 
@@ -156,9 +157,21 @@ class MusicControl {
         }
     }
 
-    playSong() {
-        if (this.audio.paused) {
-            this.audio.play();
+    async playSong() {
+        try {
+            if (this.audio.paused) {
+                await this.audio.play();
+            }
+        } catch (error) {
+            console.warn("Autoplay prevented: waiting for user interaction.");
+            // Attach an event to retry play after user clicks anywhere on the page
+            const playAfterInteraction = () => {
+                this.audio.play().catch(error => console.warn("Autoplay still prevented.", error));
+                this.isPlaying = true;
+                this.togglePlayPause(this.isPlaying);
+                document.removeEventListener("click", playAfterInteraction);
+            };
+            document.addEventListener("click", playAfterInteraction);
         }
     }
 

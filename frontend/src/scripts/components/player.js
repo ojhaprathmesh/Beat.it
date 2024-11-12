@@ -23,7 +23,7 @@ function renderAlbumInfo(song) {
 function renderPlayBar() {
     return `
         <div class="playbar">
-            <audio id="songPlayer"></audio>
+            <audio id="songPlayer"><source type="audio/mpeg"></audio>
             <div class="music-progress-bar">
                 <input type="range" id="seekMusic" class="seekbar" min="0" max="100" value="0" step="0.01">
             </div>
