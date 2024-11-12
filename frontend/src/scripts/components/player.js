@@ -25,6 +25,7 @@ function renderPlayBar() {
         <div class="playbar">
             <audio id="songPlayer"><source type="audio/mpeg"></audio>
             <div class="music-progress-bar">
+                <label for="seekMusic" id="seekMusicLabel" class="seekbar-label">.</label>
                 <input type="range" id="seekMusic" class="seekbar" min="0" max="100" value="0" step="0.01">
             </div>
 
@@ -61,12 +62,13 @@ function renderVolumeControls() {
             <i class="fas fa-volume-down" id="volume-one" style="display: none;"></i>
             
             <i class="fas fa-volume" id="volume-two" style="display: none; filter: invert(1)">
-                <img src="../assets/home/volume.png" width="20px">
+                <img src="../assets/home/volume.png" alt="" width="20px">
             </i>
             
             <i class="fas fa-volume-up" id="volume-three" style="display: block;"></i>
             
             <div class="volume-control-bar">
+                <label for="seekVolume" id="seekVolumeLabel" class="seekbar-label">.</label>
                 <input type="range" id="seekVolume" min="0" max="100" value="50" step="1">
             </div>
         </div>

@@ -45,12 +45,6 @@
     background-color: var(--grey);
 }
 
-#search-input:webkit-autofill {
-    color: var(--search-text) !important;
-    background-color: var(--grey) !important;
-}
-
 #search-input::placeholder {
     color: var(--search-text);
 }
-

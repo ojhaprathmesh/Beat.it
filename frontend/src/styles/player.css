@@ -220,6 +220,13 @@
     z-index: 1;
 }
 
+.seekbar-label {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: #172f67;
+}
+
 @keyframes shuffleAnimation {
     0% {
         color: var(--white);
