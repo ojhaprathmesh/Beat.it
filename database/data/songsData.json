@@ -115,5 +115,36 @@
         "genre": "Bollywood",
         "file": "../uploads/sooraj-ki-baahon-mein.mp3",
         "albumCover": "../album-covers/sooraj-ki-baahon-mein.webp"
+    },
+    {
+        "id": 10,
+        "title": "Desi Kalakaar",
+        "artist": [
+            "Yo Yo Honey Singh"
+        ],
+        "album": "Desi Kalakaar",
+        "genre": "Bollywood",
+        "file": "../uploads/desi-kalakaar.mp3",
+        "albumCover": "../album-covers/desi-kalakaar.webp"
+    },
+    {
+        "id": 11,
+        "title": "I'm Your DJ Tonight",
+        "artist": ["Yo Yo Honey Singh"
+        ],
+        "album": "Desi Kalakaar",
+        "genre": "Bollywood",
+        "file": "../uploads/im-your-dj-tonight.mp3",
+        "albumCover": "../album-covers/desi-kalakaar.webp"
+    },
+    {
+        "id": 12,
+        "title": "Love Dose",
+        "artist": ["Yo Yo Honey Singh"
+        ],
+        "album": "Desi Kalakaar",
+        "genre": "Bollywood",
+        "file": "../uploads/love-dose.mp3",
+        "albumCover": "../album-covers/desi-kalakaar.webp"
     }
 ]
