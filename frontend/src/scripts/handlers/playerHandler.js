@@ -12,36 +12,25 @@ const toggleLike = (likeBtnSelector, checkboxSelector) => {
     });
 };
 
-const updateVolumeUI = (volume, volumeIcons, audioElement, sliderElement) => {
-    // Set audio volume
+const updateVolumeUI = (volume, [muteIcon, lowIcon, midIcon, highIcon], audioElement, sliderElement) => {
+    // Set audio volume and update slider
     audioElement.volume = volume / 100;
     sliderElement.value = volume;
-    if (volume > 50) {
-        sliderElement.style.setProperty("--width-v", `calc(${volume}px)`);
-    } else {
-        sliderElement.style.setProperty("--width-v", `calc(${volume}px + 5px)`);
-    }
+    sliderElement.style.setProperty("--width-v", `calc(${volume}px ${volume > 50 ? '' : '+ 5px'})`);
 
-    // Update icons based on volume level
-    const [muteIcon, lowVolumeIcon, midVolumeIcon, highVolumeIcon] = volumeIcons;
-
-    const setIconVisibility = (mute, low, mid, high) => {
-        muteIcon.style.display = mute ? "block" : "none";
-        lowVolumeIcon.style.display = low ? "block" : "none";
-        midVolumeIcon.style.display = mid ? "block" : "none";
-        highVolumeIcon.style.display = high ? "block" : "none";
-    };
-
-    setIconVisibility(
-        volume == 0,                 // Show mute icon if volume is 0
-        volume > 0 && volume < 30,   // Show low volume icon if volume is from 1 to 29
-        volume >= 30 && volume < 70, // Show mid volume icon if volume is from 30 to 69
-        volume >= 70                 // Show high volume icon if volume is 70 or above
-    );
+    // Update icon visibility
+    [muteIcon, lowIcon, midIcon, highIcon].forEach((icon, index) => {
+        icon.style.display = [
+            volume === 0,                // Mute icon
+            volume > 0 && volume < 30,   // Low volume
+            volume >= 30 && volume < 70, // Mid volume
+            volume >= 70                 // High volume
+        ][index] ? "block" : "none";
+    });
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await insertPlayer(".player");   // Wait for the player to be placed
+    await insertPlayer(".player");       // Wait for the player to be placed
 
     toggleLike(".like-btn", "like-check");
 
