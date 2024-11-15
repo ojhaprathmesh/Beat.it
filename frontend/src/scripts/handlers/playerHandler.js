@@ -16,7 +16,12 @@ const updateVolumeUI = (volume, volumeIcons, audioElement, sliderElement) => {
     // Set audio volume
     audioElement.volume = volume / 100;
     sliderElement.value = volume;
-    sliderElement.style.setProperty("--width-v", `${volume}px`);
+    if (volume > 50) {
+        sliderElement.style.setProperty("--width-v", `calc(${volume}px)`);
+    }
+    else {
+        sliderElement.style.setProperty("--width-v", `calc(${volume}px + 5px)`);
+    }
 
     // Update icons based on volume level
     const [muteIcon, lowVolumeIcon, midVolumeIcon, highVolumeIcon] = volumeIcons;
