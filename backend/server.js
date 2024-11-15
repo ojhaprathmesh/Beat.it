@@ -18,8 +18,8 @@ app.use(express.static(publicPath));
 app.use(express.static(sourcePath));
 
 // Serving static assets like uploads and album covers
-app.use("/uploads", express.static(uploadsPath));
-app.use("/album-covers", express.static(albumCoversPath));
+app.use(express.static(uploadsPath));
+app.use(express.static(albumCoversPath));
 
 // Routes for pages
 app.use(express.static(pagePath));
