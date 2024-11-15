@@ -16,12 +16,10 @@ class MusicControl {
         this.songList = [];
         this.currentSongIndex = 0;
         this.loadSongCallCount = 0;
-        this.isPlaying = false;
         this.stateIndex = 0;
         this.isNotRepeating = true;
         this.repeatStates = ['isNotRepeating', 'isSingleRepeat', 'isMultiRepeat'];
 
-        this.togglePlayPause(this.isPlaying);
         this.init();
     }
 
@@ -44,6 +42,7 @@ class MusicControl {
             }
 
             this.bindEvents();
+            this.handlePause();
 
         } catch (error) {
             console.warn("Error fetching song data:", error);
@@ -59,8 +58,7 @@ class MusicControl {
         this.shuffleBtn.addEventListener("click", () => this.handleShuffle(this.songList));
 
         this.seekBar.addEventListener("updatedSeekbar", (event) => {
-            const { value } = event.detail;
-            if (Math.round(value) === 100) {
+            if (Math.round(event.detail) === 100) {
                 this.handleForward();
             }
         });
@@ -73,18 +71,29 @@ class MusicControl {
         });
 
         document.addEventListener("songClicked", (event) => {
-            this.songList.forEach(song => {
-                const id = parseInt(event.detail);
-                if ((this.currentSongIndex != (id - 1)) && (song.id == id)) {
-                    this.loadSong(id - 1);
+            const id = parseInt(event.detail) - 1; // Calculate once
+            const song = this.songList.find(song => song.id === id + 1);
+
+            if (song) {
+                if (this.currentSongIndex === id) {
+                    this.handlePlay();
+                } else {
+                    this.loadSong(id); // Load the new song
+                    this.handlePlay(); // Play it
                 }
-            });
+            }
+        });
+
+        window.addEventListener("beforeunload", function (event) {
+            const message = "You are about to leave Music Paradise.";
+            event.returnValue = message;
+            return message;
         });
     }
 
     loadSong(index) {
         if (index < 0 || index >= this.songList.length) {
-            console.warn("Error: next song not found!");
+            console.warn("Error: song not found!");
             return;
         }
 
@@ -94,11 +103,9 @@ class MusicControl {
         this.audio.load();
         this.updateSongUI(song);
 
-        if (this.loadSongCallCount === 0) {
-            this.pauseSong();
-        } else {
-            this.playSong();
-        }
+        this.loadSongCallCount === 0
+            ? this.handlePause()
+            : this.handlePlay
 
         this.loadSongCallCount++;
     }
@@ -113,18 +120,12 @@ class MusicControl {
         }
 
         if (songArtistElement) {
-            let finalName = '';
+            const finalName = song.artist.length > 1
+                ? song.artist.map(name => name.split(' ')[0]).join(', ').substring(0, 22) + '...'
+                : song.artist[0];
 
-            if (song.artist.length > 1) {
-                finalName = song.artist.map(name => name.split(' ')[0]).join(', ');
-                finalName = finalName.substring(0, 22) + '...';
-            } else {
-                finalName = song.artist[0];
-            }
-
-            songArtistElement.textContent = finalName; // Update the song artist
+            songArtistElement.textContent = finalName;
         }
-
 
         if (songAlbumElement) {
             songAlbumElement.src = song.albumCover;
@@ -141,18 +142,14 @@ class MusicControl {
         }
 
         const progress = (this.audio.currentTime / this.audio.duration) * 100;
-        this.seekBar.value = parseFloat(progress.toFixed(2));
-
         const width = progress < 50 ? `calc(${5 * progress}px + 5px)` : `${5 * progress}px`;
-        this.seekBar.style.setProperty("--width-m", width);
 
-        const color = this.audio.currentTime <= 1 ? "var(--grey)" : "var(--white)";
-        this.seekBar.style.setProperty("--color", color);
+        this.seekBar.value = parseFloat(progress.toFixed(2));
+        this.seekBar.style.setProperty("--width-m", width);
+        this.seekBar.style.setProperty("--color", "var(--white)");
 
         this.seekBar.dispatchEvent(new CustomEvent("updatedSeekbar", {
-            detail: {
-                value: this.seekBar.value
-            }
+            detail: this.seekBar.value
         }));
 
         this.saveState();
@@ -165,78 +162,65 @@ class MusicControl {
         }
     }
 
-    async playSong() {
-        try {
-            if (this.audio.paused) {
-                await this.audio.play();
-            }
-        } catch (error) {
-            console.warn("Autoplay prevented: waiting for user interaction.");
-            // Attach an event to retry play after user clicks anywhere on the page
-            const playAfterInteraction = () => {
-                this.audio.play().catch(error => console.warn("Autoplay still prevented.", error));
-                this.isPlaying = true;
-                this.togglePlayPause(this.isPlaying);
-                document.removeEventListener("click", playAfterInteraction);
-            };
-            document.addEventListener("click", playAfterInteraction);
-        }
-    }
-
-    pauseSong() {
-        if (!this.audio.paused) {
-            this.audio.pause();
-        }
-    }
-
     handlePlay() {
         this.isPlaying = true;
         this.togglePlayPause(this.isPlaying);
-        this.playSong();
+
+        // Attempt to play the song
+        try {
+            if (this.audio.paused) {
+                this.audio.play().catch(() => {
+                    console.warn("Autoplay prevented. Waiting for user interaction.");
+
+                    const playAfterInteraction = () => {
+                        this.audio.play().catch(err => console.warn("Autoplay still prevented.", err));
+                        this.isPlaying = true;
+                        this.togglePlayPause(this.isPlaying);
+                        document.removeEventListener("click", playAfterInteraction);
+                    };
+
+                    document.addEventListener("click", playAfterInteraction);
+                });
+            }
+        } catch (error) {
+            console.error("Error playing song:", error);
+        }
     }
 
     handlePause() {
         this.isPlaying = false;
         this.togglePlayPause(this.isPlaying);
-        this.pauseSong();
+        if (!this.audio.paused) {
+            this.audio.pause();
+        }
     }
 
     handleReverse() {
-        this.isPlaying = true;
-        this.togglePlayPause(this.isPlaying);
-        this.playPrevious();
-    }
-
-    handleForward() {
-        this.isPlaying = this.playNext();
-        this.togglePlayPause(this.isPlaying);
-    }
-
-    playNext() {
-        let nextIndex = this.currentSongIndex + 1;
-        if (this.isSingleRepeat) {
-            nextIndex = this.currentSongIndex;
-        } else if (this.isMultiRepeat) {
-            nextIndex = (this.currentSongIndex + 1) % this.songList.length;
-        }
-        return nextIndex < this.songList.length
-            ? (this.loadSong(nextIndex), true)
-            : (this.endCurrentSong(), false);
-    }
-
-    playPrevious() {
         const previousIndex = this.audio.currentTime < 5
-            ? (this.currentSongIndex - 1 < 0 ? 0 : this.currentSongIndex - 1)
+            ? this.isSingleRepeat || (this.currentSongIndex === 0 && !this.isMultiRepeat)
+                ? this.currentSongIndex
+                : (this.currentSongIndex - 1 + this.songList.length) % this.songList.length
             : this.currentSongIndex;
 
         this.loadSong(previousIndex);
-        this.playSong();
+        this.handlePlay();
     }
 
-    endCurrentSong() {
-        if (!isNaN(this.audio.duration)) {
-            this.audio.currentTime = this.audio.duration;
-            this.pauseSong();
+    handleForward() {
+        let nextIndex = this.isSingleRepeat
+            ? this.currentSongIndex
+            : this.isMultiRepeat
+                ? (this.currentSongIndex + 1) % this.songList.length
+                : this.currentSongIndex + 1;
+
+        if (nextIndex < this.songList.length) {
+            this.loadSong(nextIndex);
+            this.handlePlay();
+        } else {
+            if (!isNaN(this.audio.duration)) {
+                this.audio.currentTime = this.audio.duration;
+                this.handlePause();
+            }
         }
     }
 
@@ -248,14 +232,12 @@ class MusicControl {
 
         // Fisher-Yates (or Knuth) shuffle algorithm
         for (let i = array.length - 1; i > 0; i--) {
-            // Generate a random index between 0 and i
             const j = Math.floor(Math.random() * (i + 1));
 
-            // Swap elements at indices i and j
             [array[i], array[j]] = [array[j], array[i]];
         }
 
-        this.playNext();
+        this.handleForward();
     }
 
     handleRepeat() {
@@ -269,25 +251,21 @@ class MusicControl {
     updateRepeatIcon() {
         const p = this.controls.querySelector("p");
 
-        // Clear any previous animations or intervals
-        if (this.repeatInterval) {
-            clearInterval(this.repeatInterval);
-        }
+        // Clear previous interval and animation
+        clearInterval(this.repeatInterval);
+        this.repeatBtn.style.animation = "";
 
         if (this.isSingleRepeat) {
             p.textContent = "1";
             p.style.display = "block";
-            this.repeatBtn.style.animation = ""; // No animation for single repeat
         } else if (this.isMultiRepeat) {
             p.textContent = "";
             p.style.display = "block";
-
             this.repeatInterval = setInterval(() => {
                 this.repeatBtn.style.animation = this.repeatBtn.style.animation ? "" : "rotateClockwise 500ms linear forwards";
             }, 500);
         } else {
             p.style.display = "none";
-            this.repeatBtn.style.animation = ""; // Clear animation for no repeat
         }
     }
 
