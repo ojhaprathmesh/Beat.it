@@ -18,8 +18,7 @@ const updateVolumeUI = (volume, volumeIcons, audioElement, sliderElement) => {
     sliderElement.value = volume;
     if (volume > 50) {
         sliderElement.style.setProperty("--width-v", `calc(${volume}px)`);
-    }
-    else {
+    } else {
         sliderElement.style.setProperty("--width-v", `calc(${volume}px + 5px)`);
     }
 
