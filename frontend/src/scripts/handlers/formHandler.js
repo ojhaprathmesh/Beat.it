@@ -125,7 +125,7 @@ const handlePasswordValidation = (form) => {
                 errorContainer.textContent = "";
                 strengthIndicator.textContent = "";
 
-                window.location.href = "HomePage.html";
+                window.location.href = "/home";
             } else {
                 errorContainer.textContent = "This email is already associated with another account.";
                 form.appendChild(errorContainer);

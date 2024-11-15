@@ -5,6 +5,7 @@ const fs = require('fs');
 const app = express();
 const port = 3000;
 
+// Paths
 const publicPath = path.join(__dirname, "../frontend/public/");
 const sourcePath = path.join(__dirname, "../frontend/src/");
 const pagePath = path.join(__dirname, "../frontend/src/pages");
@@ -12,11 +13,16 @@ const dataPath = path.join(__dirname, "../database/data/");
 const uploadsPath = path.join(__dirname, "../database/uploads/");
 const albumCoversPath = path.join(__dirname, "../database/album-covers/");
 
+// Serving static files for public assets and source files
 app.use(express.static(publicPath));
 app.use(express.static(sourcePath));
+
+// Serving static assets like uploads and album covers
+app.use("/uploads", express.static(uploadsPath));
+app.use("/album-covers", express.static(albumCoversPath));
+
+// Routes for pages
 app.use(express.static(pagePath));
-app.use(express.static(uploadsPath));
-app.use(express.static(albumCoversPath));
 
 app.get("/", (req, res) => {
     res.sendFile("index.html", { root: publicPath });
@@ -56,6 +62,7 @@ app.get("/api/data/:type", (req, res) => {
     }
 });
 
+// Handle 404
 app.get("*", (req, res) => {
     res.status(404).send(`
         <!DOCTYPE html>
@@ -74,7 +81,8 @@ app.get("*", (req, res) => {
     `);
 });
 
+// Start the server
 app.listen(port, () => {
     console.log("Connected!!!");
-    console.log("Server hosting at http://localhost:3000");
+    console.log(`Server hosting at http://localhost:${port}`);
 });

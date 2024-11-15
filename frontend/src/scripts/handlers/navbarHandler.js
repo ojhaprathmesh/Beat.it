@@ -7,11 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const menu = document.querySelector(".menu");
 
     const handleProfileClick = () => {
-        window.location.assign("ProfilePage.html");
+        window.location.assign("/profile");
     };
 
     const handleLogoutClick = () => {
-        window.location.assign("LoginPage.html");
+        window.location.assign("/login");
     };
 
     // Toggle listeners based on menu state
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     logo.addEventListener("click", () => {
-        window.location.assign("HomePage.html");
+        window.location.assign("/home");
     });
 
     menu.addEventListener("click", (event) => {
