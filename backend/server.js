@@ -62,7 +62,7 @@ app.get("/api/data/:type", (req, res) => {
     }
 });
 
-// Handle 404
+// 404 Page Not Found
 app.get("*", (req, res) => {
     res.status(404).send(`
         <!DOCTYPE html>

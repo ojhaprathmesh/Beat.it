@@ -11,7 +11,7 @@ function renderSongCard(song) {
     `;
 }
 
-function insertSongs(containerSelector, songData) {
+async function insertSongs(containerSelector, songData) {
     const container = document.querySelector(containerSelector);
     if (container) {
         try {
