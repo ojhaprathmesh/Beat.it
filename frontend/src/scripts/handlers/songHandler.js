@@ -13,7 +13,7 @@ function shuffle(list) {
 document.addEventListener("DOMContentLoaded", async () => {
     const songData = await fetchSongData();
     const len = songData.length;
-    
+
     await insertSongs(".song-row-1", shuffle(songData));
     await insertSongs(".song-row-2", shuffle(songData));
 
@@ -21,8 +21,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (index > len - 1) {
             index = index - len;
         }
-        const delay = `calc(${30}s / ${len} * ${len - index} * -1)`;
+
+        const duration = "30s";
+        const delay = `calc(${duration} / ${len} * ${len - index} * -1)`;
         song.style.animationDelay = delay;
+        song.style.setProperty("--duration", duration);
+
         song.addEventListener("click", () => {
             document.dispatchEvent(new CustomEvent("songClicked", {
                 detail: song.id

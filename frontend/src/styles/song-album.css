@@ -55,7 +55,7 @@
     cursor: pointer;
     position: absolute;
     left: 185%;
-    animation: scrollLeft 30s linear infinite;
+    animation: scrollLeft var(--duration) linear infinite;
 }
 
 .song-row-item:hover,
