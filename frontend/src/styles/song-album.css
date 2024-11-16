@@ -35,6 +35,11 @@
     gap: 20px;
 }
 
+.album-row {
+    display: flex;
+    column-gap: 85px;
+}
+
 .song-row-1,
 .song-row-2 {
     display: flex;
@@ -46,16 +51,28 @@
     overflow: hidden;
 }
 
-.song-row-item {
+.song-row-item,
+.album-row-item {
     display: flex;
     align-items: center;
-    column-gap: 6px;
+    cursor: pointer;
+}
+
+.song-row-item {
     width: 220.5px;
     height: 80px;
-    cursor: pointer;
+    column-gap: 6px;
     position: absolute;
     left: 185%;
     animation: scrollLeft var(--duration) linear infinite;
+}
+
+.album-row-item {
+    flex-direction: column;
+    max-width: fit-content;
+    row-gap: 15px;
+    text-align: center;
+    font-size: smaller;
 }
 
 .song-row-item:hover,
@@ -66,6 +83,21 @@
 
 .song-row-item .song-cover {
     border-radius: 5px;
+}
+
+.album-row-item .album-cover {
+    border-radius: 10px;
+}
+
+.song-title,
+.album-title {
+    font-size: 13px;
+    max-width: 139.5px;
+}
+
+.album-title {
+    font-weight: 200;
+    color: var(--primary-text);
 }
 
 .title-artist {
@@ -81,32 +113,6 @@
 
 .title-artist .album-name {
     font-size: 11.5px;
-}
-
-.album-row {
-    display: flex;
-    justify-content: space-between;
-}
-
-.album-row-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: smaller;
-    row-gap: 15px;
-    max-width: fit-content;
-    text-align: center;
-}
-
-.album-title {
-    font-weight: 200;
-    color: var(--primary-text);
-}
-
-.song-title,
-.album-title {
-    font-size: 13px;
-    max-width: 139.5px;
 }
 
 @keyframes scrollLeft {
