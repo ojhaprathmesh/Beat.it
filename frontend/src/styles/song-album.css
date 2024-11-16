@@ -56,6 +56,7 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    transition: transform 0.32s;
 }
 
 .song-row-item {
@@ -78,7 +79,6 @@
 .song-row-item:hover,
 .album-row-item:hover {
     transform: scale(1.05);
-    transition: transform 0.32s;
 }
 
 .song-row-item .song-cover {

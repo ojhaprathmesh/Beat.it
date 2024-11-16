@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     await insertAlbums(".album-row", shuffle(songData));
 
     document.querySelectorAll(".album-row-item").forEach(album => {
-
+        album.addEventListener("click", () => {
+            document.dispatchEvent(new CustomEvent("albumClicked", {
+                detail: album.querySelector("img").alt
+            }));
+        });
     });
 })
