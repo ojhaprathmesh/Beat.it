@@ -65,7 +65,7 @@ const handleProfileDataIO = async (profileData, errorContainer) => {
             currentId = parseInt(existingProfiles[existingProfiles.length - 1].id);
             currentId += 1;
 
-            existingProfiles.forEach(profile => {
+            existingProfiles.forEach((profile) => {
                 if (profile.email === profileData.email) {
                     isDuplicate = true;
                 };

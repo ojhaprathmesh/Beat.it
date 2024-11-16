@@ -12,7 +12,7 @@ async function insertAlbums(containerSelector, songData) {
     if (container) {
         try {
             const albums = [];
-            songData.forEach(song => {
+            songData.forEach((song) => {
                 if (!albums.includes(song.album)) {
                     albums.push(song.album)
                     container.innerHTML += renderAlbumCard(song);

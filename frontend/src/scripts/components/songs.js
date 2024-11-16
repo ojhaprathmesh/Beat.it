@@ -15,7 +15,7 @@ async function insertSongs(containerSelector, songData) {
     const container = document.querySelector(containerSelector);
     if (container) {
         try {
-            songData.forEach(song => {
+            songData.forEach((song) => {
                 container.innerHTML += renderSongCard(song);
             });
         } catch (error) {
