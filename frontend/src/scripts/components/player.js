@@ -1,4 +1,4 @@
-import { fetchSongData } from "../apis/fetchSongData.js";
+import { fetchSongData } from "../utility/fetchSongData.js";
 
 function renderAlbumInfo(song) {
     return `
