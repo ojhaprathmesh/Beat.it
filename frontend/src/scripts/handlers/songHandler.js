@@ -1,14 +1,6 @@
-import { fetchSongData } from "../apis/fetchSongData.js";
+import { fetchSongData } from "../utility/fetchSongData.js";
 import { insertSongs } from "../components/songs.js";
-
-function shuffle(list) {
-    // Fisher-Yates (or Knuth) shuffle algorithm
-    for (let i = list.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [list[i], list[j]] = [list[j], list[i]];
-    }
-    return list;
-}
+import { shuffle } from "../utility/shuffle.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const songData = await fetchSongData();
@@ -17,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await insertSongs(".song-row-1", shuffle(songData));
     await insertSongs(".song-row-2", shuffle(songData));
 
-    document.querySelectorAll(".song-rows > div > div").forEach((song, index) => {
+    document.querySelectorAll(".song-row-item").forEach((song, index) => {
         if (index > len - 1) {
             index = index - len;
         }
