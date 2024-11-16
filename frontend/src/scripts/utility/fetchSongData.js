@@ -11,4 +11,4 @@ async function fetchSongData() {
     }
 }
 
-export { fetchSongData }
+export { fetchSongData };
