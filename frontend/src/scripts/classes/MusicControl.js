@@ -1,4 +1,5 @@
-import { fetchSongData } from "../apis/fetchSongData.js";
+import { fetchSongData } from "../utility/fetchSongData.js";
+import { shuffle } from "../utility/shuffle.js";
 
 class MusicControl {
     constructor(playbackSelector) {
@@ -230,12 +231,7 @@ class MusicControl {
             this.shuffleBtn.style.animation = "";
         }, { once: true });
 
-        // Fisher-Yates (or Knuth) shuffle algorithm
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-
-            [array[i], array[j]] = [array[j], array[i]];
-        }
+        shuffle(array);
 
         this.handleForward();
     }
