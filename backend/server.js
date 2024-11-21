@@ -1,88 +1,70 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-
 const app = express();
 const port = 3000;
 
-// Paths
-const publicPath = path.join(__dirname, "../frontend/public/");
-const sourcePath = path.join(__dirname, "../frontend/src/");
-const pagePath = path.join(__dirname, "../frontend/src/pages");
-const dataPath = path.join(__dirname, "../database/data/");
-const uploadsPath = path.join(__dirname, "../database/uploads/");
-const albumCoversPath = path.join(__dirname, "../database/album-covers/");
+// Paths (centralize the path definitions)
+const paths = {
+    public: path.join(__dirname, "../frontend/public/"),
+    source: path.join(__dirname, "../frontend/src/"),
+    pages: path.join(__dirname, "../frontend/src/pages"),
+    data: path.join(__dirname, "../database/data/"),
+    uploads: path.join(__dirname, "../database/uploads/"),
+    albumCovers: path.join(__dirname, "../database/album-covers/")
+};
 
-// Serving static files for public assets and source files
-app.use(express.static(publicPath));
-app.use(express.static(sourcePath));
+// Middleware: Serving static files
+const serveStaticFiles = () => {
+    app.use(express.static(paths.public));
+    app.use(express.static(paths.source));
+    app.use(express.static(paths.uploads));
+    app.use(express.static(paths.albumCovers));
+    app.use(express.static(paths.pages));
+};
 
-// Serving static assets like uploads and album covers
-app.use(express.static(uploadsPath));
-app.use(express.static(albumCoversPath));
+// Routes
+const setupRoutes = () => {
+    app.get("/", (req, res) => res.sendFile("index.html", { root: paths.public }));
+    app.get("/signin", (req, res) => res.sendFile("SignUpPage.html", { root: paths.pages }));
+    app.get("/login", (req, res) => res.sendFile("LoginPage.html", { root: paths.pages }));
+    app.get("/home", (req, res) => res.sendFile("HomePage.html", { root: paths.pages }));
+    app.get("/profile", (req, res) => res.sendFile("ProfilePage.html", { root: paths.pages }));
 
-// Routes for pages
-app.use(express.static(pagePath));
+    // API Routes with validation
+    app.get("/api/data/:type", (req, res) => {
+        const allowedFiles = ["profileData", "songsData", "albumsData", "artistsData"];
+        const { type } = req.params;
+        if (allowedFiles.includes(type)) {
+            const filePath = path.join(paths.data, `${type}.json`);
+            fs.readFile(filePath, "utf-8", (err, data) => {
+                if (err) return res.status(500).json({ error: "Error reading the file" });
+                res.json(JSON.parse(data));
+            });
+        } else {
+            res.status(404).json({ error: "Invalid data request" });
+        }
+    });
+};
 
-app.get("/", (req, res) => {
-    res.sendFile("index.html", { root: publicPath });
-});
-
-app.get("/signin", (req, res) => {
-    res.sendFile("SignUpPage.html", { root: pagePath });
-});
-
-app.get("/login", (req, res) => {
-    res.sendFile("LoginPage.html", { root: pagePath });
-});
-
-app.get("/home", (req, res) => {
-    res.sendFile("HomePage.html", { root: pagePath });
-});
-
-app.get("/profile", (req, res) => {
-    res.sendFile("ProfilePage.html", { root: pagePath });
-});
-
-// Secure API endpoints for database access
-app.get("/api/data/:type", (req, res) => {
-    const type = req.params.type;
-    const allowedFiles = ["profileData", "songsData", "albumsData", "artistsData"]; // Only allow these files
-
-    if (allowedFiles.includes(type)) {
-        const filePath = path.join(dataPath, `${type}.json`);
-        fs.readFile(filePath, "utf-8", (err, data) => {
-            if (err) {
-                return res.status(500).json({ error: "Error reading the file" });
-            }
-            res.json(JSON.parse(data));
-        });
-    } else {
-        res.status(404).json({ error: "Invalid data request" });
-    }
-});
-
-// 404 Page Not Found
-app.get("*", (req, res) => {
-    res.status(404).send(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>404 - Page Not Found</title>
-        </head>
-        <body>
+// 404 Error handling
+const handle404 = () => {
+    app.use((req, res) => {
+        res.status(404).send(`
             <h1>404 - Page Not Found</h1>
             <p>The page you're looking for doesn't exist.</p>
-            <a href="/">Go back to homepage</a>
-        </body>
-        </html>
-    `);
-});
+            <a href="/">Go back to homepage</a>`);
+    });
+};
 
-// Start the server
-app.listen(port, () => {
-    console.log("Connected!!!");
-    console.log(`Server hosting at http://localhost:${port}`);
-});
+// Setting up the server and starting it
+const startServer = () => {
+    serveStaticFiles();
+    setupRoutes();
+    handle404();
+    app.listen(port, () => {
+        console.log("Server hosting at http://localhost:" + port);
+    });
+};
+
+startServer();
