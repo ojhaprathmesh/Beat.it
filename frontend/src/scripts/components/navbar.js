@@ -8,7 +8,7 @@ function renderLogo() {
 
 function renderSearchBar() {
     return `
-        <form class="searchbar" action="SearchPage.html">
+        <form class="searchbar" action="/search">
             <img id="search-icon" src="../assets/home/Search.webp" alt="Search Icon" width="32px" height="32px">
             <hr id="line-separator">
             <input class="font-inter" id="search-input" type="text" placeholder="Search by artists, songs or albums" style="font-weight: 100;">

@@ -23,21 +23,28 @@ const serveStaticFiles = () => {
     app.use(express.static(paths.pages));
 };
 
-// Routes
+// Routes setup
 const setupRoutes = () => {
-    app.get("/", (req, res) => res.sendFile("index.html", { root: paths.public }));
-    app.get("/signin", (req, res) => res.sendFile("SignUpPage.html", { root: paths.pages }));
-    app.get("/login", (req, res) => res.sendFile("LoginPage.html", { root: paths.pages }));
-    app.get("/home", (req, res) => res.sendFile("HomePage.html", { root: paths.pages }));
-    app.get("/profile", (req, res) => res.sendFile("ProfilePage.html", { root: paths.pages }));
+    const pages = {
+        "/": "index.html",
+        "/signin": "SignupPage.html",
+        "/login": "LoginPage.html",
+        "/home": "HomePage.html",
+        "/profile": "ProfilePage.html",
+        "/search" : "SearchPage.html"
+    };
 
-    // API Routes with validation
+    // Serve static pages
+    Object.entries(pages).forEach(([route, file]) => {
+        app.get(route, (req, res) => res.sendFile(file, { root: paths.pages }));
+    });
+
+    // API Routes
     app.get("/api/data/:type", (req, res) => {
-        const allowedFiles = ["profileData", "songsData", "albumsData", "artistsData"];
         const { type } = req.params;
+        const allowedFiles = ["profileData", "songsData", "albumsData", "artistsData"];
         if (allowedFiles.includes(type)) {
-            const filePath = path.join(paths.data, `${type}.json`);
-            fs.readFile(filePath, "utf-8", (err, data) => {
+            fs.readFile(path.join(paths.data, `${type}.json`), "utf-8", (err, data) => {
                 if (err) return res.status(500).json({ error: "Error reading the file" });
                 res.json(JSON.parse(data));
             });
