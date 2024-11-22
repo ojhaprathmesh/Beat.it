@@ -15,7 +15,7 @@
     background-color: var(--main-body-bg);
     width: 90%;
     max-width: 90%;
-    max-height: 305px;
+    height: 290px;
     border-radius: 50px;
     padding: 30px 25px;
     font-size: 18px;
@@ -27,6 +27,7 @@
     color: var(--primary-text);
     font-weight: 500;
     cursor: pointer;
+    font-size: 27px;
 }
 
 .song-rows {
@@ -44,7 +45,7 @@
 .song-row-2 {
     display: flex;
     row-gap: 20px;
-    width: 1295px;
+    width: 100%;
     height: 80px;
     margin-inline: auto;
     position: relative;
@@ -91,7 +92,7 @@
 
 .song-title,
 .album-title {
-    font-size: 13px;
+    font-size: 12.4px;
     max-width: 139.5px;
 }
 
