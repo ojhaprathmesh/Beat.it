@@ -3,7 +3,9 @@ import { insertAlbums } from "../components/album.js";
 import { shuffle } from "../utility/shuffle.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-    if (["/home", "/search"].includes(window.location.pathname)) {
+    const pathname = window.location.pathname;
+
+    if (["/home", "/search"].includes(pathname)) {
         const songData = await fetchSongData();
         const shuffledSongs = shuffle(songData);
 
@@ -11,15 +13,42 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         document.querySelectorAll(".album-row-item").forEach(album => {
             album.addEventListener("click", async () => {
-                const albumName = album.querySelector("img").alt;
-                const songsToPlay = shuffledSongs.filter(song => song.album === albumName);
+                try {
+                    const albumName = album.querySelector("img").alt;
+                    const songsToPlay = shuffledSongs.filter(song => song.album === albumName);
+
+                    const response = await fetch("http://localhost:3000/album/get-songs", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ songsToPlay }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Failed to send album data to server.");
+                    }
+
+                    // Navigate to the album page after successfully sending the data
+                    window.location.href = "/album";
+                } catch (error) {
+                    console.error(`Error: ${error}`);
+                }
             });
         });
 
-        if (window.location.pathname === "/search") {
-            document.querySelectorAll(".song-row-item").forEach((item) => { 
+        if (pathname === "/search") {
+            document.querySelectorAll(".song-row-item").forEach(item => {
                 item.style.left = "250%";
-            })
+            });
+        }
+    } else if (pathname === "/album") {
+        try {
+            const response = await fetch("http://localhost:3000/album/send-songs", {
+                method: "POST"
+            });
+            const albumData = await response.json();
+            
+        } catch (error) {
+            console.error("Error:", error)
         }
     }
 });

@@ -85,11 +85,11 @@ class MusicControl {
             }
         });
 
-        window.addEventListener("beforeunload", function (event) {
-            const message = "You are about to leave Music Paradise.";
-            event.returnValue = message;
-            return message;
-        });
+        // window.addEventListener("beforeunload", function (event) {
+        //     const message = "You are about to leave Music Paradise.";
+        //     event.returnValue = message;
+        //     return message;
+        // });
     }
 
     loadSong(index) {
