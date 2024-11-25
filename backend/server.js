@@ -16,7 +16,7 @@ const paths = {
     albumCovers: path.join(__dirname, "../database/album-covers/")
 };
 
-// Middleware
+// Middlewares
 app.use(express.static(paths.public));
 app.use(express.static(paths.source));
 app.use(express.static(paths.uploads));
@@ -76,4 +76,6 @@ app.use((req, res) => {
 });
 
 // Start Server
-app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`)
+});
