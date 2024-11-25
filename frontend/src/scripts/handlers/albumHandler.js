@@ -54,6 +54,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 songNames[i].innerText = albumData[i].title;
             }
 
+            const coverImage = document.querySelector(".album-details img");
+            coverImage.src = albumData[0].albumCover;
+
         } catch (error) {
             console.error("Error:", error)
         }
