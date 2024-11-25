@@ -2,13 +2,15 @@ import { insertPlayer } from "../components/player.js";
 import { MusicControl } from "../classes/MusicControl.js";
 
 const toggleLike = (likeBtnSelector, checkboxSelector) => {
-    const likeBtn = document.querySelector(likeBtnSelector);
-    const checkbox = document.getElementById(checkboxSelector);
+    const likeBtns = document.querySelectorAll(likeBtnSelector);
 
-    likeBtn.addEventListener("click", () => {
-        const isLiked = !checkbox.checked;
-        checkbox.checked = isLiked;
-        likeBtn.classList.toggle("liked", isLiked);
+    likeBtns.forEach((likeBtn) => {
+        likeBtn.addEventListener("click", () => {
+            const checkbox = likeBtn.querySelector(checkboxSelector)
+            const isLiked = !checkbox.checked;
+            checkbox.checked = isLiked;
+            likeBtn.classList.toggle("liked", isLiked);
+        });
     });
 };
 
@@ -32,7 +34,7 @@ const updateVolumeUI = (volume, [muteIcon, lowIcon, midIcon, highIcon], audioEle
 document.addEventListener("DOMContentLoaded", async () => {
     await insertPlayer(".player");       // Wait for the player to be placed
 
-    toggleLike(".like-btn", "like-check");
+    toggleLike(".like-btn", ".like-check");
 
     const musicControl = new MusicControl(".playbar");
     const volumeSlider = document.getElementById("seekVolume");
@@ -46,6 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     volumeIcons.forEach(icon => {
         icon.style.width = "20px";
+        icon.style.cursor = "pointer";
 
         if (icon.id === "volume-two") {
             icon.style.position = "relative";

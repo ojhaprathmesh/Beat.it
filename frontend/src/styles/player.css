@@ -20,7 +20,7 @@
     align-items: center;
 }
 
-.player-albuminfo .like-btn {
+.like-btn {
     cursor: pointer;
     width: fit-content;
     height: 100%;
@@ -28,26 +28,35 @@
     justify-content: center;
     align-items: center;
     margin: 0 10px;
+    transition: transform 0.2s ease-in-out;
 }
 
-.player-albuminfo .like-btn .fa-heart {
+.like-btn:hover {
+    transform: scale(1.1);
+}
+
+.like-btn .fa-heart {
     color: var(--white);
     font-weight: 100;
     transition: color 0.2s ease-in, font-weight 0.15s ease-in;
 }
 
-.player-albuminfo .like-btn input[type="checkbox"]:checked+.fa-heart {
+.like-btn.liked .fa-heart {
     color: red;
     font-weight: 900;
 }
 
-.player-albuminfo .player-songcover {
+input[type="checkbox"] {
+    display: none;
+}
+
+.player-songcover {
     margin: 12px 12px 12px 20px;
     width: 75px;
     height: 75px;
 }
 
-.player-albuminfo .player-songdetails {
+.player-songdetails {
     display: flex;
     flex-direction: column;
     text-align: left;
@@ -65,7 +74,7 @@
     row-gap: 20px;
 }
 
-.playbar .music-progress-bar {
+.music-progress-bar {
     display: flex;
     width: 500px;
     height: 10px;
@@ -74,7 +83,7 @@
     align-items: center;
 }
 
-.playbar .controls {
+.controls {
     display: flex;
     font-size: 25px;
     cursor: default;
@@ -83,11 +92,11 @@
     color: var(--white);
 }
 
-.playbar .controls i {
+.controls i {
     cursor: pointer;
 }
 
-.playbar .controls .shuffle {
+.controls .shuffle {
     transition: color 0.5s ease;
     color: var(--white);
     animation-duration: 0.5s;
@@ -101,7 +110,7 @@
     color: var(--white);
 }
 
-.other-controls .burger-menu {
+.burger-menu {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -109,7 +118,7 @@
     height: 100%;
 }
 
-.other-controls .volume {
+.volume {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -117,39 +126,13 @@
     gap: 10px;
 }
 
-.other-controls .volume-control-bar {
+.volume-control-bar {
     display: flex;
     width: 100px;
     height: 10px;
     border-radius: 5px;
     background-color: var(--grey);
     align-items: center;
-}
-
-.volume-control-bar .volume-progress {
-    width: 80%;
-    height: 10px;
-    max-width: 100%;
-    border-radius: 5px;
-    background-color: var(--white);
-}
-
-.circle {
-    position: absolute;
-    top: 50%;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background-color: var(--white);
-    cursor: grab;
-    opacity: 0;
-    transform: scale(0);
-    transition: opacity 500ms ease, transform 500ms ease;
-}
-
-.circle.show {
-    opacity: 1;
-    transform: scale(1);
 }
 
 #seekMusic {
