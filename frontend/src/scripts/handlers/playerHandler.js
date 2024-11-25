@@ -5,20 +5,31 @@ const toggleLike = (likeBtnSelector, checkboxSelector) => {
     const likeBtns = document.querySelectorAll(likeBtnSelector);
 
     likeBtns.forEach((likeBtn) => {
+        document.querySelector(".player-albuminfo .fa-heart").style.color = "#FEFFF1";
+
         likeBtn.addEventListener("click", () => {
-            const checkbox = likeBtn.querySelector(checkboxSelector)
+            const checkbox = likeBtn.querySelector(checkboxSelector);
             const isLiked = !checkbox.checked;
             checkbox.checked = isLiked;
             likeBtn.classList.toggle("liked", isLiked);
+
+            const parent = likeBtn.closest(".player-albuminfo");
+            if (parent) {
+                const heartIcon = likeBtn.querySelector(".fa-heart");
+                if (heartIcon) {
+                    heartIcon.style.color = isLiked ? "red" : "#FEFFF1";
+                }
+            }
         });
     });
 };
+
 
 const updateVolumeUI = (volume, [muteIcon, lowIcon, midIcon, highIcon], audioElement, sliderElement) => {
     // Set audio volume and update slider
     audioElement.volume = volume / 100;
     sliderElement.value = volume;
-    sliderElement.style.setProperty("--width-v", `calc(${volume}px ${volume > 50 ? '' : '+ 5px'})`);
+    sliderElement.style.setProperty("--width-v", `calc(${volume}px ${volume > 50 ? '' : "+ 5px"})`);
 
     // Update icon visibility
     [muteIcon, lowIcon, midIcon, highIcon].forEach((icon, index) => {

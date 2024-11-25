@@ -12,12 +12,11 @@ function renderAlbumInfo(song) {
                 <div class="player-artistname">${song.artist}</div>
             </div>
 
-            <div class="like-btn" id="like-btn">
+            <div class="like-btn">
                 <i class="fas fa-heart" style="font-size: larger;">
                     <input type="checkbox" class="like-check" />
                 </i>
             </div>
-
         </div>
     `;
 }
