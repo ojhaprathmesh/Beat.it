@@ -45,8 +45,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             const response = await fetch("http://localhost:3000/album/send-songs", {
                 method: "POST"
             });
-            const albumData = await response.json();
-            
+            const data = await response.json();
+            const albumData = data.songs;
+
+            const songNames = document.querySelectorAll(".album-song-item .song-name");
+
+            for (let i = 0; i < songNames.length; i++) {
+                songNames[i].innerText = albumData[i].title;
+            }
+
         } catch (error) {
             console.error("Error:", error)
         }
