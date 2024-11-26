@@ -130,7 +130,8 @@
     {
         "id": 11,
         "title": "I'm Your DJ Tonight",
-        "artist": ["Yo Yo Honey Singh"
+        "artist": [
+            "Yo Yo Honey Singh"
         ],
         "album": "Desi Kalakaar",
         "genre": "Bollywood",
@@ -140,7 +141,8 @@
     {
         "id": 12,
         "title": "Love Dose",
-        "artist": ["Yo Yo Honey Singh"
+        "artist": [
+            "Yo Yo Honey Singh"
         ],
         "album": "Desi Kalakaar",
         "genre": "Bollywood",
