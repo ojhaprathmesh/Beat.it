@@ -48,9 +48,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             const albumData = data.songs;
 
             const songNames = document.querySelectorAll(".album-song-item .song-name");
+            const songDurations = document.querySelectorAll(".album-song-item .song-duration");
 
             for (let i = 0; i < songNames.length; i++) {
                 songNames[i].innerText = albumData[i].title;
+                songDurations[i].innerText = albumData[i].duration;
             }
 
             const coverImage = document.querySelector(".album-details img");
@@ -61,6 +63,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const albumName = document.querySelector(".album-details .album-name");
             albumName.innerText = albumData[0].album;
+
 
         } catch (error) {
             console.error("Error:", error)
