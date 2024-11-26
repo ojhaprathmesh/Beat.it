@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                         throw new Error("Failed to send album data to server.");
                     }
 
-                    // Navigate to the album page after successfully sending the data
                     window.location.href = "/album";
                 } catch (error) {
                     console.error(`Error: ${error}`);
@@ -56,6 +55,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const coverImage = document.querySelector(".album-details img");
             coverImage.src = albumData[0].albumCover;
+
+            const currentSong = document.querySelector(".album-details .current-song");
+            currentSong.innerText = albumData[0].title;
+
+            const albumName = document.querySelector(".album-details .album-name");
+            albumName.innerText = albumData[0].album;
 
         } catch (error) {
             console.error("Error:", error)
