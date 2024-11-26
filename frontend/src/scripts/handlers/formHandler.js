@@ -31,6 +31,14 @@ const handleFormSubmission = (form) => {
 
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
+
+        // Check password strength before validating passwords match
+        if (!checkPasswordStrength(passCreate)) {
+            errorContainer.textContent = "Password is too weak. Please choose a stronger password.";
+            form.appendChild(errorContainer);
+            return; // Prevent form submission
+        }
+
         if (validatePasswordMatch(passCreate, passRepeat, errorContainer)) {
             const profileData = {
                 firstName: firstNameInput.value,
@@ -44,28 +52,18 @@ const handleFormSubmission = (form) => {
                 window.location.href = "/home";
             }
         }
-        form.appendChild(errorContainer);  // Append error container once
+        form.appendChild(errorContainer); // Append error container once
     });
 
     // Checking password strength and matching password continuously
     const handlePasswordInput = () => {
         checkPasswordStrength(passCreate);
         validatePasswordMatch(passCreate, passRepeat, errorContainer);
-        form.appendChild(errorContainer);  // Append error container once per input event
+        form.appendChild(errorContainer); // Append error container once per input event
     };
 
     passCreate.addEventListener("input", handlePasswordInput);
     passRepeat.addEventListener("input", handlePasswordInput);
-};
-
-// Validate if passwords match
-const validatePasswordMatch = (passCreate, passRepeat, errorContainer) => {
-    if (passCreate.value !== passRepeat.value) {
-        errorContainer.textContent = "Passwords do not match.";
-        return false;
-    }
-    errorContainer.textContent = "";  // Clear error if match
-    return true;
 };
 
 // Save profile data to local storage
@@ -91,17 +89,26 @@ const handleProfileDataIO = async (profileData, errorContainer) => {
 // Check password strength
 const checkPasswordStrength = (passwordElement) => {
     const password = passwordElement.value;
-    let strength = "Weak", color = "red";
 
-    if (password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password) && /[^A-Za-z0-9]/.test(password)) {
-        strength = "Strong"; color = "green";
-    } else if (password.length >= 6) {
-        strength = "Moderate"; color = "orange";
-    }
+    const isStrong = /^[A-Za-z\d[^A-Za-z0-9]]{8,}$/.test(password);
+    const strength = isStrong ? "Strong" : (password.length >= 6 ? "Moderate" : "Weak");
+    const color = isStrong ? "green" : password.length >= 6 ? "orange" : "red";
 
     strengthIndicator.textContent = password ? `Password strength: ${strength}` : "";
     strengthIndicator.style.color = color;
     passwordElement.parentElement.appendChild(strengthIndicator);
+
+    return strength !== "Weak";
+};
+
+// Validate if passwords match
+const validatePasswordMatch = (passCreate, passRepeat, errorContainer) => {
+    if (passCreate.value !== passRepeat.value) {
+        errorContainer.textContent = "Passwords do not match.";
+        return false;
+    }
+    errorContainer.textContent = "";  // Clear error if match
+    return true;
 };
 
 // Validate input characters
