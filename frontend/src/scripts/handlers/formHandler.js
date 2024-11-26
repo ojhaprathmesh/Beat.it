@@ -48,16 +48,6 @@ const checkPasswordStrength = (passwordElement) => {
 
 const handleProfileDataIO = async (profileData, errorContainer) => {
     try {
-        /*
-        // This is to simulate API calls in later stages
-        const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(profileData),
-        });
-        const result = await response.json();
-        */
-
         let isDuplicate, currentId;
         const existingProfiles = JSON.parse(localStorage.getItem("profiles")) || [];
 
@@ -94,11 +84,11 @@ const handleProfileDataIO = async (profileData, errorContainer) => {
 
 // Main form handler that validates password and submits data
 const handlePasswordValidation = (form) => {
-    const passCreate = form.querySelector("#password-label");
-    const passRepeat = form.querySelector("#repeat-password-label");
     const firstNameInput = form.querySelector("#first-name-label");
     const lastNameInput = form.querySelector("#last-name-label");
     const emailInput = form.querySelector("#email-label");
+    const passCreate = form.querySelector("#password-label");
+    const passRepeat = form.querySelector("#confirm-password-label");
 
     const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
     errorContainer.className = "error-messages";

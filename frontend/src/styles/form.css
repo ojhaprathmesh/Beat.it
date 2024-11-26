@@ -36,7 +36,7 @@
 
 /* Email and password input spanning both columns */
 .email,
-.repeat-password,
+.confirm-password,
 .password,
 .form-btn {
     grid-column: 1 / 3;
@@ -111,8 +111,8 @@
 }
 
 /* Repeat Password label width */
-.repeat-password label {
-    width: calc(136.7875px + 15px);
+.confirm-password label {
+    width: calc(144.25px + 15px);
 }
 
 /* Form button styling */
