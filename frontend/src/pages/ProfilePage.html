@@ -11,6 +11,15 @@
     <!-- External stylesheet -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <link rel="stylesheet" href="../styles/font.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../styles/logo.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../styles/colors.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../styles/navbar.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../styles/player.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../styles/profile.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../styles/background.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../styles/song-album.css" media="print" onload="this.media='all'">
+
     <style>
         * {
             margin: 0;
@@ -77,15 +86,6 @@
             font-size: 1.2rem;
         }
     </style>
-
-    <link rel="stylesheet" href="../styles/font.css">
-    <link rel="stylesheet" href="../styles/logo.css">
-    <link rel="stylesheet" href="../styles/colors.css">
-    <link rel="stylesheet" href="../styles/navbar.css">
-    <link rel="stylesheet" href="../styles/player.css">
-    <link rel="stylesheet" href="../styles/profile.css">
-    <link rel="stylesheet" href="../styles/background.css">
-
 </head>
 
 <body>
@@ -109,8 +109,11 @@
 
     <footer class="player"></footer>
 
-    <script type="module" src="../scripts/handlers/playerHandler.js"></script>
-    <script defer>
+    <script src="../scripts/utility/loading.js"></script>
+
+    <script type="module" src="../scripts/handlers/playerHandler.js" defer></script>
+
+    <script>
         const logo = document.getElementById("logo");
         logo.addEventListener("click", () => {
             window.location.assign("/home");
@@ -121,6 +124,7 @@
             window.location.assign("/login")
         });
     </script>
+
 </body>
 
 </html>

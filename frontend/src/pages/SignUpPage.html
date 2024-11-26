@@ -8,6 +8,10 @@
         content="Join the music revolution with Beat.it! Sign up now to enjoy an amazing experience.">
     <title>Beat.it</title>
 
+    <link rel="stylesheet" href="../styles/font.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../styles/form.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../styles/colors.css" media="print" onload="this.media='all'">
+
     <style>
         * {
             padding: 0;
@@ -83,13 +87,11 @@
             column-gap: 100px;
         }
 
-        /* Rotate and style Beat.it text */
         #beatit-text {
             transform: rotate(-90deg);
             white-space: nowrap;
         }
 
-        /* Adjust font size of Beat.it text */
         #beatit-text pre {
             font-size: 40px;
         }
@@ -99,10 +101,6 @@
             bottom: 350px;
         }
     </style>
-
-    <link rel="stylesheet" href="../styles/font.css">
-    <link rel="stylesheet" href="../styles/form.css">
-    <link rel="stylesheet" href="../styles/colors.css">
 </head>
 
 <body>
@@ -146,8 +144,7 @@
                     </div>
 
                     <div class="input-container email">
-                        <input type="email" class="box" id="email-label" name="email" required
-                            autocomplete="username">
+                        <input type="email" class="box" id="email-label" name="email" required autocomplete="username">
                         <label for="email-label">Email</label>
                     </div>
 
@@ -175,7 +172,8 @@
             </form>
         </section>
     </main>
-    <script defer>
+
+    <script>
         document.addEventListener("DOMContentLoaded", () => {
             const redirect = document.querySelector(".redirect p:nth-child(2)");
             redirect.addEventListener("click", () => {

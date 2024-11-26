@@ -8,6 +8,10 @@
         content="Join the music revolution with Beat.it! Login now to enjoy an amazing experience.">
     <title>Beat.it</title>
 
+    <link rel="stylesheet" href="../styles/font.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../styles/form.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="../styles/colors.css" media="print" onload="this.media='all'">
+
     <style>
         * {
             padding: 0;
@@ -59,10 +63,6 @@
             justify-content: space-between;
         }
     </style>
-
-    <link rel="stylesheet" href="../styles/font.css">
-    <link rel="stylesheet" href="../styles/form.css">
-    <link rel="stylesheet" href="../styles/colors.css">
 </head>
 
 <body>
@@ -104,6 +104,9 @@
             </form>
         </section>
     </main>
+
+    <script src="../scripts/utility/loading.js"></script>
+    
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
