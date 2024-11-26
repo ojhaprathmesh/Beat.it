@@ -231,9 +231,13 @@ class MusicControl {
             this.shuffleBtn.style.animation = "";
         }, { once: true });
 
-        shuffle(array);
+        const currentSong = array[this.currentSongIndex];
+        const remainingSongs = array.filter((_, index) => index !== this.currentSongIndex);
 
-        this.handleForward();
+        shuffle(remainingSongs);
+
+        const shuffledArray = [currentSong, ...remainingSongs];
+        this.songList = shuffledArray;
     }
 
     handleRepeat() {
