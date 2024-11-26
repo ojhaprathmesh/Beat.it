@@ -100,7 +100,7 @@ class MusicControl {
 
         this.currentSongIndex = index;
         const song = this.songList[index];
-        this.audioSource.src = `../../../database/` + song.file;
+        this.audioSource.src = song.file;
         this.audio.load();
         this.updateSongUI(song);
 
