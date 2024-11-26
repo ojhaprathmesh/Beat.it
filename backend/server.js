@@ -44,20 +44,7 @@ const setupPageRoutes = () => {
 };
 
 // API Routes
-const setupApiRoutes = () => {
-    app.post("/album/get-songs", (req, res) => {
-        const { songsToPlay } = req.body;
-        if (!Array.isArray(songsToPlay)) {
-            return res.status(400).json({ error: "Invalid or missing data." });
-        }
-        albumSongs = songsToPlay;
-        res.json({ message: `Received ${songsToPlay.length} songs.` });
-    });
-
-    app.post("/album/send-songs", (req, res) => {
-        res.json({ songs: albumSongs });
-    });
-
+const setupAPIRoutes = () => {
     app.get("/api/data/:type", (req, res) => {
         const { type } = req.params;
         const allowedFiles = ["profileData", "songsData", "albumsData", "artistsData"];
@@ -69,6 +56,22 @@ const setupApiRoutes = () => {
             if (err) return res.status(500).json({ error: "Error reading the file." });
             res.json(JSON.parse(data));
         });
+    });
+
+    app.post("/album/get-songs", (req, res) => {
+        const { songsToPlay } = req.body;
+        if (!Array.isArray(songsToPlay)) {
+            return res.status(400).json({ error: "Invalid or missing data." });
+        }
+
+        // Sort songs by ID in ascending order
+        albumSongs = songsToPlay.sort((a, b) => a.id - b.id);
+
+        res.json({ message: `Received ${songsToPlay.length} songs.` });
+    });
+
+    app.post("/album/send-songs", (req, res) => {
+        res.json({ songs: albumSongs });
     });
 };
 
@@ -87,7 +90,7 @@ const handle404 = () => {
 const startServer = () => {
     serveStaticFiles();   // Serve static files
     setupPageRoutes();    // Setup static page routes
-    setupApiRoutes();     // Setup API routes
+    setupAPIRoutes();     // Setup API routes
     handle404();          // Handle 404 for undefined routes
     app.listen(port, () => {
         console.log("Server hosting at http://localhost:" + port);
