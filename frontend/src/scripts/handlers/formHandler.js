@@ -1,104 +1,82 @@
-const strengthIndicator = document.getElementById("strength-indicator") || document.createElement("p");
-strengthIndicator.id = "strength-indicator";
+const strengthIndicator = document.getElementById("strength-indicator") || (() => {
+    const indicator = document.createElement("p");
+    indicator.id = "strength-indicator";
+    return indicator;
+})();
 
-// Restricts input for name fields to alphabets only
+// Restrict name inputs to alphabets only
 const handleNameInputRestriction = (nameInputs) => {
-    const restrictInputToAlphabets = (event) => {
-
-        // Allowing control keys like Backspace, Delete, and Arrow keys
-        const isControlKey = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"].includes(event.key);
-
-        if (!/^[a-zA-Z]$/.test(event.key) && !isControlKey && validateCharacters(event.key)) {
-            event.preventDefault();
-        }
-    };
-
-    nameInputs.forEach((nameInput) => {
-        nameInput.addEventListener("keydown", restrictInputToAlphabets);
+    nameInputs.forEach((input) => {
+        input.addEventListener("keydown", (event) => {
+            const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"];
+            if (!/^[a-zA-Z]$/.test(event.key) && !allowedKeys.includes(event.key)) {
+                event.preventDefault();
+            }
+        });
     });
 };
 
+// Validate if passwords match
 const validatePasswordMatch = (passCreate, passRepeat, errorContainer) => {
     if (passCreate.value !== passRepeat.value) {
-        errorContainer.textContent = "Passwords do not match. Please re-enter your password.";
+        errorContainer.textContent = "Passwords do not match.";
         return false;
     }
+    errorContainer.textContent = ""; // Clear error if match
     return true;
 };
 
+// Check password strength
 const checkPasswordStrength = (passwordElement) => {
-    const passwordValue = passwordElement.value;
+    const password = passwordElement.value;
+    let strength = "Weak", color = "red";
 
-    // Sets strength level with respective color feedback
-    let strengthMessage = passwordValue.length >= 8 && /[A-Z]/.test(passwordValue) && /[0-9]/.test(passwordValue) && /[^A-Za-z0-9]/.test(passwordValue)
-        ? (strengthIndicator.style.color = "green", "Strong")
-        : passwordValue.length >= 6
-            ? (strengthIndicator.style.color = "orange", "Moderate")
-            : (strengthIndicator.style.color = "red", "Weak");
-
-    strengthIndicator.textContent = `Password strength: ${strengthMessage}`;
-
-    const isEmpty = passwordElement.validity.valueMissing;
-    if (isEmpty) {
-        strengthIndicator.textContent = "";
+    if (password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password) && /[^A-Za-z0-9]/.test(password)) {
+        strength = "Strong"; color = "green";
+    } else if (password.length >= 6) {
+        strength = "Moderate"; color = "orange";
     }
 
+    strengthIndicator.textContent = password ? `Password strength: ${strength}` : "";
+    strengthIndicator.style.color = color;
     passwordElement.parentElement.appendChild(strengthIndicator);
 };
 
+// Save profile data to local storage
 const handleProfileDataIO = async (profileData, errorContainer) => {
     try {
-        let isDuplicate, currentId;
-        const existingProfiles = JSON.parse(localStorage.getItem("profiles")) || [];
-
-        if (existingProfiles.length != 0) {
-            currentId = parseInt(existingProfiles[existingProfiles.length - 1].id);
-            currentId += 1;
-
-            existingProfiles.forEach((profile) => {
-                if (profile.email === profileData.email) {
-                    isDuplicate = true;
-                };
-            });
-        } else {
-            currentId = 1;
-            isDuplicate = false;
+        const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
+        if (profiles.some((profile) => profile.email === profileData.email)) {
+            throw new Error("Duplicate email");
         }
 
-        profileData.id = currentId;
-
-        if (!isDuplicate) {
-            existingProfiles.push(profileData);
-            localStorage.setItem("profiles", JSON.stringify(existingProfiles));
-
-            return true;
-        } else {
-            return false;
-        }
+        profileData.id = profiles.length ? profiles[profiles.length - 1].id + 1 : 1;
+        profiles.push(profileData);
+        localStorage.setItem("profiles", JSON.stringify(profiles));
+        return true;
     } catch (error) {
-        console.error("Error saving profile:", error);
-        errorContainer.textContent = "Failed to save profile. Please try again.";
+        errorContainer.textContent = error.message === "Duplicate email"
+            ? "This email is already associated with another account."
+            : "Failed to save profile. Please try again.";
         return false;
     }
 };
 
-// Main form handler that validates password and submits data
+// Form submission handler
 const handlePasswordValidation = (form) => {
-    const firstNameInput = form.querySelector("#first-name-label");
-    const lastNameInput = form.querySelector("#last-name-label");
-    const emailInput = form.querySelector("#email-label");
-    const passCreate = form.querySelector("#password-label");
-    const passRepeat = form.querySelector("#confirm-password-label");
+    const [firstNameInput, lastNameInput, emailInput, passCreate, passRepeat] = [
+        "#first-name-label", "#last-name-label", "#email-label", "#password-label", "#confirm-password-label"
+    ].map((id) => form.querySelector(id));
 
-    const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
-    errorContainer.className = "error-messages";
+    const errorContainer = document.querySelector(".error-messages") || (() => {
+        const error = document.createElement("p");
+        error.className = "error-messages";
+        return error;
+    })();
     errorContainer.style.bottom = "165px";
 
-    // Form submission event handler
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
-
-        // Validates password match before proceeding with data handling
         if (validatePasswordMatch(passCreate, passRepeat, errorContainer)) {
             const profileData = {
                 firstName: firstNameInput.value,
@@ -106,50 +84,32 @@ const handlePasswordValidation = (form) => {
                 email: emailInput.value,
                 password: passCreate.value,
             };
-
-            const isSaved = await handleProfileDataIO(profileData, errorContainer);
-
-            // Resets form and redirects if data was saved successfully
-            if (isSaved) {
+            if (await handleProfileDataIO(profileData, errorContainer)) {
                 form.reset();
-                errorContainer.textContent = "";
                 strengthIndicator.textContent = "";
-
                 window.location.href = "/home";
-            } else {
-                errorContainer.textContent = "This email is already associated with another account.";
-                form.appendChild(errorContainer);
             }
-        } else {
-            form.appendChild(errorContainer); // Displays error if password validation fails
         }
+        form.appendChild(errorContainer);
     });
 
-    // Updates password strength as user types and checks for invalid characters
     passCreate.addEventListener("input", () => {
         checkPasswordStrength(passCreate);
-
-        if (validateCharacters(passCreate.value)) {
-            errorContainer.textContent = "";
-        } else {
-            errorContainer.textContent = passCreate.value != 0
-                ? "Password contains invalid characters. Please remove them."
-                : "No characters found. Please enter a password.";
-
-            form.appendChild(errorContainer);
-        }
+        errorContainer.textContent = validateCharacters(passCreate.value)
+            ? "" : "Password contains invalid characters.";
+        form.appendChild(errorContainer);
     });
 };
 
-const validateCharacters = (password) => {
-    // Allows alphanumeric characters and specific special characters only, disallowing spaces
-    return /^[\w!@#$%^&*()_+\-=\[\]{};':"\\|,.<>?]+$/.test(password);
+// Validate password characters
+const validateCharacters = (string) => {
+    if (string === "") return true;
+    return /^[\w!@#$%^&*()_+\-=\[\]{};':"\\|,.<>?]+$/.test(string);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("signup-form");
     const nameInputs = document.querySelectorAll(".name-input");
-
     handleNameInputRestriction(nameInputs);
     handlePasswordValidation(form);
 });
