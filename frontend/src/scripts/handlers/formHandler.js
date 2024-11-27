@@ -86,11 +86,24 @@ const handleProfileDataIO = async (profileData, errorContainer) => {
     }
 };
 
-// Check password strength
+// Check password strength and validate characters
 const checkPasswordStrength = (passwordElement) => {
     const password = passwordElement.value;
 
-    const isStrong = /^[A-Za-z\d[^A-Za-z0-9]]{8,}$/.test(password);
+    // Regex for strong password validation
+    const strongRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^*_+~?!])[A-Za-z\d@#$%^*_+~?!]{8,16}$/;
+    const invalidCharRegex = /[^A-Za-z\d@#$%^*_+~?!]/; // Regex for invalid characters
+
+    // Check for invalid characters
+    if (invalidCharRegex.test(password)) {
+        strengthIndicator.textContent = "Password contains invalid characters.";
+        strengthIndicator.style.color = "red";
+        passwordElement.parentElement.appendChild(strengthIndicator);
+        return false;
+    }
+
+    // Check password strength
+    const isStrong = strongRegex.test(password);
     const strength = isStrong ? "Strong" : (password.length >= 6 ? "Moderate" : "Weak");
     const color = isStrong ? "green" : password.length >= 6 ? "orange" : "red";
 
