@@ -1,3 +1,21 @@
+## How to Use
+1. **Clone the Repository:**
+   ```
+   git clone https://github.com/ojhaprathmesh/Beat.it.git
+   ```
+   
+2. **Install Dependencies:**
+   ```
+   npm install
+   ```
+   
+3. **Run the server:**
+   ```
+   nodemon backend/server
+   ```
+
+
+
 ## File Structure
 
 ```plaintext
