@@ -14,5 +14,5 @@ document.querySelector("body").appendChild(loader);
 window.addEventListener("load", () => {
     setTimeout(() => {
         loader.style.display = "none";
-    }, 1500);
+    }, 250);
 });

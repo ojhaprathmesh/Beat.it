@@ -58,7 +58,7 @@ const setupAPIRoutes = () => {
         });
     });
 
-    app.post("/album/get-songs", (req, res) => {
+    app.post("/album/send-songs", (req, res) => {
         const { songsToPlay } = req.body;
         if (!Array.isArray(songsToPlay)) {
             return res.status(400).json({ error: "Invalid or missing data." });
@@ -70,7 +70,7 @@ const setupAPIRoutes = () => {
         res.json({ message: `Received ${songsToPlay.length} songs.` });
     });
 
-    app.post("/album/send-songs", (req, res) => {
+    app.post("/album/get-songs", (req, res) => {
         res.json({ songs: albumSongs });
     });
 };

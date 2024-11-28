@@ -17,13 +17,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const albumName = album.querySelector("img").alt;
                     const songsToPlay = shuffledSongs.filter(song => song.album === albumName);
 
-                    const response = await fetch("http://localhost:3000/album/get-songs", {
+                    const response = await fetch("http://localhost:3000/album/send-songs", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ songsToPlay }),
                     });
 
-                    if (!response.ok) {
+                    if (!response) {
                         throw new Error("Failed to send album data to server.");
                     }
 
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     } else if (pathname === "/album") {
         try {
-            const response = await fetch("http://localhost:3000/album/send-songs", {
+            const response = await fetch("http://localhost:3000/album/get-songs", {
                 method: "POST"
             });
             const data = await response.json();
@@ -63,7 +63,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const albumName = document.querySelector(".album-details .album-name");
             albumName.innerText = albumData[0].album;
-
 
         } catch (error) {
             console.error("Error:", error)
