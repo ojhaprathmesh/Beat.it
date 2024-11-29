@@ -2,10 +2,13 @@ import { fetchSongData } from "../utility/fetchSongData.js";
 import { shuffle } from "../utility/shuffle.js";
 
 class MusicControl {
-    constructor(playbackSelector) {
-        this.controls = document.querySelector(`${playbackSelector} .controls`);
+    constructor() {
+        this.controls = document.querySelector(`.playbar .controls`);
+        this.albumControls = document.querySelector(`.album-content .controls`);
         this.playBtn = this.controls.querySelector(".play");
+        this.albumPlayBtn = this.albumControls.querySelector(".play");
         this.pauseBtn = this.controls.querySelector(".pause");
+        this.albumPauseBtn = this.albumControls.querySelector(".pause");
         this.reverseBtn = this.controls.querySelector(".reverse");
         this.forwardBtn = this.controls.querySelector(".forward");
         this.shuffleBtn = this.controls.querySelector(".shuffle");
@@ -52,7 +55,9 @@ class MusicControl {
 
     bindEvents() {
         this.playBtn.addEventListener("click", () => this.handlePlay());
+        this.albumPlayBtn.addEventListener("click", () => this.handlePlay());
         this.pauseBtn.addEventListener("click", () => this.handlePause());
+        this.albumPauseBtn.addEventListener("click", () => this.handlePause());
         this.forwardBtn.addEventListener("click", () => this.handleForward());
         this.reverseBtn.addEventListener("click", () => this.handleReverse());
         this.repeatBtn.addEventListener("click", () => this.handleRepeat());
@@ -311,7 +316,9 @@ class MusicControl {
 
     togglePlayPause(isPlaying) {
         this.playBtn.style.display = isPlaying ? "none" : "block";
+        this.albumPlayBtn.style.display = isPlaying ? "none" : "block";
         this.pauseBtn.style.display = isPlaying ? "block" : "none";
+        this.albumPauseBtn.style.display = isPlaying ? "block" : "none";
     }
 }
 
