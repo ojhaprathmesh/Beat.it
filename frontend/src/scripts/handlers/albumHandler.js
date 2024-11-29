@@ -6,66 +6,57 @@ document.addEventListener("DOMContentLoaded", async () => {
     const pathname = window.location.pathname;
 
     if (["/home", "/search"].includes(pathname)) {
-        const songData = await fetchSongData();
-        const shuffledSongs = shuffle(songData);
-
-        await insertAlbums(".album-row", shuffledSongs);
-
-        document.querySelectorAll(".album-row-item").forEach(album => {
-            album.addEventListener("click", async () => {
-                try {
-                    const albumName = album.querySelector("img").alt;
-                    const songsToPlay = shuffledSongs.filter(song => song.album === albumName);
-
-                    const response = await fetch("http://localhost:3000/album/send-songs", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ songsToPlay }),
-                    });
-
-                    if (!response) {
-                        throw new Error("Failed to send album data to server.");
-                    }
-
-                    window.location.href = "/album";
-                } catch (error) {
-                    console.error(`Error: ${error}`);
-                }
-            });
-        });
-
-        if (pathname === "/search") {
-            document.querySelectorAll(".song-row-item").forEach(item => {
-                item.style.left = "250%";
-            });
-        }
-    } else if (pathname === "/album") {
         try {
-            const response = await fetch("http://localhost:3000/album/get-songs", {
-                method: "POST"
+            const songData = await fetchSongData();
+            const shuffledSongs = shuffle(songData);
+            await insertAlbums(".album-row", shuffledSongs);
+
+            document.querySelectorAll(".album-row-item").forEach(album => {
+                album.addEventListener("click", () => {
+                    const albumName = album.querySelector("img").alt;
+                    window.location.href = `/album?name=${encodeURIComponent(albumName)}`;
+                });
             });
-            const data = await response.json();
-            const albumData = data.songs;
 
-            const songNames = document.querySelectorAll(".album-song-item .song-name");
-            const songDurations = document.querySelectorAll(".album-song-item .song-duration");
+            if (pathname === "/search") {
+                document.querySelectorAll(".song-row-item").forEach(item => item.style.left = "250%");
+            }
+        } catch (error) {
+            console.error("Error fetching song data:", error);
+        }
+    } else if (pathname.startsWith("/album")) {
+        const params = new URLSearchParams(window.location.search);
+        const albumName = params.get("name");
 
-            for (let i = 0; i < songNames.length; i++) {
-                songNames[i].innerText = albumData[i].title;
-                songDurations[i].innerText = albumData[i].duration;
+        if (!albumName) {
+            console.error("Album name is missing in the query string.");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:3000/api/data/songsData");
+            const albumData = await response.json();
+
+            console.log(albumData);
+
+            const filteredSongs = albumData.filter(song => song.album === albumName);
+
+            if (filteredSongs.length === 0) {
+                console.error("No songs found for this album.");
+                return;
             }
 
-            const coverImage = document.querySelector(".album-details img");
-            coverImage.src = albumData[0].albumCover;
+            filteredSongs.forEach((song, i) => {
+                document.querySelectorAll(".album-song-item .song-name")[i].innerText = song.title;
+                document.querySelectorAll(".album-song-item .song-duration")[i].innerText = song.duration;
+            });
 
-            const currentSong = document.querySelector(".album-details .current-song");
-            currentSong.innerText = albumData[0].title;
-
-            const albumName = document.querySelector(".album-details .album-name");
-            albumName.innerText = albumData[0].album;
-
+            const albumDetails = document.querySelector(".album-details");
+            albumDetails.querySelector("img").src = filteredSongs[0].albumCover;
+            albumDetails.querySelector(".current-song").innerText = filteredSongs[0].title;
+            albumDetails.querySelector(".album-name").innerText = albumName;
         } catch (error) {
-            console.error("Error:", error)
+            console.error("Error fetching album data:", error);
         }
     }
 });

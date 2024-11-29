@@ -6,7 +6,10 @@ function formatTime(seconds) {
 
 async function fetchSongData() {
     try {
-        const response = await fetch("http://localhost:3000/api/data/songsData");
+        const response = await fetch("http://localhost:3000/api/data/songsData", {
+            cache: "no-store", // Disable caching for fetch requests
+        });
+
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -21,8 +24,20 @@ async function fetchSongData() {
             });
         };
 
+        // Calculate durations and update data
         for (const song of data) {
             song.duration = formatTime(await getDuration(song.file));
+        }
+
+        // Send updated data to the server
+        const updateResponse = await fetch("http://localhost:3000/api/data/update-durations", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ songs: data }),
+        });
+
+        if (!updateResponse.ok) {
+            console.warn("Failed to update durations on the server:", updateResponse.status);
         }
 
         return data;
