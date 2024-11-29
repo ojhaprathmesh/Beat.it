@@ -10,8 +10,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     // console.log(searchbar.innerHTML);
 
     searchbar.addEventListener("input", (e)=>{
-        const value = e.target.value;
-        console.log(value);
+        const value = e.target.value.toLowerCase();
+        // console.log(value);
+        innerHTMLArray.forEach(x => {
+            const isVisible = x.includes(value);
+            if(isVisible) console.log(x);
+        }) 
     })
 
     const container = document.querySelector(".song-row-1")
@@ -25,5 +29,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     const songRowItems = document.querySelectorAll('.song-title');
     const songRowItemsArray = Array.from(songRowItems);
     const innerHTMLArray = songRowItemsArray.map(item => item.innerHTML);
-    console.log(innerHTMLArray);
+    // console.log(innerHTMLArray);
 })
