@@ -50,14 +50,26 @@ const setupPageRoutes = () => {
     });
 };
 
+// Add updateJSONFile helper function above setupAPIRoutes
+const updateJSONFile = (filePath, newData) => {
+    return new Promise((resolve, reject) => {
+        fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf-8", (err) => {
+            if (err) reject(err);
+            else resolve();
+        });
+    });
+};
+
 // API Routes
 const setupAPIRoutes = () => {
     app.get("/api/data/:type", (req, res) => {
         const { type } = req.params;
         const allowedFiles = ["profileData", "songsData", "albumsData", "artistsData"];
+
         if (!allowedFiles.includes(type)) {
             return res.status(404).json({ error: "Invalid data request." });
         }
+
         const filePath = path.join(paths.data, `${type}.json`);
         fs.readFile(filePath, "utf-8", (err, data) => {
             if (err) return res.status(500).json({ error: "Error reading the file." });
@@ -65,20 +77,23 @@ const setupAPIRoutes = () => {
         });
     });
 
-    app.post("/album/get-songs", (req, res) => {
-        const { songsToPlay } = req.body;
-        if (!Array.isArray(songsToPlay)) {
-            return res.status(400).json({ error: "Invalid or missing data." });
+    // Add the new PUT route for updating durations
+    app.put("/api/data/update-durations", async (req, res) => {
+        const { songs } = req.body;
+
+        if (!Array.isArray(songs)) {
+            return res.status(400).json({ error: "Invalid data format. 'songs' must be an array." });
         }
 
-        // Sort songs by ID in ascending order
-        albumSongs = songsToPlay.sort((a, b) => a.id - b.id);
+        const filePath = path.join(paths.data, "songsData.json");
 
-        res.json({ message: `Received ${songsToPlay.length} songs.` });
-    });
-
-    app.post("/album/send-songs", (req, res) => {
-        res.json({ songs: albumSongs });
+        try {
+            await updateJSONFile(filePath, songs);
+            res.json({ message: "Durations updated successfully." });
+        } catch (error) {
+            console.error("Error updating durations:", error);
+            res.status(500).json({ error: "Failed to update song durations." });
+        }
     });
 };
 

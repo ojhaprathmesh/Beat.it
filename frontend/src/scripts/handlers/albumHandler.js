@@ -1,72 +1,91 @@
 import { fetchSongData } from "../utility/fetchSongData.js";
 import { insertAlbums } from "../components/album.js";
 import { shuffle } from "../utility/shuffle.js";
+import { MusicControl } from "../classes/MusicControl.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const pathname = window.location.pathname;
+    const isHomeOrSearch = ["/home", "/search"].includes(pathname);
 
-    if (["/home", "/search"].includes(pathname)) {
-        const songData = await fetchSongData();
-        const shuffledSongs = shuffle(songData);
-
-        await insertAlbums(".album-row", shuffledSongs);
-
-        document.querySelectorAll(".album-row-item").forEach(album => {
-            album.addEventListener("click", async () => {
-                try {
-                    const albumName = album.querySelector("img").alt;
-                    const songsToPlay = shuffledSongs.filter(song => song.album === albumName);
-
-                    const response = await fetch("http://localhost:3000/album/get-songs", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ songsToPlay }),
-                    });
-
-                    if (!response.ok) {
-                        throw new Error("Failed to send album data to server.");
-                    }
-
-                    window.location.href = "/album";
-                } catch (error) {
-                    console.error(`Error: ${error}`);
-                }
-            });
-        });
-
-        if (pathname === "/search") {
-            document.querySelectorAll(".song-row-item").forEach(item => {
-                item.style.left = "250%";
-            });
-        }
-    } else if (pathname === "/album") {
+    if (isHomeOrSearch) {
         try {
-            const response = await fetch("http://localhost:3000/album/send-songs", {
-                method: "POST"
+            const songData = await fetchSongData();
+            const shuffledSongs = shuffle(songData);
+            await insertAlbums(".album-row", shuffledSongs);
+
+            document.querySelectorAll(".album-row-item").forEach(album => {
+                album.addEventListener("click", () => {
+                    const albumName = album.querySelector("img").alt;
+                    window.location.href = `/album?name=${encodeURIComponent(albumName)}`;
+                });
             });
-            const data = await response.json();
-            const albumData = data.songs;
 
-            const songNames = document.querySelectorAll(".album-song-item .song-name");
-            const songDurations = document.querySelectorAll(".album-song-item .song-duration");
+            if (pathname === "/search") {
+                document.querySelectorAll(".song-row-item").forEach(item => item.style.left = "250%");
+            }
+        } catch (error) {
+            console.error("Error fetching song data:", error);
+        }
+    } else if (pathname.startsWith("/album")) {
+        const albumName = new URLSearchParams(window.location.search).get("name");
 
-            for (let i = 0; i < songNames.length; i++) {
-                songNames[i].innerText = albumData[i].title;
-                songDurations[i].innerText = albumData[i].duration;
+        if (!albumName) {
+            console.error("Album name is missing in the query string.");
+            return;
+        }
+
+        try {
+            const songData = await fetchSongData();
+            const albumSongs = songData.filter(song => song.album === albumName);
+
+            if (albumSongs.length === 0) {
+                console.error(`No songs found for the album: ${albumName}`);
+                return;
             }
 
-            const coverImage = document.querySelector(".album-details img");
-            coverImage.src = albumData[0].albumCover;
+            // Populate album details
+            const albumDetails = document.querySelector(".album-details");
+            if (albumDetails) {
+                const albumCover = albumDetails.querySelector("img");
+                const albumTitle = albumDetails.querySelector("h1");
+                const albumArtist = albumDetails.querySelector("h4");
 
-            const currentSong = document.querySelector(".album-details .current-song");
-            currentSong.innerText = albumData[0].title;
+                albumCover.src = albumSongs[0].albumCover;
+                albumCover.alt = albumName;
+                albumTitle.textContent = albumName;
+                albumArtist.textContent = albumSongs[0].artist.join(", ");
+            }
 
-            const albumName = document.querySelector(".album-details .album-name");
-            albumName.innerText = albumData[0].album;
+            // Populate album songs
+            const albumSongsContainer = document.querySelector(".album-songs");
+            albumSongsContainer.innerHTML = ""; // Clear existing items
 
+            albumSongs.forEach((song, index) => {
+                const songItem = document.createElement("div");
+                songItem.className = "album-song-item";
+                songItem.innerHTML = `
+                    <div class="index">${index + 1}.</div>
+                    <div class="song-name">${song.title}</div>
+                    <div class="song-duration">${song.duration}</div>
+                    <div class="like-btn">
+                        <i class="fas fa-heart" style="font-size: larger;">
+                            <input type="checkbox" class="like-check" />
+                        </i>
+                    </div>
+                `;
 
+                // Add click listener for song item
+                songItem.addEventListener("click", () => {
+                    const songClickEvent = new CustomEvent("songClicked", {
+                        detail: `${song.id}`,
+                    });
+                    document.dispatchEvent(songClickEvent);
+                });
+
+                albumSongsContainer.appendChild(songItem);
+            });
         } catch (error) {
-            console.error("Error:", error)
+            console.error("Error setting up album page:", error);
         }
     }
 });
