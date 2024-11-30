@@ -25,6 +25,11 @@ const paths = {
 
 // Middleware: Serve static files and handle JSON
 const serveStaticFiles = () => {
+    app.use((req, res, next) => {
+        res.setHeader("Cache-Control", "no-store");
+        next();
+    });
+
     app.use(express.static(paths.public));
     app.use(express.static(paths.source));
     app.use(express.static(paths.uploads));
