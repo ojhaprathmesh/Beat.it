@@ -79,7 +79,8 @@ class MusicControl {
         });
 
         document.addEventListener("keydown", (event) => {
-            if (event.code === "Space") {
+            const searchInput = document.getElementById("search-input")
+            if (event.code === "Space" && document.activeElement !== searchInput) {
                 event.preventDefault();
                 this.isPlaying ? this.handlePause() : this.handlePlay();
             }
