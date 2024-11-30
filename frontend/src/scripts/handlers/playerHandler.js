@@ -34,7 +34,7 @@ const updateVolumeUI = (volume, [muteIcon, lowIcon, midIcon, highIcon], audioEle
     // Update icon visibility
     [muteIcon, lowIcon, midIcon, highIcon].forEach((icon, index) => {
         icon.style.display = [
-            volume === 0,                // Mute icon
+            volume == 0,                // Mute icon
             volume > 0 && volume < 30,   // Low volume
             volume >= 30 && volume < 70, // Mid volume
             volume >= 70                 // High volume
