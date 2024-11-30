@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
             const songData = await fetchSongData();
-            const albumSongs = songData.filter(song => song.album === albumName);
+            const albumSongs = songData.filter((song) => song.album === albumName);
 
             if (albumSongs.length === 0) {
                 console.error(`No songs found for the album: ${albumName}`);
