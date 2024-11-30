@@ -101,18 +101,6 @@
     <script type="module" src="../scripts/handlers/albumHandler.js" defer></script>
     <script type="module" src="../scripts/handlers/navbarHandler.js" defer></script>
     <script type="module" src="../scripts/handlers/playerHandler.js" defer></script>
-
-    <script>
-        const loader = document.createElement("div");
-        loader.id = "preloader";
-        document.querySelector("body").appendChild(loader);
-
-        window.addEventListener("load", () => {
-            setTimeout(() => {
-                loader.style.display = "none";
-            }, 1500);
-        });
-    </script>
 </body>
 
 </html>

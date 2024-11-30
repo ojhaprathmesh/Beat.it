@@ -1,0 +1,33 @@
+<footer class="player"></footer>
+
+    <script src="../scripts/utility/loading.js"></script>
+    
+    <% if (pageTitle.toLowerCase() === 'album') { %>
+        <script type="module" src="../scripts/handlers/navbarHandler.js" defer></script>
+        <script type="module" src="../scripts/handlers/albumHandler.js" defer></script>
+        <script type="module" src="../scripts/handlers/playerHandler.js" defer></script>
+    <% } 
+    else if (pageTitle.toLowerCase() === 'search' || pageTitle.toLowerCase() === 'home') { %>
+        <script type="module" src="../scripts/handlers/songHandler.js" defer></script>
+        <script type="module" src="../scripts/handlers/albumHandler.js" defer></script>
+        <script type="module" src="../scripts/handlers/navbarHandler.js" defer></script>
+        <script type="module" src="../scripts/handlers/playerHandler.js" defer></script>
+    <% } %>
+    else if (pageTitle.toLowerCase() === 'profile') { %>
+        <script type="module" src="../scripts/handlers/playerHandler.js" defer></script>
+        <script>
+            const logo = document.getElementById("logo");
+            logo.addEventListener("click", () => {
+                window.location.assign("/home");
+            });
+
+            const logout = document.querySelector(".logout");
+            logout.addEventListener("click", () => {
+                window.location.assign("/login")
+            });
+        </script>
+    <% } %>
+
+</body>
+
+</html>
