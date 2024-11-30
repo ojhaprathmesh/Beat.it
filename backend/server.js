@@ -6,6 +6,13 @@ const app = express();
 const port = 3000;
 let albumSongs = [];
 
+//mongoDB connect
+const dbconnect =require("./dbconnect/dbcon.js")
+dbconnect()
+
+const songsDB1 = require("./model/model.js")
+songsDB1()
+
 // Paths (centralize the path definitions)
 const paths = {
     public: path.join(__dirname, "../frontend/public/"),
@@ -30,7 +37,7 @@ const serveStaticFiles = () => {
 const setupPageRoutes = () => {
     const pages = {
         "/": "index.html",
-        "/signin": "SignupPage.html",
+        "/signin": "SignUpPage.html",
         "/login": "LoginPage.html",
         "/home": "HomePage.html",
         "/profile": "ProfilePage.html",
