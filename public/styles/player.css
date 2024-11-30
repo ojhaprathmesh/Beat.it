@@ -1,0 +1,235 @@
+/* Player Section Styles*/
+.player {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #172f67;
+    width: 100%;
+    height: 90px;
+    align-items: center;
+    box-shadow: 0 0 40px;
+    justify-content: space-between;
+}
+
+.player-albuminfo,
+.other-controls {
+    display: flex;
+    width: 25vw;
+    height: 100%;
+    align-items: center;
+}
+
+.like-btn {
+    cursor: pointer;
+    width: fit-content;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 10px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.like-btn:hover {
+    transform: scale(1.1);
+}
+
+.like-btn .fa-heart {
+    color: black;
+    font-weight: 100;
+    transition: color 0.2s ease-in, font-weight 0.15s ease-in;
+}
+
+.like-btn.liked .fa-heart {
+    color: red;
+    font-weight: 900;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+.player-songcover {
+    margin: 12px 12px 12px 20px;
+    width: 75px;
+    height: 75px;
+}
+
+.player-songdetails {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    justify-content: center;
+    margin: auto 10px;
+    color: var(--white);
+}
+
+/* Playbar Section Styles */
+.playbar {
+    display: flex;
+    flex-direction: column;
+    width: 50vw;
+    align-items: center;
+    row-gap: 20px;
+}
+
+.music-progress-bar {
+    display: flex;
+    width: 500px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: var(--grey);
+    align-items: center;
+}
+
+.controls {
+    display: flex;
+    font-size: 25px;
+    cursor: default;
+    justify-content: space-between;
+    width: 160px;
+    color: var(--white);
+}
+
+.controls i {
+    cursor: pointer;
+}
+
+.controls .shuffle {
+    transition: color 0.5s ease;
+    color: var(--white);
+    animation-duration: 0.5s;
+}
+
+/*Other Control Styles */
+.other-controls {
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px;
+    color: var(--white);
+}
+
+.burger-menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.volume {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 10px;
+}
+
+.volume-control-bar {
+    display: flex;
+    width: 100px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: var(--grey);
+    align-items: center;
+}
+
+#seekMusic {
+    appearance: none;
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+    border-radius: 5px;
+    background: var(--grey);
+}
+
+#seekMusic::-webkit-slider-runnable-track {
+    height: 10px;
+}
+
+#seekMusic::-webkit-slider-thumb {
+    position: relative;
+    top: -2px;
+    appearance: none;
+    height: 14px;
+    width: 14px;
+    background-color: var(--white);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+#seekMusic::before {
+    position: absolute;
+    content: "";
+    height: 10px;
+    width: var(--width-m);
+    background-color: var(--color);
+    border-radius: 5px;
+    z-index: 1;
+}
+
+#seekVolume {
+    appearance: none;
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+    border-radius: 5px;
+    background: var(--grey);
+}
+
+#seekVolume::-webkit-slider-runnable-track {
+    height: 10px;
+}
+
+#seekVolume::-webkit-slider-thumb {
+    position: relative;
+    bottom: 2px;
+    appearance: none;
+    height: 14px;
+    width: 14px;
+    background-color: var(--white);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+#seekVolume::before {
+    position: absolute;
+    content: "";
+    height: 10px;
+    width: var(--width-v);
+    background-color: var(--white);
+    border-radius: 5px;
+    z-index: 1;
+}
+
+.seekbar-label {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: #172f67;
+}
+
+@keyframes shuffleAnimation {
+    0% {
+        color: var(--white);
+    }
+
+    50% {
+        color: #3e00956d;
+    }
+
+    100% {
+        color: var(--white);
+    }
+}
+
+@keyframes rotateClockwise {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

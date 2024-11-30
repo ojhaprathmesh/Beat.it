@@ -1,0 +1,123 @@
+/* Song Section Styles */
+.main-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+#song-container,
+#album-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: var(--main-body-bg);
+    width: 90%;
+    max-width: 90%;
+    height: 290px;
+    border-radius: 50px;
+    padding: 30px 25px;
+    font-size: 18px;
+    box-shadow: 0 0 20px var(--shadow);
+}
+
+#song-heading,
+#album-heading {
+    color: var(--primary-text);
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 27px;
+}
+
+.song-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.album-row {
+    display: flex;
+    column-gap: 85px;
+}
+
+.song-row-1,
+.song-row-2 {
+    display: flex;
+    row-gap: 20px;
+    width: 100%;
+    height: 80px;
+    margin-inline: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.song-row-item,
+.album-row-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.32s;
+}
+
+.song-row-item {
+    width: 220.5px;
+    height: 80px;
+    column-gap: 6px;
+    position: absolute;
+    left: 185%;
+    animation: scrollLeft var(--duration) linear infinite;
+}
+
+.album-row-item {
+    flex-direction: column;
+    max-width: fit-content;
+    row-gap: 15px;
+    text-align: center;
+    font-size: smaller;
+}
+
+.song-row-item:hover,
+.album-row-item:hover {
+    transform: scale(1.05);
+}
+
+.song-row-item .song-cover {
+    border-radius: 5px;
+}
+
+.album-row-item .album-cover {
+    border-radius: 10px;
+}
+
+.song-title,
+.album-title {
+    font-size: 12.4px;
+    max-width: 139.5px;
+}
+
+.album-title {
+    font-weight: 200;
+    color: var(--primary-text);
+}
+
+.title-artist {
+    display: flex;
+    flex-direction: column;
+    font-size: smaller;
+    row-gap: 5px;
+    font-weight: 400;
+    color: var(--primary-text);
+    justify-content: center;
+    width: 139.5px;
+}
+
+.title-artist .album-name {
+    font-size: 11.5px;
+}
+
+@keyframes scrollLeft {
+    to {
+        left: -220.5px;
+    }
+}
