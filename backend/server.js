@@ -4,6 +4,9 @@ const fs = require('fs');
 
 const app = express();
 const port = 3000;
+
+app.set("view engine", "ejs");
+
 let albumSongs = [];
 
 // Paths (centralize the path definitions)
