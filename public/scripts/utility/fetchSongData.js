@@ -6,7 +6,7 @@ function formatTime(seconds) {
 
 async function fetchSongData() {
     try {
-        const response = await fetch("http://localhost:3000/api/data/songsData", {
+        const response = await fetch("database/data/songsData.json", {
             cache: "no-store", // Disable caching for fetch requests
         });
 

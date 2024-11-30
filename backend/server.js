@@ -9,6 +9,8 @@ app.set("views", path.join(__dirname, "../embjsFiles"));
 
 //serve static files
 app.use(express.static(path.join(__dirname, "../public")));
+// app.use(express.static(path.join(__dirname, "../public/database/album-covers/")));
+// console.log(path.join(__dirname, "../public/database/album-covers/"))
 
 // Use routes
 app.use('/', routes);
