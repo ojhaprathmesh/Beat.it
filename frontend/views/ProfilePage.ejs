@@ -103,8 +103,8 @@
             <img src="/assets/profile/Shrey%20Jaiswal%20Pic.webp" alt="Profile Image" width="400px" height="400px">
         </div>
         <div class="details-container font-syne">
-            <h1 class="username">Shrey Jaiswal</h1>
-            <h5 class="usermail">shrey.jaiswal.23cse@bmu.edu.in</h5>
+            <h1 class="username"><%= username %></h1>
+            <h5 class="usermail"><%= usermail %></h5>
         </div>
     </main>
 
@@ -122,7 +122,7 @@
 
         const logout = document.querySelector(".logout");
         logout.addEventListener("click", () => {
-            window.location.assign("/login")
+            window.location.assign("/login");
         });
     </script>
 
