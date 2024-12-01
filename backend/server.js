@@ -1,8 +1,8 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const {shuffle} = require('../frontend/public/scripts/utility/shuffle');
-const {fetchSongData} = require("../frontend/public/scripts/utility/fetchSongData");
+const { shuffle } = require('../frontend/public/scripts/utility/shuffle');
+const { fetchSongData } = require("../frontend/public/scripts/utility/fetchSongData");
 
 const app = express();
 const port = 3000;
@@ -48,37 +48,41 @@ const setupPageRoutes = () => {
     app.get('/home', async (req, res) => {
         const songData = await fetchSongData();
 
+        // Shuffle the songs twice to ensure different orders for each row
+        const songRow1 = shuffle([...songData]); // Copy the array before shuffling
+        const songRow2 = shuffle([...songData]); // Copy the array before shuffling
+
         res.render('HomePage', {
             usernameLetter: 'S',
-            songRow1: shuffle(songData),
-            songRow2: shuffle(songData),
+            songRow1: songRow1,
+            songRow2: songRow2,
         });
     });
 };
 
-// Helper: Update JSON file
-const updateJSONFile = (filePath, newData) => {
-    return new Promise((resolve, reject) => {
-        fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf-8", (err) => {
-            if (err) reject(err);
-            else resolve();
-        });
-    });
-};
+// // Helper: Update JSON file
+// const updateJSONFile = (filePath, newData) => {
+//     return new Promise((resolve, reject) => {
+//         fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf-8", (err) => {
+//             if (err) reject(err);
+//             else resolve();
+//         });
+//     });
+// };
 
 // API Routes
 const setupAPIRoutes = () => {
     app.get("/api/data/:type", (req, res) => {
-        const {type} = req.params;
+        const { type } = req.params;
         const allowedFiles = ["profileData", "songsData", "albumsData"];
 
         if (!allowedFiles.includes(type)) {
-            return res.status(404).json({error: "Invalid data request."});
+            return res.status(404).json({ error: "Invalid data request." });
         }
 
         const filePath = path.join(paths.data, `${type}.json`);
         fs.readFile(filePath, "utf-8", (err, data) => {
-            if (err) return res.status(500).json({error: "Error reading the file."});
+            if (err) return res.status(500).json({ error: "Error reading the file." });
             res.json(JSON.parse(data));
         });
     });
