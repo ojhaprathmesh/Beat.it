@@ -20,8 +20,30 @@ app.set("views", paths.views);  // Directory to look for EJS views
 
 // Middleware: Serve static files and handle JSON
 const serveStaticFiles = () => {
+
     app.use((req, res, next) => {
         res.setHeader("Cache-Control", "no-store");
+        next();
+    });
+
+    app.use((req, res, next) => {
+        const song = {
+            "id": 1,
+            "title": "Do Pal",
+            "artist": [
+                "Lata Mangeshkar",
+                "Sonu Nigam",
+                "Madan Mohan",
+                "Javed Akhtar"
+            ],
+            "album": "Veer-Zaara",
+            "genre": "Bollywood",
+            "file": "/uploads/do-pal.mp3",
+            "albumCover": "assets/album-covers/veer-zaara.webp"
+        }
+
+        res.locals.usernameLetter = 'S';
+        res.locals.song = song;
         next();
     });
 
@@ -47,7 +69,6 @@ const setupPageRoutes = () => {
 
     app.get('/home', async (req, res) => {
         const songData = await fetchSongData();
-
         // Shuffle the songs for both rows
         const [songRow1, songRow2] = [shuffle(songData), shuffle([...songData])];
 
@@ -56,12 +77,14 @@ const setupPageRoutes = () => {
         const albumData = songData.filter(song => albums.includes(song.album));
 
         res.render('HomePage', {
-            usernameLetter: 'S',
             songRow1,
             songRow2,
             albums: shuffle(albumData),
-            song: songData[0],
         });
+    });
+
+    app.get('/album', async (req, res) => {
+        res.render('AlbumPage');
     });
 };
 

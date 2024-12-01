@@ -129,8 +129,10 @@
 </head>
 
 <body>
-    <nav class="navbar"></nav>
+    <script src="/scripts/utility/loading.js"></script>
 
+    <%- include('partials/navbar.ejs') %>
+    
     <main class="main-body">
         <section class="album-content">
             <div class="controls">
@@ -152,9 +154,7 @@
         </section>
     </main>
 
-    <footer class="player"></footer>
-
-    <script src="/scripts/utility/loading.js"></script>
+    <%- include('partials/player.ejs') %>
 
     <script type="module" src="/scripts/handlers/navbarHandler.js" defer></script>
     <script type="module" src="/scripts/handlers/albumHandler.js" defer></script>
