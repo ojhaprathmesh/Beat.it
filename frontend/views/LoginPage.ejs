@@ -116,6 +116,7 @@
             const forgotPasswordLink = document.querySelector(".redirect > p");
 
             errorContainer.className = "error-messages";
+            errorContainer.style.bottom = "0px"
 
             const showError = (message) => {
                 errorContainer.textContent = message;
@@ -154,7 +155,7 @@
                         body: JSON.stringify({ email, password })
                     });
                     const data = await response.json();
-                    if (!response.ok) throw new Error(data.error || "Login failed.");
+                    if (!response.ok) throw new Error(data.error || "Login failed!");
                     window.location.href = "/home"; // Redirect on success
                 } catch (error) {
                     showError(error.message);

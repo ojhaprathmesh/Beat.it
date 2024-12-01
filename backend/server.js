@@ -1,23 +1,20 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const session = require("express-session");
 
 const app = express();
 const port = 3000;
 
-const dbconnect = require("./dbconnect/dbcon.js");
-const { songsDB1, fetchJSON } = require('./model/dataModel.js');
+const dbConnect = require("./dbconnect/dbcon.js");
+const { createDB, fetchJSON } = require('./model/dataModel.js');
 const userData = require("./model/userModel.js");
 const songData = require("../frontend/public/data/songsData.json");
 const { shuffle } = require('../frontend/public/scripts/utility/shuffle');
 
-dbconnect()
-try {
-    // songsDB1();
-} catch (err) {
-    console.warn("Error saving data: " + err);
-}
-fetchJSON()
+dbConnect();
+createDB();
+fetchJSON();
 
 // Paths
 const paths = {
@@ -36,6 +33,13 @@ const serveStaticFiles = () => {
         res.setHeader("Cache-Control", "no-store");
         next();
     });
+
+    app.use(session({
+        secret: "your-secret-key",
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false }
+    }));
 
     app.use(async (req, res, next) => {
         // Placeholder song data
@@ -85,7 +89,18 @@ const setupPageRoutes = () => {
 
     // Routes for EJS views
     Object.entries(pages).forEach(([route, view]) => {
+        if (["/home", "/search", "/profile", "/album"].includes(route)) {
+            app.get(route, (req, res) => {
+                const usernameLetter = req.session.usernameLetter || '~'
+                res.render(view, { usernameLetter })
+            });
+        }
         app.get(route, (req, res) => res.render(view));  // Using .render() to render EJS templates
+    });
+
+    app.get("/home", (req, res) => {
+        const usernameLetter = req.session.usernameLetter || "S"; // Default to "S" if not set
+        res.render("HomePage", { usernameLetter });
     });
 };
 
@@ -127,17 +142,20 @@ const setupAPIRoutes = () => {
             const user = await userData.findOne({ email });
 
             if (!user) {
-                return res.status(404).json({ error: "Email not associated with any account." });
+                return res.status(404).json({ message: "Email not associated with any account." });
             }
 
             if (user.password !== password) {
-                return res.status(401).json({ error: "Invalid credentials. Please try again." });
+                return res.status(401).json({ message: "Invalid credentials. Please try again." });
             }
 
-            res.status(200).json({ message: "Login successful!", user });
+            // Save to session
+            req.session.usernameLetter = email.charAt(0).toUpperCase();
+
+            res.status(200).json({ message: "Login successful!" });
         } catch (error) {
             console.error("Error during login:", error);
-            res.status(500).json({ error: "Internal server error." });
+            res.status(500).json({ message: "Internal server error." });
         }
     });
 
