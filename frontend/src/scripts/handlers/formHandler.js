@@ -67,6 +67,7 @@ const handleFormSubmission = (form) => {
 };
 
 // Save profile data to local storage
+//mongo
 const handleProfileDataIO = async (profileData, errorContainer) => {
     try {
         const response = await fetch("/api/register", {
@@ -86,6 +87,8 @@ const handleProfileDataIO = async (profileData, errorContainer) => {
         return false;
     }
 };
+
+//local
 // const handleProfileDataIO = async (profileData, errorContainer) => {
 //     try {
 //         const profiles = JSON.parse(localStorage.getItem("profiles")) || [];

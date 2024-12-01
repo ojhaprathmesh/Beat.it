@@ -72,7 +72,41 @@ const updateJSONFile = (filePath, newData) => {
 const UserData = require("./model/userModel.js"); // Import UserData model
 
 const setupAPIRoutes = () => {
-    // Other routes...
+    app.get("/api/data/:type", (req, res) => {
+        const { type } = req.params;
+        const allowedFiles = ["profileData", "songsData", "albumsData", "artistsData"];
+
+        if (!allowedFiles.includes(type)) {
+            return res.status(404).json({ error: "Invalid data request." });
+        }
+
+        const filePath = path.join(paths.data, `${type}.json`);
+        fs.readFile(filePath, "utf-8", (err, data) => {
+            if (err) return res.status(500).json({ error: "Error reading the file." });
+            res.json(JSON.parse(data));
+        });
+    });
+
+    // Add the new PUT route for updating durations
+    app.put("/api/data/update-durations", async (req, res) => {
+        const { songs } = req.body;
+
+        if (!Array.isArray(songs)) {
+            return res.status(400).json({ error: "Invalid data format. 'songs' must be an array." });
+        }
+
+        const filePath = path.join(paths.data, "songsData.json");
+
+        try {
+            await updateJSONFile(filePath, songs);
+            res.json({ message: "Durations updated successfully." });
+        } catch (error) {
+            console.error("Error updating durations:", error);
+            res.status(500).json({ error: "Failed to update song durations." });
+        }
+    });
+
+    //mongo
     app.post("/api/register", async (req, res) => {
         const { firstName, lastName, email, password } = req.body;
         if (!firstName || !lastName || !email || !password) {
@@ -90,41 +124,6 @@ const setupAPIRoutes = () => {
         }
     });
 };
-// const setupAPIRoutes = () => {
-//     app.get("/api/data/:type", (req, res) => {
-//         const { type } = req.params;
-//         const allowedFiles = ["profileData", "songsData", "albumsData", "artistsData"];
-
-//         if (!allowedFiles.includes(type)) {
-//             return res.status(404).json({ error: "Invalid data request." });
-//         }
-
-//         const filePath = path.join(paths.data, `${type}.json`);
-//         fs.readFile(filePath, "utf-8", (err, data) => {
-//             if (err) return res.status(500).json({ error: "Error reading the file." });
-//             res.json(JSON.parse(data));
-//         });
-//     });
-
-//     // Add the new PUT route for updating durations
-//     app.put("/api/data/update-durations", async (req, res) => {
-//         const { songs } = req.body;
-
-//         if (!Array.isArray(songs)) {
-//             return res.status(400).json({ error: "Invalid data format. 'songs' must be an array." });
-//         }
-
-//         const filePath = path.join(paths.data, "songsData.json");
-
-//         try {
-//             await updateJSONFile(filePath, songs);
-//             res.json({ message: "Durations updated successfully." });
-//         } catch (error) {
-//             console.error("Error updating durations:", error);
-//             res.status(500).json({ error: "Failed to update song durations." });
-//         }
-//     });
-// };
 
 // 404 Error Handling
 const handle404 = () => {
