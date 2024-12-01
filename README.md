@@ -16,51 +16,26 @@
 
 
 
-## File Structure
+## Project Structure
 
 ```plaintext
 Beat.it/
 ├── backend/                                   # Backend-related files
 │   ├── server.js                              # Server app
-├── database/                                  # Database-related files
-│   ├── album-covers/                          # Album cover images
-│   │   ├── bhool-bhulaiyaa.webp               # Album cover - Bhool Bhulaiyaa
-│   │   ├── cocktail.webp                      # Album cover - Cocktail
-│   │   ├── desi-kalakaar.webp                 # Album cover - Desi Kalakaar
-│   │   ├── kabhi-kabhi-aditi.webp             # Album cover - Kabhi Kabhi Aditi
-│   │   ├── sooraj-ki-baahon-mein.webp         # Album cover - Sooraj Ki Baahon Mein
-│   │   ├── veer-zaara.webp                    # Album cover - Veer Zaara
-│   ├── data/                                  # Data files
-│   │   ├── profileData.json                   # JSON file containing profile details
-│   │   ├── songsData.json                     # JSON file containing song details
-│   ├── uploads/                               # Uploaded audio files
-│   │   ├── bhool-bhulaiyaa.mp3                # Bhool Bhulaiyaa song
-│   │   ├── daaru-desi.mp3                     # Daaru Desi song
-│   │   ├── desi-kalakaar.mp3                  # Desi Kalakaar song
-│   │   ├── dil-dhadakne-do.mp3                # Dil Dhadakne Do song
-│   │   ├── do-pal.mp3                         # Do Pal song
-│   │   ├── im-your-dj-tonight.mp3             # I'm Your DJ Tonight song
-│   │   ├── kabhi-kabhi-aditi.mp3              # Kabhi Kabhi Aditi song
-│   │   ├── labon-ko-bhool-bhulaiyaa.mp3       # Labon Ko Bhool Bhulaiyaa song
-│   │   ├── love-dose.mp3                      # Love Dose song
-│   │   ├── main-yahaan-hoon.mp3               # Main Yahaan Hoon song
-│   │   ├── mere-dholna-bhool-bhulaiyaa.mp3    # Mere Dholna song
-│   │   ├── nazrein-milaana-nazrein-churaana.mp3 # Nazrein Milaana song
-│   │   ├── pappu-cant-dance.mp3               # Pappu Can't Dance song
-│   │   ├── second-hand-jawaani.mp3           # Second Hand Jawaani song
-│   │   ├── senorita.mp3                       # Senorita song
-│   │   ├── sooraj-ki-baahon-mein.mp3          # Sooraj Ki Baahon Mein song
-│   │   ├── tera-naam-japdi-phiran.mp3         # Tera Naam Japdi Phiran song
-│   │   ├── tere-liye.mp3                      # Tere Liye song
 ├── frontend/                                  # Frontend-related files
 │   ├── public/                                # Public assets
-│   │   ├── index.html                         # Main HTML file for frontend
-│   ├── src/                                   # Source files
 │   │   ├── assets/                            # Asset files
 │   │   │   ├── Beat.it Logo.webp              # Project logo image
 │   │   │   ├── Beat.it White Logo.webp        # Project white logo image
 │   │   │   ├── bg-graphic.webp                # Background graphic image
 │   │   │   ├── loading.gif                    # Loading animation
+│   │   │   ├── album-covers/                  # Album cover images
+│   │   │   │   ├── bhool-bhulaiyaa.webp       # Album cover - Bhool Bhulaiyaa
+│   │   │   │   ├── cocktail.webp              # Album cover - Cocktail
+│   │   │   │   ├── desi-kalakaar.webp         # Album cover - Desi Kalakaar
+│   │   │   │   ├── kabhi-kabhi-aditi.webp     # Album cover - Kabhi Kabhi Aditi
+│   │   │   │   ├── sooraj-ki-baahon-mein.webp # Album cover - Sooraj Ki Baahon Mein
+│   │   │   │   ├── veer-zaara.webp            # Album cover - Veer Zaara
 │   │   │   ├── home/                          # Home-related images
 │   │   │   │   ├── Album Cover - 1.webp       # Album cover image 1
 │   │   │   │   ├── Album Cover - 2.webp       # Album cover image 2
@@ -79,13 +54,10 @@ Beat.it/
 │   │   │   │   ├── DJ Girl.webp               # DJ girl image for signup
 │   │   │   │   ├── Graphic Design.webp        # Graphic design element for signup
 │   │   │   │   ├── Singing Boy.webp           # Singing boy image for signup
-│   │   ├── pages/                             # HTML pages
-│   │   │   ├── AlbumPage.html                 # Album page
-│   │   │   ├── HomePage.html                  # Home page
-│   │   │   ├── LoginPage.html                 # Login page
-│   │   │   ├── ProfilePage.html               # Profile page
-│   │   │   ├── SearchPage.html                # Search page
-│   │   │   ├── SignUpPage.html                # Signup page
+│   │   ├── data/                              # Data files
+│   │   │   ├── albumsData.json                # Album data
+│   │   │   ├── profileData.json               # Profile data
+│   │   │   ├── songsData.json                 # Song data
 │   │   ├── scripts/                           # Script files
 │   │   │   ├── classes/                       # Class files
 │   │   │   │   ├── MusicControl.js            # Music control class
@@ -114,6 +86,35 @@ Beat.it/
 │   │   │   ├── player.css                     # Player styles
 │   │   │   ├── profile.css                    # Profile styles
 │   │   │   ├── song-album.css                 # Song/album styles
+│   ├── uploads/                               # Uploaded audio files
+│   │   ├── bhool-bhulaiyaa.mp3                # Bhool Bhulaiyaa song
+│   │   ├── daaru-desi.mp3                     # Daaru Desi song
+│   │   ├── desi-kalakaar.mp3                  # Desi Kalakaar song
+│   │   ├── dil-dhadakne-do.mp3                # Dil Dhadakne Do song
+│   │   ├── do-pal.mp3                         # Do Pal song
+│   │   ├── im-your-dj-tonight.mp3             # I'm Your DJ Tonight song
+│   │   ├── kabhi-kabhi-aditi.mp3              # Kabhi Kabhi Aditi song
+│   │   ├── labon-ko-bhool-bhulaiyaa.mp3       # Labon Ko Bhool Bhulaiyaa song
+│   │   ├── love-dose.mp3                      # Love Dose song
+│   │   ├── main-yahaan-hoon.mp3               # Main Yahaan Hoon song
+│   │   ├── mere-dholna-bhool-bhulaiyaa.mp3    # Mere Dholna song
+│   │   ├── nazrein-milaana-nazrein-churaana.mp3 # Nazrein Milaana song
+│   │   ├── pappu-cant-dance.mp3               # Pappu Can't Dance song
+│   │   ├── second-hand-jawaani.mp3            # Second Hand Jawaani song
+│   │   ├── senorita.mp3                       # Senorita song
+│   │   ├── sooraj-ki-baahon-mein.mp3          # Sooraj Ki Baahon Mein song
+│   │   ├── tera-naam-japdi-phiran.mp3         # Tera Naam Japdi Phiran song
+│   │   ├── tere-liye.mp3                      # Tere Liye song
+│   ├── views/                                 # Views directory for EJS templates
+│   │   ├── AlbumPage.ejs                      # Album page template
+│   │   ├── HomePage.ejs                       # Home page template
+│   │   ├── LoginPage.ejs                      # Login page template
+│   │   ├── ProfilePage.ejs                    # Profile page template
+│   │   ├── SearchPage.ejs                     # Search page template
+│   │   ├── SignUpPage.ejs                     # Signup page template
+│   │   ├── partials/                          # Partials for reusability
+│   │   │   ├── navbar.ejs                     # Navbar partial
+│   │   │   ├── songs.ejs                      # Songs partial
 ├── .gitattributes                             # Git attributes
 ├── .gitignore                                 # Git ignore file
 ├── LICENSE                                    # License file
