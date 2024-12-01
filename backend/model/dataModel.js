@@ -13,10 +13,10 @@ const schema = new mongoose.Schema({
     duration: { type: String, required: true }
 });
 
-const SongsDB = new mongoose.model("SongsDB", schema);
+const songsDB = new mongoose.model("SongsDB", schema);
 
-const songsDB1 = () => {
-    const s1 = new SongsDB({
+const createDB = () => {
+    const s1 = new songsDB({
         "id": 1,
         "title": "Do Pal",
         "artist": ["Lata Mangeshkar", "Sonu Nigam", "Madan Mohan", "Javed Akhtar"],
@@ -27,7 +27,7 @@ const songsDB1 = () => {
         "duration": "4:25"
     });
 
-    const s2 = new SongsDB({
+    const s2 = new songsDB({
         "id": 2,
         "title": "Main Yahaan Hoon",
         "artist": ["Sonu Nigam", "Madan Mohan", "Javed Akhtar"],
@@ -38,7 +38,7 @@ const songsDB1 = () => {
         "duration": "4:55"
     });
 
-    const s3 = new SongsDB({
+    const s3 = new songsDB({
         "id": 3,
         "title": "Tere Liye",
         "artist": ["Lata Mangeshkar", "Roopkumar Rathod", "Salim-Sulaiman", "Javed Akhtar"],
@@ -49,7 +49,7 @@ const songsDB1 = () => {
         "duration": "5:31"
     });
 
-    const s4 = new SongsDB({
+    const s4 = new songsDB({
         "id": 4,
         "title": "Kabhi Kabhi Aditi",
         "artist": ["Rashid Ali"],
@@ -60,7 +60,7 @@ const songsDB1 = () => {
         "duration": "3:38"
     });
 
-    const s5 = new SongsDB({
+    const s5 = new songsDB({
         "id": 5,
         "title": "Nazrein Milana Nazrein Churana",
         "artist": ["Benny Dayal", "Satish Chakravarthy", "Sayonara"],
@@ -71,7 +71,7 @@ const songsDB1 = () => {
         "duration": "3:53"
     });
 
-    const s6 = new SongsDB({
+    const s6 = new songsDB({
         "id": 6,
         "title": "Pappu Can't Dance",
         "artist": ["Benny Dayal", "Naresh Iyer", "Satish Chakravarthy"],
@@ -82,7 +82,7 @@ const songsDB1 = () => {
         "duration": "4:24"
     });
 
-    const s7 = new SongsDB({
+    const s7 = new songsDB({
         "id": 7,
         "title": "Dil Dhadakne Do",
         "artist": ["Shankar-Ehsaan-Loy", "Suraj Jagan", "Shankar Mahadevan"],
@@ -93,7 +93,7 @@ const songsDB1 = () => {
         "duration": "3:51"
     });
 
-    const s8 = new SongsDB({
+    const s8 = new songsDB({
         "id": 8,
         "title": "Senorita",
         "artist": ["Shankar-Ehsaan-Loy", "Farhan Akhtar", "Hrithik Roshan"],
@@ -104,7 +104,7 @@ const songsDB1 = () => {
         "duration": "3:51"
     });
 
-    const s9 = new SongsDB({
+    const s9 = new songsDB({
         "id": 9,
         "title": "Sooraj Ki Baahon Mein",
         "artist": ["Shankar-Ehsaan-Loy", "Clinton Cerejo", "Dominique Cerejo"],
@@ -115,7 +115,7 @@ const songsDB1 = () => {
         "duration": "3:24"
     });
 
-    const s10 = new SongsDB({
+    const s10 = new songsDB({
         "id": 10,
         "title": "Desi Kalakaar",
         "artist": ["Yo Yo Honey Singh"],
@@ -126,7 +126,7 @@ const songsDB1 = () => {
         "duration": "4:18"
     });
 
-    const s11 = new SongsDB({
+    const s11 = new songsDB({
         "id": 11,
         "title": "I'm Your DJ Tonight",
         "artist": ["Yo Yo Honey Singh"],
@@ -137,7 +137,7 @@ const songsDB1 = () => {
         "duration": "4:41"
     });
 
-    const s12 = new SongsDB({
+    const s12 = new songsDB({
         "id": 12,
         "title": "Love Dose",
         "artist": ["Yo Yo Honey Singh"],
@@ -148,13 +148,18 @@ const songsDB1 = () => {
         "duration": "3:48"
     });
 
-    SongsDB.insertMany([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12]);
-    console.log("Data inserted successfully");
+    songsDB.insertMany([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12])
+        .then(() => {
+            console.log("Data inserted successfully");
+        })
+        .catch((err) => {
+            console.error(`Error during insert: ${err.name}`);
+        });
 }
 
 async function fetchJSON() {
     try {
-        const results = await SongsDB.find().select({ _id: 0, __v: 0 });
+        const results = await songsDB.find().select({ _id: 0, __v: 0 });
         const filePath = path.join(__dirname, "../../frontend/public/data/songsData.json");
 
         fs.writeFileSync(filePath, JSON.stringify(results, null, 2), 'utf-8'); // `null, 2` for pretty printing
@@ -164,4 +169,4 @@ async function fetchJSON() {
     }
 }
 
-module.exports = { songsDB1, fetchJSON };
+module.exports = { createDB, fetchJSON };
