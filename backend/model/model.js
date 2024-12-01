@@ -166,12 +166,12 @@ async function fetchJSON() {
 
         const filePath = 'database/data/songsData.json';
         fs.writeFileSync(filePath, JSON.stringify(results, null, 2), 'utf-8'); // `null, 2` for pretty printing
-        console.log(`Data successfully saved to ${filePath}`);
+        console.log(`Song data successfully saved to ${filePath}`);
 
         } 
 
     catch (error) {
-        console.error("Error fetching or saving data:", error);
+        console.error("Error fetching or saving song data:", error);
     }
 }
 
