@@ -23,7 +23,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const albumName = new URLSearchParams(window.location.search).get("name");
 
         if (!albumName) {
-            console.error("Album name is missing in the query string.");
+            alert("No album name was given!");
+            window.location.assign("/home");
             return;
         }
 
@@ -32,7 +33,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             const albumSongs = songData.filter((song) => song.album === albumName);
 
             if (albumSongs.length === 0) {
-                console.error(`No songs found for the album: ${albumName}`);
+                alert("Invalid album name was given!");
+                window.location.assign("/home");
                 return;
             }
 
