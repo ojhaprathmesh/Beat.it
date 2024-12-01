@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             albumSongs.forEach((song, index) => {
                 const songItem = document.createElement("div");
                 songItem.className = "album-song-item";
+                songItem.id = `song-${index + 1}`;
                 songItem.innerHTML = `
                     <div class="index">${index + 1}.</div>
                     <div class="song-name">${song.title}</div>
