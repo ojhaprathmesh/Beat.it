@@ -9,7 +9,7 @@
    npm install
    ```
    
-3. **Run the server:**
+3. **Run the Server:**
    ```
    nodemon backend/server
    ```
