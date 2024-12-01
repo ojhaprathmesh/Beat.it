@@ -76,12 +76,10 @@ const handleProfileDataIO = async (profileData, errorContainer) => {
             },
             body: JSON.stringify(profileData)
         });
-
         if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.error);
         }
-
         return true; // Successfully registered
     } catch (error) {
         errorContainer.textContent = error.message;

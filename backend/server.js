@@ -73,14 +73,11 @@ const UserData = require("./model/userModel.js"); // Import UserData model
 
 const setupAPIRoutes = () => {
     // Other routes...
-
     app.post("/api/register", async (req, res) => {
         const { firstName, lastName, email, password } = req.body;
-
         if (!firstName || !lastName || !email || !password) {
             return res.status(400).json({ error: "All fields are required." });
         }
-
         try {
             const newUser  = new UserData({ firstName, lastName, email, password });
             await newUser .save();
