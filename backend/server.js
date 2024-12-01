@@ -79,7 +79,6 @@ Object.entries(pageRoutes).forEach(([route, view]) => {
     });
 });
 
-
 // API Routes
 app.get("/api/data/:type", (req, res) => {
     const { type } = req.params;
