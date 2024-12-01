@@ -1,19 +1,21 @@
 <nav class="navbar">
     <div id="logo">
         <img src="/assets/Beat.it White Logo.webp" alt="Beat.it Logo" width="60px" height="60px"
-             onclick="window.location='/home'">
+            onclick="window.location='/home'">
     </div>
 
     <form class="searchbar" action="/search" method="GET">
         <img id="search-icon" src="/assets/home/Search.webp" alt="Search Icon" width="32px" height="32px">
         <hr id="line-separator">
         <input class="font-inter" id="search-input" type="text" placeholder="Search by artists, songs or albums"
-               name="query" style="font-weight: 100;">
+            name="query" style="font-weight: 100;">
     </form>
 
     <div class="menu font-inter">
         <!-- Dynamically rendering username letter -->
-        <h1 id="username-letter" style="font-weight: 100;"><%= usernameLetter %></h1>
+        <h1 id="username-letter" style="font-weight: 100;">
+            <%= usernameLetter %>
+        </h1>
         <div class="overlay">
             <p id="profile" onclick="window.location='/profile'">Profile</p>
             <div>

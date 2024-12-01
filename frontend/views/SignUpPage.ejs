@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-          content="Join the music revolution with Beat.it! Sign up now to enjoy an amazing experience.">
+        content="Join the music revolution with Beat.it! Sign up now to enjoy an amazing experience.">
     <title>Beat.it</title>
 
     <link rel="stylesheet" href="/styles/font.css" media="print" onload="this.media='all'">
@@ -104,88 +104,87 @@
 </head>
 
 <body>
-<main class="signup">
-    <section class="graphics-signup">
-        <div class="font-syne-mono" id="brand-tag">
-            Join us in the music revolution and just Beat it!
-        </div>
-
-        <div class=" image-container" id="image-container-1">
-            <img src="/assets/signup/Graphic%20Design.webp" alt="Graphic Design Blob" width="725px"
-                 height="1024px">
-        </div>
-
-        <div class="image-container" id="image-container-2">
-            <img src="/assets/signup/Singing%20Boy.webp" alt="Singing Boy" width="330px" height="382px">
-        </div>
-
-        <div class="image-container" id="image-container-3">
-            <img src="/assets/signup/DJ%20Girl.webp" alt="DJ Girl" width="288px" height="276px">
-        </div>
-    </section>
-    <section class="whiteFrame-signup">
-        <div id="beatit-text" style="width: 50px; position: relative; bottom: 65px;">
-            <pre class="font-syne">Beat.it     Beat.it     Beat.it     Beat.it     Beat.it</pre>
-        </div>
-
-        <form class="form font-inter" id="signup-form" method="POST">
-            <section class="form-heading">
-                <h1 class="main-heading">Create Account</h1>
-            </section>
-
-            <section class="form-inputs">
-                <div class="input-container name-input first-name">
-                    <input type="text" class="name box" id="first-name-label" name="firstName" required>
-                    <label for="first-name-label">First Name</label>
-                </div>
-
-                <div class="input-container name-input last-name">
-                    <input type="text" class="name box" id="last-name-label" name="lastName">
-                    <label for="last-name-label">Last Name</label>
-                </div>
-
-                <div class="input-container email">
-                    <input type="email" class="box" id="email-label" name="email" required autocomplete="username">
-                    <label for="email-label">Email</label>
-                </div>
-
-                <div class="input-container password">
-                    <input type="password" class="box" id="password-label" name="pass-create" required
-                           autocomplete="new-password">
-                    <label for="password-label">Password</label>
-                </div>
-
-                <div class="input-container confirm-password">
-                    <input type="password" class="box" id="confirm-password-label" name="pass-confirm" required
-                           autocomplete="new-password">
-                    <label for="confirm-password-label">Confirm Password</label>
-                </div>
-
-                <button class="form-btn font-inter" id="create-account" type="submit">
-                    Create Account
-                </button>
-            </section>
-
-            <div class="font-inter redirect" id="redirect-login">
-                <p>Already have an account? </p>
-                <p>Login</p>
+    <main class="signup">
+        <section class="graphics-signup">
+            <div class="font-syne-mono" id="brand-tag">
+                Join us in the music revolution and just Beat it!
             </div>
-        </form>
-    </section>
-</main>
 
-<script src="/scripts/utility/loading.js"></script>
+            <div class=" image-container" id="image-container-1">
+                <img src="/assets/signup/Graphic%20Design.webp" alt="Graphic Design Blob" width="725px" height="1024px">
+            </div>
 
-<script type="module" src="/scripts/handlers/formHandler.js" defer></script>
+            <div class="image-container" id="image-container-2">
+                <img src="/assets/signup/Singing%20Boy.webp" alt="Singing Boy" width="330px" height="382px">
+            </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const redirect = document.querySelector(".redirect p:nth-child(2)");
-        redirect.addEventListener("click", () => {
-            window.location.href = "/login";
+            <div class="image-container" id="image-container-3">
+                <img src="/assets/signup/DJ%20Girl.webp" alt="DJ Girl" width="288px" height="276px">
+            </div>
+        </section>
+        <section class="whiteFrame-signup">
+            <div id="beatit-text" style="width: 50px; position: relative; bottom: 65px;">
+                <pre class="font-syne">Beat.it     Beat.it     Beat.it     Beat.it     Beat.it</pre>
+            </div>
+
+            <form class="form font-inter" id="signup-form" method="POST">
+                <section class="form-heading">
+                    <h1 class="main-heading">Create Account</h1>
+                </section>
+
+                <section class="form-inputs">
+                    <div class="input-container name-input first-name">
+                        <input type="text" class="name box" id="first-name-label" name="firstName" required>
+                        <label for="first-name-label">First Name</label>
+                    </div>
+
+                    <div class="input-container name-input last-name">
+                        <input type="text" class="name box" id="last-name-label" name="lastName">
+                        <label for="last-name-label">Last Name</label>
+                    </div>
+
+                    <div class="input-container email">
+                        <input type="email" class="box" id="email-label" name="email" required autocomplete="username">
+                        <label for="email-label">Email</label>
+                    </div>
+
+                    <div class="input-container password">
+                        <input type="password" class="box" id="password-label" name="pass-create" required
+                            autocomplete="new-password">
+                        <label for="password-label">Password</label>
+                    </div>
+
+                    <div class="input-container confirm-password">
+                        <input type="password" class="box" id="confirm-password-label" name="pass-confirm" required
+                            autocomplete="new-password">
+                        <label for="confirm-password-label">Confirm Password</label>
+                    </div>
+
+                    <button class="form-btn font-inter" id="create-account" type="submit">
+                        Create Account
+                    </button>
+                </section>
+
+                <div class="font-inter redirect" id="redirect-login">
+                    <p>Already have an account? </p>
+                    <p>Login</p>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="/scripts/utility/loading.js"></script>
+
+    <script type="module" src="/scripts/handlers/formHandler.js" defer></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const redirect = document.querySelector(".redirect p:nth-child(2)");
+            redirect.addEventListener("click", () => {
+                window.location.href = "/login";
+            });
         });
-    });
-</script>
+    </script>
 </body>
 
 </html>
