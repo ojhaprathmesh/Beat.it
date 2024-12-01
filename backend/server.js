@@ -62,7 +62,6 @@ const serveStaticFiles = () => {
         const albums = [...new Set(songData.map(song => song.album))];
         const albumData = songData.filter(song => albums.includes(song.album));
 
-        res.locals.usernameLetter = 'S';
         res.locals.song = song;
         res.locals.songRow1 = shuffle([...songData]);
         res.locals.songRow2 = shuffle([...songData]);
@@ -91,16 +90,22 @@ const setupPageRoutes = () => {
     Object.entries(pages).forEach(([route, view]) => {
         if (["/home", "/search", "/profile", "/album"].includes(route)) {
             app.get(route, (req, res) => {
-                const usernameLetter = req.session.usernameLetter || '~'
-                res.render(view, { usernameLetter })
+                const username = req.session.name;
+                const usermail = req.session.email;
+                const usernameLetter = req.session.usernameLetter;
+                if (!usernameLetter) {
+                    return res.redirect("/login");
+                }
+                if (route == "/profile") {
+                    return res.render(view, { username, usermail })
+                }
+                if (route == "/login") {
+                    req.session.usernameLetter = '';
+                }
+                res.render(view, { usernameLetter });
             });
         }
         app.get(route, (req, res) => res.render(view));  // Using .render() to render EJS templates
-    });
-
-    app.get("/home", (req, res) => {
-        const usernameLetter = req.session.usernameLetter || "S"; // Default to "S" if not set
-        res.render("HomePage", { usernameLetter });
     });
 };
 
@@ -150,7 +155,9 @@ const setupAPIRoutes = () => {
             }
 
             // Save to session
-            req.session.usernameLetter = email.charAt(0).toUpperCase();
+            req.session.usernameLetter = user.email.charAt(0).toUpperCase();
+            req.session.email = user.email;
+            req.session.name = user.firstName + ' ' + user.lastName;
 
             res.status(200).json({ message: "Login successful!" });
         } catch (error) {
