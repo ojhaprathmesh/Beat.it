@@ -34,33 +34,33 @@
 
     <%- include('partials/navbar.ejs') %>
 
-        <main class="main-body">
-            <section class="font-montserrat" id="song-container">
-                <h1 id="song-heading" class="song-heading">Songs</h1>
-                <div class="song-rows">
-                    <div class="song-row-1">
-                        <%- include('partials/songs.ejs', { songs: songRow1 }) %>
-                    </div>
-                    <div class="song-row-2">
-                        <%- include('partials/songs.ejs', { songs: songRow2 }) %>
-                    </div>
+    <main class="main-body">
+        <section class="font-montserrat" id="song-container">
+            <h1 id="song-heading" class="song-heading">Songs</h1>
+            <div class="song-rows">
+                <div class="song-row-1">
+                    <%- include('partials/songs.ejs', { songs: songRow1 }) %>
                 </div>
-            </section>
-
-            <section class="font-montserrat" id="album-container">
-                <h1 id="album-heading">Albums</h1>
-                <div class="album-row">
-                    <%- include('partials/albums.ejs', { albums: albums }) %>
+                <div class="song-row-2">
+                    <%- include('partials/songs.ejs', { songs: songRow2 }) %>
                 </div>
-            </section>
-        </main>
+            </div>
+        </section>
 
-        <footer class="player"></footer>
+        <section class="font-montserrat" id="album-container">
+            <h1 id="album-heading">Albums</h1>
+            <div class="album-row">
+                <%- include('partials/albums.ejs', { albums: albums }) %>
+            </div>
+        </section>
+    </main>
 
-        <script type="module" src="/scripts/handlers/navbarHandler.js" defer></script>
-        <script type="module" src="/scripts/handlers/songHandler.js" defer></script>
-        <script type="module" src="/scripts/handlers/albumHandler.js" defer></script>
-        <script type="module" src="/scripts/handlers/playerHandler.js" defer></script>
+    <%- include('partials/player.ejs', { song: song}) %>
+
+    <script type="module" src="/scripts/handlers/navbarHandler.js" defer></script>
+    <script type="module" src="/scripts/handlers/songHandler.js" defer></script>
+    <script type="module" src="/scripts/handlers/albumHandler.js" defer></script>
+    <script type="module" src="/scripts/handlers/playerHandler.js" defer></script>
 </body>
 
 </html>

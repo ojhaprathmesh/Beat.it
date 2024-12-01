@@ -1,4 +1,3 @@
-import { insertPlayer } from "../components/player.js";
 import { MusicControl } from "../classes/MusicControl.js";
 
 const toggleLike = (likeBtnSelector, checkboxSelector) => {
@@ -43,8 +42,6 @@ const updateVolumeUI = (volume, [muteIcon, lowIcon, midIcon, highIcon], audioEle
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await insertPlayer(".player");       // Wait for the player to be placed
-
     toggleLike(".like-btn", ".like-check");
 
     const musicControl = new MusicControl(".playbar");

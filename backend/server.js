@@ -60,6 +60,7 @@ const setupPageRoutes = () => {
             songRow1,
             songRow2,
             albums: shuffle(albumData),
+            song: songData[0],
         });
     });
 };
