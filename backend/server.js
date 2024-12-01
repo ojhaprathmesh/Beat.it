@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const {shuffle} = require('../frontend/public/scripts/utility/shuffle');
+const {fetchSongData} = require("../frontend/public/scripts/utility/fetchSongData");
 
 const app = express();
 const port = 3000;
@@ -43,12 +45,14 @@ const setupPageRoutes = () => {
         app.get(route, (req, res) => res.render(view));  // Using .render() to render EJS templates
     });
 
-    app.get('/home', (req, res) => {
-        // You can fetch this value from the session, database, or any other source
-        const usernameLetter = 'S'; // Example static value, but should be dynamic based on the user
+    app.get('/home', async (req, res) => {
+        const songData = await fetchSongData();
 
-        // Render the HomePage.ejs and pass the usernameLetter variable to the template
-        res.render('HomePage', { usernameLetter });
+        res.render('HomePage', {
+            usernameLetter: 'S',
+            songRow1: shuffle(songData),
+            songRow2: shuffle(songData),
+        });
     });
 };
 
@@ -79,24 +83,24 @@ const setupAPIRoutes = () => {
         });
     });
 
-    // PUT route to update song durations
-    app.put("/api/data/update-durations", async (req, res) => {
-        const {songs} = req.body;
-
-        if (!Array.isArray(songs)) {
-            return res.status(400).json({error: "Invalid data format. 'songs' must be an array."});
-        }
-
-        const filePath = path.join(paths.data, "songsData.json");
-
-        try {
-            await updateJSONFile(filePath, songs);
-            res.json({message: "Durations updated successfully."});
-        } catch (error) {
-            console.error("Error updating durations:", error);
-            res.status(500).json({error: "Failed to update song durations."});
-        }
-    });
+    // // PUT route to update song durations
+    // app.put("/api/data/update-durations", async (req, res) => {
+    //     const {songs} = req.body;
+    //
+    //     if (!Array.isArray(songs)) {
+    //         return res.status(400).json({error: "Invalid data format. 'songs' must be an array."});
+    //     }
+    //
+    //     const filePath = path.join(paths.data, "songsData.json");
+    //
+    //     try {
+    //         await updateJSONFile(filePath, songs);
+    //         res.json({message: "Durations updated successfully."});
+    //     } catch (error) {
+    //         console.error("Error updating durations:", error);
+    //         res.status(500).json({error: "Failed to update song durations."});
+    //     }
+    // });
 };
 
 // 404 Error Handling
