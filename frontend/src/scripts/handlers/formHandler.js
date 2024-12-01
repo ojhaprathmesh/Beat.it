@@ -69,22 +69,43 @@ const handleFormSubmission = (form) => {
 // Save profile data to local storage
 const handleProfileDataIO = async (profileData, errorContainer) => {
     try {
-        const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
-        if (profiles.some(profile => profile.email === profileData.email)) {
-            throw new Error("Duplicate email");
+        const response = await fetch("/api/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(profileData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error);
         }
 
-        profileData.id = profiles.length ? profiles[profiles.length - 1].id + 1 : 1;
-        profiles.push(profileData);
-        localStorage.setItem("profiles", JSON.stringify(profiles));
-        return true;
+        return true; // Successfully registered
     } catch (error) {
-        errorContainer.textContent = error.message === "Duplicate email"
-            ? "This email is already associated with another account."
-            : "Failed to save profile. Please try again.";
+        errorContainer.textContent = error.message;
         return false;
     }
 };
+// const handleProfileDataIO = async (profileData, errorContainer) => {
+//     try {
+//         const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
+//         if (profiles.some(profile => profile.email === profileData.email)) {
+//             throw new Error("Duplicate email");
+//         }
+
+//         profileData.id = profiles.length ? profiles[profiles.length - 1].id + 1 : 1;
+//         profiles.push(profileData);
+//         localStorage.setItem("profiles", JSON.stringify(profiles));
+//         return true;
+//     } catch (error) {
+//         errorContainer.textContent = error.message === "Duplicate email"
+//             ? "This email is already associated with another account."
+//             : "Failed to save profile. Please try again.";
+//         return false;
+//     }
+// };
 
 // Check password strength and validate characters
 const checkPasswordStrength = (passwordElement) => {
