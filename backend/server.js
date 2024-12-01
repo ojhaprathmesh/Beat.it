@@ -1,12 +1,23 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const { shuffle } = require('../frontend/public/scripts/utility/shuffle');
-const { fetchSongData } = require("../frontend/public/scripts/utility/fetchSongData");
 
 const app = express();
 const port = 3000;
+
+const dbconnect = require("./dbconnect/dbcon.js");
+const { songsDB1, fetchJSON } = require('./model/dataModel.js');
+const userData = require("./model/userModel.js");
 const songData = require("../frontend/public/data/songsData.json");
+const { shuffle } = require('../frontend/public/scripts/utility/shuffle');
+
+dbconnect()
+try {
+    // songsDB1();
+} catch (err) {
+    console.warn("Error saving data: " + err);
+}
+fetchJSON()
 
 // Paths
 const paths = {
@@ -93,6 +104,20 @@ const setupAPIRoutes = () => {
             if (err) return res.status(500).json({ error: "Error reading the file." });
             res.json(JSON.parse(data));
         });
+    });
+
+    app.post("/api/register", async (req, res) => {
+        const { firstName, lastName, email, password } = req.body;
+        try {
+            const newUser = new userData({ firstName, lastName, email, password });
+            await newUser.save();
+            res.status(201).json({ message: "User  registered successfully." });
+        } catch (error) {
+            if (error.code === 11000) {
+                return res.status(400).json({ error: "Email already exists." });
+            }
+            res.status(500).json({ error: "Internal server error." });
+        }
     });
 };
 

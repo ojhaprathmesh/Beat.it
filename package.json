@@ -20,5 +20,10 @@
   },
   "devDependencies": {
     "nodeman": "^1.1.2"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "frontend/public/data/songsData.json"
+    ]
   }
 }
