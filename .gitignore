@@ -1,7 +1,6 @@
 *.txt
 *.py
 /.idea
-/example.html
 /node_modules
+/example.html
 /frontend/public/data/songsData.js
-/package-lock.json
