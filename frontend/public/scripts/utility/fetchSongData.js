@@ -1,8 +1,8 @@
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60); // Extract the minutes
-    const remainingSeconds = Math.floor(seconds % 60); // Extract the remaining seconds
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-}
+// function formatTime(seconds) {
+//     const minutes = Math.floor(seconds / 60); // Extract the minutes
+//     const remainingSeconds = Math.floor(seconds % 60); // Extract the remaining seconds
+//     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+// }
 
 async function fetchSongData() {
     try {
