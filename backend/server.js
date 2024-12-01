@@ -60,16 +60,6 @@ const setupPageRoutes = () => {
     });
 };
 
-// // Helper: Update JSON file
-// const updateJSONFile = (filePath, newData) => {
-//     return new Promise((resolve, reject) => {
-//         fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf-8", (err) => {
-//             if (err) reject(err);
-//             else resolve();
-//         });
-//     });
-// };
-
 // API Routes
 const setupAPIRoutes = () => {
     app.get("/api/data/:type", (req, res) => {
@@ -86,25 +76,6 @@ const setupAPIRoutes = () => {
             res.json(JSON.parse(data));
         });
     });
-
-    // // PUT route to update song durations
-    // app.put("/api/data/update-durations", async (req, res) => {
-    //     const {songs} = req.body;
-    //
-    //     if (!Array.isArray(songs)) {
-    //         return res.status(400).json({error: "Invalid data format. 'songs' must be an array."});
-    //     }
-    //
-    //     const filePath = path.join(paths.data, "songsData.json");
-    //
-    //     try {
-    //         await updateJSONFile(filePath, songs);
-    //         res.json({message: "Durations updated successfully."});
-    //     } catch (error) {
-    //         console.error("Error updating durations:", error);
-    //         res.status(500).json({error: "Failed to update song durations."});
-    //     }
-    // });
 };
 
 // 404 Error Handling
