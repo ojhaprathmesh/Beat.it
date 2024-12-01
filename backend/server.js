@@ -64,6 +64,7 @@ const serveStaticFiles = () => {
 const setupPageRoutes = () => {
     const pages = {
         "/": "SignUpPage",
+        "/home": "HomePage",
         "/signup": "SignUpPage",
         "/login": "LoginPage",
         "/profile": "ProfilePage",
@@ -74,14 +75,6 @@ const setupPageRoutes = () => {
     // Routes for EJS views
     Object.entries(pages).forEach(([route, view]) => {
         app.get(route, (req, res) => res.render(view));  // Using .render() to render EJS templates
-    });
-
-    app.get('/home', async (req, res) => {
-        res.render('HomePage');
-    });
-
-    app.get('/album', async (req, res) => {
-        res.render('AlbumPage');
     });
 };
 
