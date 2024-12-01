@@ -119,6 +119,28 @@ const setupAPIRoutes = () => {
             res.status(500).json({ error: "Internal server error." });
         }
     });
+
+    app.post("/api/login", async (req, res) => {
+        const { email, password } = req.body;
+
+        try {
+            const user = await userData.findOne({ email });
+
+            if (!user) {
+                return res.status(404).json({ error: "Email not associated with any account." });
+            }
+
+            if (user.password !== password) {
+                return res.status(401).json({ error: "Invalid credentials. Please try again." });
+            }
+
+            // Assuming you want to redirect or return a success message
+            res.status(200).json({ message: "Login successful!", user });
+        } catch (error) {
+            console.error("Error during login:", error);
+            res.status(500).json({ error: "Internal server error." });
+        }
+    });
 };
 
 // 404 Error Handling

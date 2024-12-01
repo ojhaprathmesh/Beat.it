@@ -110,63 +110,80 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
             const loginForm = document.getElementById("login-form");
+            const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
             const redirect = document.querySelector(".redirect p:nth-child(2)");
             const forgot = document.querySelector(".redirect > p");
-
-            forgot.addEventListener("click", () => {
+    
+            errorContainer.className = "error-messages";
+    
+            // Forgot Password Handler
+            forgot.addEventListener("click", async () => {
                 const email = loginForm.querySelector("#email-label").value;
-                let found = false;
-                profiles.forEach((profile) => {
-                    if (email === profile.email) {
-                        alert(profile.password);
-                        found = true;
+    
+                if (!email) {
+                    alert("Please enter your email to retrieve your password.");
+                    return;
+                }
+    
+                try {
+                    const response = await fetch(`/api/forgot-password`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ email })
+                    });
+    
+                    const data = await response.json();
+    
+                    if (!response.ok) {
+                        throw new Error(data.error || "Failed to retrieve password.");
                     }
-                });
-                if (!found) {
-                    alert("Email not associated with any account!")
+    
+                    alert(`Your password is: ${data.password}`);
+                } catch (error) {
+                    alert(error.message || "Failed to retrieve password.");
                 }
             });
-
-            loginForm.addEventListener("submit", (event) => {
+    
+            // Login Form Submission Handler
+            loginForm.addEventListener("submit", async (event) => {
                 event.preventDefault();
+    
                 const email = loginForm.querySelector("#email-label").value;
                 const password = loginForm.querySelector("#password-label").value;
-
-                let isMatched = false, isFound = false;
-                profiles.forEach((profile) => {
-                    if (email === profile.email) {
-                        isFound = true;
+    
+                try {
+                    const response = await fetch("/api/login", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+    
+                    const data = await response.json();
+    
+                    if (!response.ok) {
+                        throw new Error(data.error || "Failed to log in.");
                     }
-                    if (email === profile.email && password === profile.password) {
-                        isMatched = true;
-                    }
-                });
-
-                loginForm.reset();
-
-                if (isMatched) {
+    
+                    // Redirect on success
                     window.location.href = "/home";
-                } else {
-                    const form = document.getElementById("login-form");
-                    const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
-                    errorContainer.className = "error-messages";
-                    if (isFound) {
-                        errorContainer.textContent = "Invalid Credentials! Please try again."
-                    } else {
-                        errorContainer.textContent = "This email is not associated with any account."
-                    }
-                    errorContainer.style.bottom = "120px";
-                    form.appendChild(errorContainer);
+                } catch (error) {
+                    errorContainer.textContent = error.message;
+                    loginForm.appendChild(errorContainer);
                 }
             });
-
+    
+            // Redirect to Sign-up Page
             redirect.addEventListener("click", () => {
                 window.location.href = "/signin";
             });
         });
     </script>
+    
 </body>
 
 </html>
