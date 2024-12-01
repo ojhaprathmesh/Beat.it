@@ -112,78 +112,62 @@
         document.addEventListener("DOMContentLoaded", () => {
             const loginForm = document.getElementById("login-form");
             const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
-            const redirect = document.querySelector(".redirect p:nth-child(2)");
-            const forgot = document.querySelector(".redirect > p");
-    
+            const redirectLink = document.querySelector(".redirect p:nth-child(2)");
+            const forgotPasswordLink = document.querySelector(".redirect > p");
+
             errorContainer.className = "error-messages";
-    
+
+            const showError = (message) => {
+                errorContainer.textContent = message;
+                loginForm.appendChild(errorContainer);
+            };
+
             // Forgot Password Handler
-            forgot.addEventListener("click", async () => {
-                const email = loginForm.querySelector("#email-label").value;
-    
-                if (!email) {
-                    alert("Please enter your email to retrieve your password.");
-                    return;
-                }
-    
+            forgotPasswordLink.addEventListener("click", async () => {
+                const email = loginForm.querySelector("#email-label").value.trim();
+
                 try {
-                    const response = await fetch(`/api/forgot-password`, {
+                    const response = await fetch("/api/forgot-password", {
                         method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ email })
                     });
-    
                     const data = await response.json();
-    
-                    if (!response.ok) {
-                        throw new Error(data.error || "Failed to retrieve password.");
-                    }
-    
+                    if (!response.ok) throw new Error(data.error || "Unable to retrieve password.");
                     alert(`Your password is: ${data.password}`);
                 } catch (error) {
-                    alert(error.message || "Failed to retrieve password.");
+                    alert(error);
                 }
             });
-    
+
             // Login Form Submission Handler
             loginForm.addEventListener("submit", async (event) => {
                 event.preventDefault();
-    
-                const email = loginForm.querySelector("#email-label").value;
-                const password = loginForm.querySelector("#password-label").value;
-    
+
+                const email = loginForm.querySelector("#email-label").value.trim();
+                const password = loginForm.querySelector("#password-label").value.trim();
+
                 try {
                     const response = await fetch("/api/login", {
                         method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ email, password })
                     });
-    
                     const data = await response.json();
-    
-                    if (!response.ok) {
-                        throw new Error(data.error || "Failed to log in.");
-                    }
-    
-                    // Redirect on success
-                    window.location.href = "/home";
+                    if (!response.ok) throw new Error(data.error || "Login failed.");
+                    window.location.href = "/home"; // Redirect on success
                 } catch (error) {
-                    errorContainer.textContent = error.message;
-                    loginForm.appendChild(errorContainer);
+                    showError(error.message);
                 }
             });
-    
+
             // Redirect to Sign-up Page
-            redirect.addEventListener("click", () => {
+            redirectLink.addEventListener("click", () => {
                 window.location.href = "/signin";
             });
         });
     </script>
-    
+
 </body>
 
 </html>

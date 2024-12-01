@@ -134,10 +134,29 @@ const setupAPIRoutes = () => {
                 return res.status(401).json({ error: "Invalid credentials. Please try again." });
             }
 
-            // Assuming you want to redirect or return a success message
             res.status(200).json({ message: "Login successful!", user });
         } catch (error) {
             console.error("Error during login:", error);
+            res.status(500).json({ error: "Internal server error." });
+        }
+    });
+
+    app.post("/api/forgot-password", async (req, res) => {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ error: "Email is required." });
+        }
+
+        try {
+            const user = await userData.findOne({ email });
+
+            if (!user) {
+                return res.status(404).json({ error: "Email not associated with any account." });
+            }
+            res.status(200).json({ password: user.password });
+        } catch (error) {
+            console.error("Error during password retrieval:", error);
             res.status(500).json({ error: "Internal server error." });
         }
     });
