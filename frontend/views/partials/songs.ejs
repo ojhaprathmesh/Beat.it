@@ -1,0 +1,10 @@
+<% songs.forEach(song => { %>
+    <div class="song-row-item" id="<%= song.id %>">
+        <img src="<%= song.albumCover %>" class="song-cover" alt="<%= song.title %>"
+             width="75px" height="75px">
+        <div class="title-artist font-syne">
+            <div class="song-title"><%= song.title %></div>
+            <div class="album-name"><%= song.album %></div>
+        </div>
+    </div>
+<% }); %>

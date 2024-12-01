@@ -4,16 +4,12 @@ const fs = require('fs');
 
 const app = express();
 const port = 3000;
-let albumSongs = [];
 
-// Paths (centralize the path definitions)
+// Paths
 const paths = {
-    public: path.join(__dirname, "../frontend/public/"),
-    source: path.join(__dirname, "../frontend/src/"),
-    pages: path.join(__dirname, "../frontend/src/pages"),
-    data: path.join(__dirname, "../database/data/"),
-    uploads: path.join(__dirname, "../database/uploads/"),
-    albumCovers: path.join(__dirname, "../database/album-covers/")
+    public: path.join(__dirname, "../frontend/public"),
+    views: path.join(__dirname, "../frontend/views"),
+    data: path.join(__dirname, "../frontend/public/data"),
 };
 
 // Middleware: Serve static files and handle JSON
@@ -24,31 +20,28 @@ const serveStaticFiles = () => {
     });
 
     app.use(express.static(paths.public));
-    app.use(express.static(paths.source));
-    app.use(express.static(paths.uploads));
-    app.use(express.static(paths.albumCovers));
-    app.use(express.static(paths.pages));
     app.use(express.json());
 };
 
 // Define static page routes
 const setupPageRoutes = () => {
     const pages = {
-        "/": "index.html",
-        "/signin": "SignupPage.html",
+        "/": "SignUpPage.html",
+        "/signup": "SignUpPage.html",
         "/login": "LoginPage.html",
         "/home": "HomePage.html",
         "/profile": "ProfilePage.html",
         "/search": "SearchPage.html",
-        "/album": "AlbumPage.html"
+        "/album": "AlbumPage.html",
     };
 
+    // Routes for view pages
     Object.entries(pages).forEach(([route, file]) => {
-        app.get(route, (req, res) => res.sendFile(file, { root: paths.pages }));
+        app.get(route, (req, res) => res.sendFile(file, {root: paths.views}));
     });
 };
 
-// Add updateJSONFile helper function above setupAPIRoutes
+// Helper: Update JSON file
 const updateJSONFile = (filePath, newData) => {
     return new Promise((resolve, reject) => {
         fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf-8", (err) => {
@@ -61,36 +54,36 @@ const updateJSONFile = (filePath, newData) => {
 // API Routes
 const setupAPIRoutes = () => {
     app.get("/api/data/:type", (req, res) => {
-        const { type } = req.params;
-        const allowedFiles = ["profileData", "songsData", "albumsData", "artistsData"];
+        const {type} = req.params;
+        const allowedFiles = ["profileData", "songsData", "albumsData"];
 
         if (!allowedFiles.includes(type)) {
-            return res.status(404).json({ error: "Invalid data request." });
+            return res.status(404).json({error: "Invalid data request."});
         }
 
         const filePath = path.join(paths.data, `${type}.json`);
         fs.readFile(filePath, "utf-8", (err, data) => {
-            if (err) return res.status(500).json({ error: "Error reading the file." });
+            if (err) return res.status(500).json({error: "Error reading the file."});
             res.json(JSON.parse(data));
         });
     });
 
-    // Add the new PUT route for updating durations
+    // PUT route to update song durations
     app.put("/api/data/update-durations", async (req, res) => {
-        const { songs } = req.body;
+        const {songs} = req.body;
 
         if (!Array.isArray(songs)) {
-            return res.status(400).json({ error: "Invalid data format. 'songs' must be an array." });
+            return res.status(400).json({error: "Invalid data format. 'songs' must be an array."});
         }
 
         const filePath = path.join(paths.data, "songsData.json");
 
         try {
             await updateJSONFile(filePath, songs);
-            res.json({ message: "Durations updated successfully." });
+            res.json({message: "Durations updated successfully."});
         } catch (error) {
             console.error("Error updating durations:", error);
-            res.status(500).json({ error: "Failed to update song durations." });
+            res.status(500).json({error: "Failed to update song durations."});
         }
     });
 };
@@ -106,14 +99,15 @@ const handle404 = () => {
     });
 };
 
-// Setting up the server and starting it
+// Initialize and Start Server
 const startServer = () => {
     serveStaticFiles();   // Serve static files
     setupPageRoutes();    // Setup static page routes
     setupAPIRoutes();     // Setup API routes
     handle404();          // Handle 404 for undefined routes
+
     app.listen(port, () => {
-        console.log("Server hosting at http://localhost:" + port);
+        console.log(`Server hosting at http://localhost:${port}`);
     });
 };
 
