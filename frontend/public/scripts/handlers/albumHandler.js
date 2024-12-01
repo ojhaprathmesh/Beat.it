@@ -1,7 +1,4 @@
 import { fetchSongData } from "../utility/fetchSongData.js";
-import { insertAlbums } from "../components/album.js";
-import { shuffle } from "../utility/shuffle.js";
-import { MusicControl } from "../classes/MusicControl.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const pathname = window.location.pathname;
@@ -9,10 +6,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (isHomeOrSearch) {
         try {
-            const songData = await fetchSongData();
-            const shuffledSongs = shuffle(songData);
-            await insertAlbums(".album-row", shuffledSongs);
-
             document.querySelectorAll(".album-row-item").forEach(album => {
                 album.addEventListener("click", () => {
                     const albumName = album.querySelector("img").alt;

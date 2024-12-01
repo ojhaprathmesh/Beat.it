@@ -30,6 +30,8 @@
 </head>
 
 <body>
+    <script src="/scripts/utility/loading.js"></script>
+
     <%- include('partials/navbar.ejs') %>
 
         <main class="main-body">
@@ -47,13 +49,13 @@
 
             <section class="font-montserrat" id="album-container">
                 <h1 id="album-heading">Albums</h1>
-                <div class="album-row"></div>
+                <div class="album-row">
+                    <%- include('partials/albums.ejs', { albums: albums }) %>
+                </div>
             </section>
         </main>
 
         <footer class="player"></footer>
-
-        <script src="/scripts/utility/loading.js"></script>
 
         <script type="module" src="/scripts/handlers/navbarHandler.js" defer></script>
         <script type="module" src="/scripts/handlers/songHandler.js" defer></script>

@@ -48,14 +48,18 @@ const setupPageRoutes = () => {
     app.get('/home', async (req, res) => {
         const songData = await fetchSongData();
 
-        // Shuffle the songs twice to ensure different orders for each row
-        const songRow1 = shuffle([...songData]); // Copy the array before shuffling
-        const songRow2 = shuffle([...songData]); // Copy the array before shuffling
+        // Shuffle the songs for both rows
+        const [songRow1, songRow2] = [shuffle(songData), shuffle([...songData])];
+
+        // Filter unique albums
+        const albums = [...new Set(songData.map(song => song.album))];
+        const albumData = songData.filter(song => albums.includes(song.album));
 
         res.render('HomePage', {
             usernameLetter: 'S',
-            songRow1: songRow1,
-            songRow2: songRow2,
+            songRow1,
+            songRow2,
+            albums: shuffle(albumData),
         });
     });
 };
