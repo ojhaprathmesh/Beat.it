@@ -11,7 +11,10 @@ const dbconnect =require("./dbconnect/dbcon.js")
 dbconnect()
 
 const songsDB1 = require("./model/model.js")
-songsDB1()
+// songsDB1()
+
+const fetchJSON = require("./model/model.js")
+fetchJSON()
 
 // Paths (centralize the path definitions)
 const paths = {
