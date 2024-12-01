@@ -12,6 +12,10 @@ const paths = {
     data: path.join(__dirname, "../frontend/public/data"),
 };
 
+// Set EJS as the view engine
+app.set("view engine", "ejs");
+app.set("views", paths.views);  // Directory to look for EJS views
+
 // Middleware: Serve static files and handle JSON
 const serveStaticFiles = () => {
     app.use((req, res, next) => {
@@ -26,18 +30,25 @@ const serveStaticFiles = () => {
 // Define static page routes
 const setupPageRoutes = () => {
     const pages = {
-        "/": "SignUpPage.html",
-        "/signup": "SignUpPage.html",
-        "/login": "LoginPage.html",
-        "/home": "HomePage.html",
-        "/profile": "ProfilePage.html",
-        "/search": "SearchPage.html",
-        "/album": "AlbumPage.html",
+        "/": "SignUpPage",
+        "/signup": "SignUpPage",
+        "/login": "LoginPage",
+        "/profile": "ProfilePage",
+        "/search": "SearchPage",
+        "/album": "AlbumPage",
     };
 
-    // Routes for view pages
-    Object.entries(pages).forEach(([route, file]) => {
-        app.get(route, (req, res) => res.sendFile(file, {root: paths.views}));
+    // Routes for EJS views
+    Object.entries(pages).forEach(([route, view]) => {
+        app.get(route, (req, res) => res.render(view));  // Using .render() to render EJS templates
+    });
+
+    app.get('/home', (req, res) => {
+        // You can fetch this value from the session, database, or any other source
+        const usernameLetter = 'S'; // Example static value, but should be dynamic based on the user
+
+        // Render the HomePage.ejs and pass the usernameLetter variable to the template
+        res.render('HomePage', { usernameLetter });
     });
 };
 

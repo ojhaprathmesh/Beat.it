@@ -1,8 +1,4 @@
-import { insertNavbar } from "../components/navbar.js";
-
 document.addEventListener("DOMContentLoaded", () => {
-    insertNavbar(".navbar");
-
     const logo = document.getElementById("logo");
     const menu = document.querySelector(".menu");
 
