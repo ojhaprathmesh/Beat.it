@@ -78,18 +78,24 @@
                     <h2 class="font-montserrat" id="creator-type">Artist</h2>
                 </div>
             </div>
-            <section class="font-montserrat" id="song-container" style="width: 75.5%;">
+            <section class="font-montserrat" id="song-container">
                 <h1 id="song-heading" class="song-heading">Songs</h1>
                 <div class="song-rows">
-                    <div class="song-row-1"></div>
-                    <div class="song-row-2"></div>
+                    <div class="song-row-1">
+                        <%- include('partials/songs.ejs', { songs: songRow1 }) %>
+                    </div>
+                    <div class="song-row-2">
+                        <%- include('partials/songs.ejs', { songs: songRow2 }) %>
+                    </div>
                 </div>
             </section>
         </section>
 
         <section class="font-montserrat" id="album-container">
             <h1 id="album-heading">Albums</h1>
-            <div class="album-row"></div>
+            <div class="album-row">
+                <%- include('partials/albums.ejs', { albums: albums }) %>
+            </div>
         </section>
     </main>
 

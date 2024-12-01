@@ -6,6 +6,7 @@ const { fetchSongData } = require("../frontend/public/scripts/utility/fetchSongD
 
 const app = express();
 const port = 3000;
+const songData = require("../frontend/public/data/songsData.json");
 
 // Paths
 const paths = {
@@ -20,13 +21,13 @@ app.set("views", paths.views);  // Directory to look for EJS views
 
 // Middleware: Serve static files and handle JSON
 const serveStaticFiles = () => {
-
     app.use((req, res, next) => {
         res.setHeader("Cache-Control", "no-store");
         next();
     });
 
-    app.use((req, res, next) => {
+    app.use(async (req, res, next) => {
+        // Placeholder song data
         const song = {
             "id": 1,
             "title": "Do Pal",
@@ -42,8 +43,16 @@ const serveStaticFiles = () => {
             "albumCover": "assets/album-covers/veer-zaara.webp"
         }
 
+        // Filter unique albums
+        const albums = [...new Set(songData.map(song => song.album))];
+        const albumData = songData.filter(song => albums.includes(song.album));
+
         res.locals.usernameLetter = 'S';
         res.locals.song = song;
+        res.locals.songRow1 = shuffle([...songData]);
+        res.locals.songRow2 = shuffle([...songData]);
+        res.locals.albums = shuffle(albumData);
+
         next();
     });
 
@@ -68,19 +77,7 @@ const setupPageRoutes = () => {
     });
 
     app.get('/home', async (req, res) => {
-        const songData = await fetchSongData();
-        // Shuffle the songs for both rows
-        const [songRow1, songRow2] = [shuffle(songData), shuffle([...songData])];
-
-        // Filter unique albums
-        const albums = [...new Set(songData.map(song => song.album))];
-        const albumData = songData.filter(song => albums.includes(song.album));
-
-        res.render('HomePage', {
-            songRow1,
-            songRow2,
-            albums: shuffle(albumData),
-        });
+        res.render('HomePage');
     });
 
     app.get('/album', async (req, res) => {
