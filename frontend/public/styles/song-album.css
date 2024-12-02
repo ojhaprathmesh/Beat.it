@@ -65,7 +65,7 @@
     height: 80px;
     column-gap: 6px;
     position: absolute;
-    left: 185%;
+    left: 285%;
     animation: scrollLeft var(--duration) linear infinite;
 }
 

@@ -148,7 +148,73 @@ const createDB = () => {
         "duration": "3:48"
     });
 
-    songsDB.insertMany([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12])
+    const s13 = new songsDB({
+        "id": 13,
+        "title": "Bhool Bhulaiyaa",
+        "artist": ["Pritam", "Niraj Shridhar"],
+        "album": "Bhool Bhulaiyaa",
+        "genre": "Bollywood",
+        "file": "uploads/bhool-bhulaiyaa.mp3",
+        "albumCover": "assets/album-covers/bhool-bhulaiyaa.webp",
+        "duration": "5:27"
+    });
+
+    const s14 = new songsDB({
+        "id": 14,
+        "title": "Labon Ko",
+        "artist": ["Pritam", "KK"],
+        "album": "Bhool Bhulaiyaa",
+        "genre": "Bollywood",
+        "file": "uploads/labon-ko-bhool-bhulaiyaa.mp3",
+        "albumCover": "assets/album-covers/bhool-bhulaiyaa.webp",
+        "duration": "5:43"
+    });
+
+    const s15 = new songsDB({
+        "id": 15,
+        "title": "Mere Dholna",
+        "artist": ["Pritam", "Shreya Ghoshal", "M. G.Shreekumar"],
+        "album": "Bhool Bhulaiyaa",
+        "genre": "Bollywood",
+        "file": "uploads/mere-dholna-bhool-bhulaiyaa.mp3",
+        "albumCover": "assets/album-covers/bhool-bhulaiyaa.webp",
+        "duration": "6:47"
+    });
+
+    const s16 = new songsDB({
+        "id": 16,
+        "title": "Daaru Desi",
+        "artist": ["Pritam", "Benny Dayal", "Shalmali Kholgade"],
+        "album": "Cocktail",
+        "genre": "Bollywood",
+        "file": "uploads/daaru-desi.mp3",
+        "albumCover": "assets/album-covers/cocktail.webp",
+        "duration": "5:27"
+    });
+
+    const s17 = new songsDB({
+        "id": 17,
+        "title": "Second Hand Jawaani",
+        "artist": ["Pritam", "Miss Pooja", "Neha Kakkar", "Nakkash Aziz"],
+        "album": "Cocktail",
+        "genre": "Bollywood",
+        "file": "uploads/second-hand-jawaani.mp3",
+        "albumCover": "assets/album-covers/cocktail.webp",
+        "duration": "5:43"
+    });
+
+    const s18 = new songsDB({
+        "id": 18,
+        "title": "Mere Dholna",
+        "artist": ["Pritam", "Nikhil D'souza", "Shefali Alvares", "Javed Bashir"],
+        "album": "Cocktail",
+        "genre": "Bollywood",
+        "file": "uploads/mere-dholna-bhool-bhulaiyaa.mp3",
+        "albumCover": "assets/album-covers/cocktail.webp",
+        "duration": "6:47"
+    });
+
+    songsDB.insertMany([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15])
         .then(() => {
             console.log("Data inserted successfully");
         })
