@@ -189,7 +189,7 @@ const createDB = () => {
         "genre": "Bollywood",
         "file": "uploads/daaru-desi.mp3",
         "albumCover": "assets/album-covers/cocktail.webp",
-        "duration": "5:27"
+        "duration": "4:29"
     });
 
     const s17 = new songsDB({
@@ -200,21 +200,21 @@ const createDB = () => {
         "genre": "Bollywood",
         "file": "uploads/second-hand-jawaani.mp3",
         "albumCover": "assets/album-covers/cocktail.webp",
-        "duration": "5:43"
+        "duration": "4:02"
     });
 
     const s18 = new songsDB({
         "id": 18,
-        "title": "Mere Dholna",
+        "title": "Tera Naam Japdi Phiran",
         "artist": ["Pritam", "Nikhil D'souza", "Shefali Alvares", "Javed Bashir"],
         "album": "Cocktail",
         "genre": "Bollywood",
-        "file": "uploads/mere-dholna-bhool-bhulaiyaa.mp3",
+        "file": "uploads/tera-naam-japdi-phiran.mp3",
         "albumCover": "assets/album-covers/cocktail.webp",
-        "duration": "6:47"
+        "duration": "3:39"
     });
 
-    songsDB.insertMany([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15])
+    songsDB.insertMany([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18])
         .then(() => {
             console.log("Data inserted successfully");
         })

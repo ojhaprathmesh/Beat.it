@@ -52,9 +52,9 @@ app.use((req, res, next) => {
 
 // Static Routes for EJS Views
 const pageRoutes = {
-    "/": "SignUpPage",
+    "/": "SigninPage",
     "/home": "HomePage",
-    "/signup": "SignUpPage",
+    "/signin": "SigninPage",
     "/login": "LoginPage",
     "/profile": "ProfilePage",
     "/search": "SearchPage",
@@ -66,7 +66,7 @@ Object.entries(pageRoutes).forEach(([route, view]) => {
         const { usernameLetter, name, email } = req.session;
 
         // Redirect to login if not authenticated
-        if (!usernameLetter && route !== "/login") {
+        if (!usernameLetter && !['/login', '/signin'].includes(route)) {
             return res.redirect("/login");
         }
 

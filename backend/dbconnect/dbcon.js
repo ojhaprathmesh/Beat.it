@@ -1,5 +1,12 @@
-let mongoose = require("mongoose");
-let constring = "mongodb+srv://shashwatgaur:fDJMzGsAJSnIpKay@cluster0.6222w.mongodb.net/";
+require('dotenv').config();
+const mongoose = require("mongoose");
+
+const dbUser = process.env.DB_USER;
+const dbPassword = process.env.DB_PASSWORD;
+const dbHost = process.env.DB_HOST;
+const dbName = process.env.DB_NAME;
+
+const constring = `mongodb+srv://${dbUser}:${dbPassword}@${dbHost}/${dbName}?retryWrites=true&w=majority&appName=Site-Database`;
 
 let dbconnect = async () => {
     try {

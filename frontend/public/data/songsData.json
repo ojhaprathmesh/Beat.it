@@ -213,7 +213,7 @@
     "genre": "Bollywood",
     "file": "uploads/daaru-desi.mp3",
     "albumCover": "assets/album-covers/cocktail.webp",
-    "duration": "5:27"
+    "duration": "4:29"
   },
   {
     "id": 17,
@@ -228,11 +228,11 @@
     "genre": "Bollywood",
     "file": "uploads/second-hand-jawaani.mp3",
     "albumCover": "assets/album-covers/cocktail.webp",
-    "duration": "5:43"
+    "duration": "4:02"
   },
   {
     "id": 18,
-    "title": "Mere Dholna",
+    "title": "Tera Naam Japdi Phiran",
     "artist": [
       "Pritam",
       "Nikhil D'souza",
@@ -241,8 +241,8 @@
     ],
     "album": "Cocktail",
     "genre": "Bollywood",
-    "file": "uploads/mere-dholna-bhool-bhulaiyaa.mp3",
+    "file": "uploads/tera-naam-japdi-phiran.mp3",
     "albumCover": "assets/album-covers/cocktail.webp",
-    "duration": "6:47"
+    "duration": "3:39"
   }
 ]
