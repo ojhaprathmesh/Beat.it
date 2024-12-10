@@ -2,9 +2,13 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const session = require("express-session");
+
+// Database and models
 const dbConnect = require("./dbconnect/dbcon.js");
 const { createDB, fetchJSON } = require('./model/dataModel.js');
 const userData = require("./model/userModel.js");
+
+// Utilities
 const songData = require("../frontend/public/data/songsData.json");
 const { shuffle } = require('../frontend/public/scripts/utility/shuffle');
 
