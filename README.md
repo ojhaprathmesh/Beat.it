@@ -111,7 +111,7 @@ Beat.it/
 │   │   ├── LoginPage.ejs                      # Login page template
 │   │   ├── ProfilePage.ejs                    # Profile page template
 │   │   ├── SearchPage.ejs                     # Search page template
-│   │   ├── SigninPage.ejs                     # Signup page template
+│   │   ├── SignupPage.ejs                     # Signup page template
 │   │   ├── partials/                          # Partials for reusability
 │   │   │   ├── navbar.ejs                     # Navbar partial
 │   │   │   ├── songs.ejs                      # Songs partial
