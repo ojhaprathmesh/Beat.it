@@ -6,12 +6,11 @@ const dbPassword = process.env.DB_PASSWORD;
 const dbHost = process.env.DB_HOST;
 const dbName = process.env.DB_NAME;
 
-const constring = `mongodb+srv://${dbUser}:${dbPassword}@${dbHost}/${dbName}?retryWrites=true&w=majority&appName=Site-Database`;
+const dbURI = `mongodb+srv://${dbUser}:${dbPassword}@${dbHost}/${dbName}?retryWrites=true&w=majority&appName=Site-Database`;
 
 let dbconnect = async () => {
     try {
-        await mongoose.connect(constring, {});
-        console.log("Database successfully connected!");
+        await mongoose.connect(dbURI, {});
     } catch (err) {
         console.log("error: " + err);
     }

@@ -3,19 +3,19 @@ const fs = require('fs');
 const path = require("path");
 
 const schema = new mongoose.Schema({
-    id: { type: Number, required: true, unique: true },
-    title: { type: String, required: true },
-    artist: [{ type: String }],
-    album: { type: String, required: true },
-    genre: { type: String, required: true },
-    file: { type: String, required: true },
-    albumCover: { type: String, required: true },
-    duration: { type: String, required: true }
+    id: {type: Number, required: true, unique: true},
+    title: {type: String, required: true},
+    artist: [{type: String}],
+    album: {type: String, required: true},
+    genre: {type: String, required: true},
+    file: {type: String, required: true},
+    albumCover: {type: String, required: true},
+    duration: {type: String, required: true}
 });
 
 const songsDB = new mongoose.model("SongsDB", schema);
 
-const createDB = () => {
+const createDB = async () => {
     const s1 = new songsDB({
         "id": 1,
         "title": "Do Pal",
@@ -214,25 +214,23 @@ const createDB = () => {
         "duration": "3:39"
     });
 
-    songsDB.insertMany([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18])
-        .then(() => {
-            console.log("Data inserted successfully");
-        })
+    return songsDB.insertMany([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18])
         .catch((err) => {
             console.error(`Error during insert: ${err.name}`);
+            throw err; // Re-throw to propagate the error if needed
         });
 }
 
-async function fetchJSON() {
+const fetchJSON = async () => {
     try {
-        const results = await songsDB.find().select({ _id: 0, __v: 0 });
+        const results = await songsDB.find().select({_id: 0, __v: 0});
         const filePath = path.join(__dirname, "../../frontend/public/data/songsData.json");
 
         fs.writeFileSync(filePath, JSON.stringify(results, null, 2), 'utf-8'); // `null, 2` for pretty printing
-        console.log(`Data successfully saved to ${filePath}`);
+        return filePath
     } catch (error) {
         console.error("Error fetching or saving data:", error);
     }
 }
 
-module.exports = { createDB, fetchJSON };
+module.exports = {createDB, fetchJSON};
