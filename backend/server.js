@@ -29,7 +29,7 @@ dbConnect().then(() => {
             console.error("Error saving data to file:", error);
         });
     }).catch((error) => {
-        console.error("Error during database creation or data insertion:", error);
+        console.error("Error during database creation or data insertion:", error.message);
     });
 });
 
