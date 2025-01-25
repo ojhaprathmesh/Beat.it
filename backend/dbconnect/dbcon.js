@@ -1,10 +1,16 @@
-let mongoose = require("mongoose");
-let constring = "mongodb+srv://shashwatgaur:fDJMzGsAJSnIpKay@cluster0.6222w.mongodb.net/";
+require('dotenv').config();
+const mongoose = require("mongoose");
+
+const dbHost = process.env.DB_HOST;
+const dbName = process.env.DB_NAME;
+const dbUser = process.env.DB_USER;
+const dbPass = process.env.DB_PASSWORD;
+
+const dbURI = `mongodb+srv://${dbUser}:${dbPass}@${dbHost}/${dbName}?retryWrites=true&w=majority&appName=Site-Database`;
 
 let dbconnect = async () => {
     try {
-        await mongoose.connect(constring, {});
-        console.log("Database successfully connected!");
+        await mongoose.connect(dbURI, {});
     } catch (err) {
         console.log("error: " + err);
     }

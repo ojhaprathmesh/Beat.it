@@ -48,3 +48,10 @@
 #search-input::placeholder {
     color: var(--search-text);
 }
+
+#search-input:-webkit-autofill {
+    background-color: var(--grey) !important;
+    color: var(--search-text) !important;
+    font-weight: 100 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}

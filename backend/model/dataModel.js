@@ -3,20 +3,20 @@ const fs = require('fs');
 const path = require("path");
 
 const schema = new mongoose.Schema({
-    id: { type: Number, required: true, unique: true },
-    title: { type: String, required: true },
-    artist: [{ type: String }],
-    album: { type: String, required: true },
-    genre: { type: String, required: true },
-    file: { type: String, required: true },
-    albumCover: { type: String, required: true },
-    duration: { type: String, required: true }
+    id: {type: Number, required: true, unique: true},
+    title: {type: String, required: true},
+    artist: [{type: String}],
+    album: {type: String, required: true},
+    genre: {type: String, required: true},
+    file: {type: String, required: true},
+    albumCover: {type: String, required: true},
+    duration: {type: String, required: true}
 });
 
-const SongsDB = new mongoose.model("SongsDB", schema);
+const songsDB = new mongoose.model("SongsDB", schema);
 
-const songsDB1 = () => {
-    const s1 = new SongsDB({
+const createDB = async () => {
+    const s1 = new songsDB({
         "id": 1,
         "title": "Do Pal",
         "artist": ["Lata Mangeshkar", "Sonu Nigam", "Madan Mohan", "Javed Akhtar"],
@@ -27,7 +27,7 @@ const songsDB1 = () => {
         "duration": "4:25"
     });
 
-    const s2 = new SongsDB({
+    const s2 = new songsDB({
         "id": 2,
         "title": "Main Yahaan Hoon",
         "artist": ["Sonu Nigam", "Madan Mohan", "Javed Akhtar"],
@@ -38,7 +38,7 @@ const songsDB1 = () => {
         "duration": "4:55"
     });
 
-    const s3 = new SongsDB({
+    const s3 = new songsDB({
         "id": 3,
         "title": "Tere Liye",
         "artist": ["Lata Mangeshkar", "Roopkumar Rathod", "Salim-Sulaiman", "Javed Akhtar"],
@@ -49,7 +49,7 @@ const songsDB1 = () => {
         "duration": "5:31"
     });
 
-    const s4 = new SongsDB({
+    const s4 = new songsDB({
         "id": 4,
         "title": "Kabhi Kabhi Aditi",
         "artist": ["Rashid Ali"],
@@ -60,7 +60,7 @@ const songsDB1 = () => {
         "duration": "3:38"
     });
 
-    const s5 = new SongsDB({
+    const s5 = new songsDB({
         "id": 5,
         "title": "Nazrein Milana Nazrein Churana",
         "artist": ["Benny Dayal", "Satish Chakravarthy", "Sayonara"],
@@ -71,7 +71,7 @@ const songsDB1 = () => {
         "duration": "3:53"
     });
 
-    const s6 = new SongsDB({
+    const s6 = new songsDB({
         "id": 6,
         "title": "Pappu Can't Dance",
         "artist": ["Benny Dayal", "Naresh Iyer", "Satish Chakravarthy"],
@@ -82,7 +82,7 @@ const songsDB1 = () => {
         "duration": "4:24"
     });
 
-    const s7 = new SongsDB({
+    const s7 = new songsDB({
         "id": 7,
         "title": "Dil Dhadakne Do",
         "artist": ["Shankar-Ehsaan-Loy", "Suraj Jagan", "Shankar Mahadevan"],
@@ -93,7 +93,7 @@ const songsDB1 = () => {
         "duration": "3:51"
     });
 
-    const s8 = new SongsDB({
+    const s8 = new songsDB({
         "id": 8,
         "title": "Senorita",
         "artist": ["Shankar-Ehsaan-Loy", "Farhan Akhtar", "Hrithik Roshan"],
@@ -104,7 +104,7 @@ const songsDB1 = () => {
         "duration": "3:51"
     });
 
-    const s9 = new SongsDB({
+    const s9 = new songsDB({
         "id": 9,
         "title": "Sooraj Ki Baahon Mein",
         "artist": ["Shankar-Ehsaan-Loy", "Clinton Cerejo", "Dominique Cerejo"],
@@ -115,7 +115,7 @@ const songsDB1 = () => {
         "duration": "3:24"
     });
 
-    const s10 = new SongsDB({
+    const s10 = new songsDB({
         "id": 10,
         "title": "Desi Kalakaar",
         "artist": ["Yo Yo Honey Singh"],
@@ -126,7 +126,7 @@ const songsDB1 = () => {
         "duration": "4:18"
     });
 
-    const s11 = new SongsDB({
+    const s11 = new songsDB({
         "id": 11,
         "title": "I'm Your DJ Tonight",
         "artist": ["Yo Yo Honey Singh"],
@@ -137,7 +137,7 @@ const songsDB1 = () => {
         "duration": "4:41"
     });
 
-    const s12 = new SongsDB({
+    const s12 = new songsDB({
         "id": 12,
         "title": "Love Dose",
         "artist": ["Yo Yo Honey Singh"],
@@ -148,20 +148,89 @@ const songsDB1 = () => {
         "duration": "3:48"
     });
 
-    SongsDB.insertMany([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12]);
-    console.log("Data inserted successfully");
+    const s13 = new songsDB({
+        "id": 13,
+        "title": "Bhool Bhulaiyaa",
+        "artist": ["Pritam", "Niraj Shridhar"],
+        "album": "Bhool Bhulaiyaa",
+        "genre": "Bollywood",
+        "file": "uploads/bhool-bhulaiyaa.mp3",
+        "albumCover": "assets/album-covers/bhool-bhulaiyaa.webp",
+        "duration": "5:27"
+    });
+
+    const s14 = new songsDB({
+        "id": 14,
+        "title": "Labon Ko",
+        "artist": ["Pritam", "KK"],
+        "album": "Bhool Bhulaiyaa",
+        "genre": "Bollywood",
+        "file": "uploads/labon-ko-bhool-bhulaiyaa.mp3",
+        "albumCover": "assets/album-covers/bhool-bhulaiyaa.webp",
+        "duration": "5:43"
+    });
+
+    const s15 = new songsDB({
+        "id": 15,
+        "title": "Mere Dholna",
+        "artist": ["Pritam", "Shreya Ghoshal", "M. G.Shreekumar"],
+        "album": "Bhool Bhulaiyaa",
+        "genre": "Bollywood",
+        "file": "uploads/mere-dholna-bhool-bhulaiyaa.mp3",
+        "albumCover": "assets/album-covers/bhool-bhulaiyaa.webp",
+        "duration": "6:47"
+    });
+
+    const s16 = new songsDB({
+        "id": 16,
+        "title": "Daaru Desi",
+        "artist": ["Pritam", "Benny Dayal", "Shalmali Kholgade"],
+        "album": "Cocktail",
+        "genre": "Bollywood",
+        "file": "uploads/daaru-desi.mp3",
+        "albumCover": "assets/album-covers/cocktail.webp",
+        "duration": "4:29"
+    });
+
+    const s17 = new songsDB({
+        "id": 17,
+        "title": "Second Hand Jawaani",
+        "artist": ["Pritam", "Miss Pooja", "Neha Kakkar", "Nakkash Aziz"],
+        "album": "Cocktail",
+        "genre": "Bollywood",
+        "file": "uploads/second-hand-jawaani.mp3",
+        "albumCover": "assets/album-covers/cocktail.webp",
+        "duration": "4:02"
+    });
+
+    const s18 = new songsDB({
+        "id": 18,
+        "title": "Tera Naam Japdi Phiran",
+        "artist": ["Pritam", "Nikhil D'souza", "Shefali Alvares", "Javed Bashir"],
+        "album": "Cocktail",
+        "genre": "Bollywood",
+        "file": "uploads/tera-naam-japdi-phiran.mp3",
+        "albumCover": "assets/album-covers/cocktail.webp",
+        "duration": "3:39"
+    });
+
+    return songsDB.insertMany([s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18])
+        .catch((err) => {
+            console.error(`Error during insert: ${err.name}`);
+            throw err; // Re-throw to propagate the error if needed
+        });
 }
 
-async function fetchJSON() {
+const fetchJSON = async () => {
     try {
-        const results = await SongsDB.find().select({ _id: 0, __v: 0 });
+        const results = await songsDB.find().select({_id: 0, __v: 0});
         const filePath = path.join(__dirname, "../../frontend/public/data/songsData.json");
 
         fs.writeFileSync(filePath, JSON.stringify(results, null, 2), 'utf-8'); // `null, 2` for pretty printing
-        console.log(`Data successfully saved to ${filePath}`);
+        return filePath
     } catch (error) {
         console.error("Error fetching or saving data:", error);
     }
 }
 
-module.exports = { songsDB1, fetchJSON };
+module.exports = {createDB, fetchJSON};

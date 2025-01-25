@@ -7,6 +7,7 @@
     <meta name="description"
         content="Join the music revolution with Beat.it! Login now to enjoy an amazing experience.">
     <title>Beat.it</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/browserIcon.ico" />
 
     <!-- External stylesheet -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -68,8 +69,11 @@
         }
 
         .album-songs {
+            position: relative;
+            overflow: hidden;
             flex-direction: column;
             width: 800px;
+            height: 100%;
         }
 
         .album-song-item {
@@ -83,7 +87,24 @@
             padding: 0px 15px;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 500ms ease;
+            position: relative;
+            transition: all 750ms ease;
+            top: 100%; /*Comment this to remove effect*/
+        }
+
+        #song-1 {
+            animation: glideUp 750ms linear forwards;
+            animation-delay: calc(750ms / 3 * 0);
+        }
+
+        #song-2 {
+            animation: glideUp 750ms linear forwards;
+            animation-delay: calc(750ms / 3 * 1);
+        }
+
+        #song-3 {
+            animation: glideUp 750ms linear forwards;
+            animation-delay: calc(750ms / 3 * 2);
         }
 
         .album-song-item:hover {
@@ -125,6 +146,12 @@
             margin: 8px 0px;
             font-size: 16px;
         }
+
+        @keyframes glideUp {
+            to {
+                top: 0%;
+            }
+        }
     </style>
 </head>
 
@@ -132,33 +159,33 @@
     <script src="/scripts/utility/loading.js"></script>
 
     <%- include('partials/navbar.ejs') %>
-    
-    <main class="main-body">
-        <section class="album-content">
-            <div class="controls">
-                <i class="fas fa-play play" style="display: block; padding-right: 4px;"></i> <!-- Play -->
-                <i class="fas fa-pause pause" style="display: none; padding: 0 7px;"></i> <!-- Pause -->
-                <i class="fas fa-random shuffle"></i> <!-- Shuffle -->
-                <i class="fa-solid fa-repeat repeat">
-                    <p style="display: none; color: var(--white); position: absolute; left: 811px; bottom: 24px; font-size: 12px; font-weight: bold; font-family: 'Segoe UI'; cursor: pointer;
+
+        <main class="main-body">
+            <section class="album-content">
+                <div class="controls">
+                    <i class="fas fa-play play" style="display: block; padding-right: 4px;"></i> <!-- Play -->
+                    <i class="fas fa-pause pause" style="display: none; padding: 0 7px;"></i> <!-- Pause -->
+                    <i class="fas fa-random shuffle"></i> <!-- Shuffle -->
+                    <i class="fa-solid fa-repeat repeat">
+                        <p style="display: none; color: var(--white); position: absolute; left: 811px; bottom: 24px; font-size: 12px; font-weight: bold; font-family: 'Segoe UI'; cursor: pointer;
                     ">1
-                    </p>
-                </i> <!-- Repeat -->
-            </div>
-            <div class="album-songs font-inter"></div>
-        </section>
-        <section class="album-details">
-            <img src="" alt="" width="345" height="345">
-            <h1 class="current-song font-montserrat"></h1>
-            <h4 class="album-name font-montserrat"></h4>
-        </section>
-    </main>
+                        </p>
+                    </i> <!-- Repeat -->
+                </div>
+                <div class="album-songs font-inter"></div>
+            </section>
+            <section class="album-details">
+                <img src="" alt="" width="345" height="345">
+                <h1 class="current-song font-montserrat"></h1>
+                <h4 class="album-name font-montserrat"></h4>
+            </section>
+        </main>
 
-    <%- include('partials/player.ejs') %>
+        <%- include('partials/player.ejs') %>
 
-    <script type="module" src="/scripts/handlers/navbarHandler.js" defer></script>
-    <script type="module" src="/scripts/handlers/albumHandler.js" defer></script>
-    <script type="module" src="/scripts/handlers/playerHandler.js" defer></script>
+            <script type="module" src="/scripts/handlers/navbarHandler.js" defer></script>
+            <script type="module" src="/scripts/handlers/albumHandler.js" defer></script>
+            <script type="module" src="/scripts/handlers/playerHandler.js" defer></script>
 </body>
 
 </html>

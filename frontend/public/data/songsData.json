@@ -160,5 +160,89 @@
     "file": "uploads/love-dose.mp3",
     "albumCover": "assets/album-covers/desi-kalakaar.webp",
     "duration": "3:48"
+  },
+  {
+    "id": 13,
+    "title": "Bhool Bhulaiyaa",
+    "artist": [
+      "Pritam",
+      "Niraj Shridhar"
+    ],
+    "album": "Bhool Bhulaiyaa",
+    "genre": "Bollywood",
+    "file": "uploads/bhool-bhulaiyaa.mp3",
+    "albumCover": "assets/album-covers/bhool-bhulaiyaa.webp",
+    "duration": "5:27"
+  },
+  {
+    "id": 14,
+    "title": "Labon Ko",
+    "artist": [
+      "Pritam",
+      "KK"
+    ],
+    "album": "Bhool Bhulaiyaa",
+    "genre": "Bollywood",
+    "file": "uploads/labon-ko-bhool-bhulaiyaa.mp3",
+    "albumCover": "assets/album-covers/bhool-bhulaiyaa.webp",
+    "duration": "5:43"
+  },
+  {
+    "id": 15,
+    "title": "Mere Dholna",
+    "artist": [
+      "Pritam",
+      "Shreya Ghoshal",
+      "M. G.Shreekumar"
+    ],
+    "album": "Bhool Bhulaiyaa",
+    "genre": "Bollywood",
+    "file": "uploads/mere-dholna-bhool-bhulaiyaa.mp3",
+    "albumCover": "assets/album-covers/bhool-bhulaiyaa.webp",
+    "duration": "6:47"
+  },
+  {
+    "id": 16,
+    "title": "Daaru Desi",
+    "artist": [
+      "Pritam",
+      "Benny Dayal",
+      "Shalmali Kholgade"
+    ],
+    "album": "Cocktail",
+    "genre": "Bollywood",
+    "file": "uploads/daaru-desi.mp3",
+    "albumCover": "assets/album-covers/cocktail.webp",
+    "duration": "4:29"
+  },
+  {
+    "id": 17,
+    "title": "Second Hand Jawaani",
+    "artist": [
+      "Pritam",
+      "Miss Pooja",
+      "Neha Kakkar",
+      "Nakkash Aziz"
+    ],
+    "album": "Cocktail",
+    "genre": "Bollywood",
+    "file": "uploads/second-hand-jawaani.mp3",
+    "albumCover": "assets/album-covers/cocktail.webp",
+    "duration": "4:02"
+  },
+  {
+    "id": 18,
+    "title": "Tera Naam Japdi Phiran",
+    "artist": [
+      "Pritam",
+      "Nikhil D'souza",
+      "Shefali Alvares",
+      "Javed Bashir"
+    ],
+    "album": "Cocktail",
+    "genre": "Bollywood",
+    "file": "uploads/tera-naam-japdi-phiran.mp3",
+    "albumCover": "assets/album-covers/cocktail.webp",
+    "duration": "3:39"
   }
 ]
