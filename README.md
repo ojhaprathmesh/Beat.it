@@ -1,7 +1,7 @@
 ## How to Use
 1. **Clone the Repository:**
    ```
-   git clone https://github.com/ojhaprathmesh/Beat.it.git
+   git clone https://github.com/ojhaprathmesh/Beat.it_Team.git
    ```
    
 2. **Install Dependencies:**
