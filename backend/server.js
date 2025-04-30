@@ -2,36 +2,27 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const session = require("express-session");
+require('dotenv').config();
 
-// Database and models
-const dbConnect = require("./dbconnect/dbcon.js");
-const {createDB, fetchJSON} = require('./model/dataModel.js');
-const userData = require("./model/userModel.js");
+// Firebase Configuration
+const firebaseConfig = require('./config/firebase-config');
+const userModel = process.env.DISABLE_FIREBASE !== 'true' ? require('./model/userModel') : null;
 
 // Utilities
-const songData = require("../frontend/public/data/songsData.json");
-const {shuffle} = require('../frontend/public/scripts/utility/shuffle');
+let songData = [];
+console.log('Loading songs data from:', path.join(__dirname, "../frontend/public/data/songsData.json"));
+try {
+    songData = require("../frontend/public/data/songsData.json");
+    console.log('Successfully loaded songs:', songData.length, 'songs found');
+} catch (error) {
+    console.error('Error loading songs data:', error);
+    songData = [];
+}
+
+const { shuffle } = require('../frontend/public/scripts/utility/shuffle');
 
 const app = express();
-const port = 3000;
-
-// Initialize Database Connection
-dbConnect().then(() => {
-    console.log("Connected to the database successfully!");
-
-    createDB().then(() => {
-        console.log("Database created and data inserted.");
-
-        // After the database is created, call fetchJSON() and log the file path
-        fetchJSON().then((filePath) => {
-            console.log(`Data successfully saved to ${filePath}`);
-        }).catch((error) => {
-            console.error("Error saving data to file:", error);
-        });
-    }).catch((error) => {
-        console.error("Error during database creation or data insertion:", error.message);
-    });
-});
+const port = process.env.PORT || 3000;
 
 // Paths Configuration
 const paths = {
@@ -44,10 +35,13 @@ const paths = {
 app.use(express.static(paths.public));
 app.use(express.json());
 app.use(session({
-    secret: "your-secret-key",
+    secret: process.env.SESSION_SECRET || 'fallback-secret-key',
     resave: false,
     saveUninitialized: true,
-    cookie: {secure: false}
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
 }));
 
 // View Engine Setup
@@ -56,14 +50,37 @@ app.set("views", paths.views);
 
 // Set song data in response locals for rendering
 app.use((req, res, next) => {
-    const albums = [...new Set(songData.map(song => song.album))];
-    const albumData = songData.filter(song => albums.includes(song.album));
+    console.log('Setting up song data for request');
+    try {
+        const albums = [...new Set(songData.map(song => song.album))];
+        console.log('Found albums:', albums);
+        const albumData = songData.filter(song => albums.includes(song.album));
 
-    res.locals.song = songData[0]; // Placeholder song data
-    res.locals.songRow1 = shuffle([...songData]);
-    res.locals.songRow2 = shuffle([...songData]);
-    res.locals.albums = shuffle(albumData);
+        // Check if the first song's audio file exists
+        const firstSong = songData[0];
+        if (firstSong) {
+            const audioPath = path.join(paths.public, firstSong.audioSrc);
+            if (!fs.existsSync(audioPath)) {
+                console.warn(`Audio file not found: ${firstSong.audioSrc}`);
+                // Use a default song if the audio file is missing
+                firstSong.audioSrc = '/uploads/default.mp3';
+            }
+        }
 
+        res.locals.song = firstSong || null;
+        res.locals.songRow1 = shuffle([...songData]);
+        res.locals.songRow2 = shuffle([...songData]);
+        res.locals.albums = shuffle(albumData);
+        
+        console.log('Song data set up successfully');
+        console.log('First song:', res.locals.song);
+    } catch (error) {
+        console.error('Error setting up song data:', error);
+        res.locals.song = songData[0];
+        res.locals.songRow1 = songData;
+        res.locals.songRow2 = songData;
+        res.locals.albums = songData;
+    }
     next();
 });
 
@@ -82,17 +99,13 @@ Object.entries(pageRoutes).forEach(([route, view]) => {
     app.get(route, (req, res) => {
         const {usernameLetter, name, email} = req.session;
 
-        // Redirect to login if not authenticated
-        if (!usernameLetter && !['/login', '/signup'].includes(route)) {
-            return res.redirect("/login");
-        }
-
         // If route is "/profile", pass user details
         if (route === "/profile") {
             return res.render(view, {username: name, usermail: email});
         }
 
-        res.render(view, {usernameLetter});
+        // During development, allow access to all routes without authentication
+        res.render(view, {usernameLetter: usernameLetter || 'D'}); // 'D' for Development
     });
 });
 
@@ -111,28 +124,130 @@ app.get("/api/data/:type", (req, res) => {
 
 app.post("/api/register", async (req, res) => {
     const {firstName, lastName, email, password} = req.body;
+    
     try {
-        await new userData({firstName, lastName, email, password}).save();
+        // Check if Firebase is disabled (development mode)
+        if (!firebaseConfig.isEnabled) {
+            console.log('Running in development mode - using local storage');
+            
+            // Store user data in session
+            req.session.usernameLetter = email.charAt(0).toUpperCase();
+            req.session.email = email;
+            req.session.name = `${firstName} ${lastName}`;
+            
+            // In development, store user data in a local file
+            const usersFilePath = path.join(paths.data, 'users.json');
+            let users = [];
+            
+            try {
+                if (fs.existsSync(usersFilePath)) {
+                    users = JSON.parse(fs.readFileSync(usersFilePath, 'utf8'));
+                }
+                
+                // Check if email already exists
+                if (users.some(user => user.email === email)) {
+                    return res.status(400).json({ error: "Email already exists." });
+                }
+                
+                // Add new user
+                users.push({
+                    id: users.length + 1,
+                    firstName,
+                    lastName,
+                    email,
+                    password // Note: In production, this should be hashed
+                });
+                
+                fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+                return res.status(201).json({ message: "User registered successfully." });
+            } catch (error) {
+                console.error('Error handling local user registration:', error);
+                return res.status(500).json({ error: "Error saving user data." });
+            }
+        }
+        
+        // Firebase mode
+        if (!firebaseConfig.admin) {
+            throw new Error('Firebase Admin SDK not initialized');
+        }
+
+        // Create user in Firebase Authentication
+        const userRecord = await firebaseConfig.admin.auth().createUser({
+            email,
+            password,
+            displayName: `${firstName} ${lastName}`
+        });
+
+        // Store additional user data in Firestore
+        await firebaseConfig.admin.firestore().collection('users').doc(userRecord.uid).set({
+            firstName,
+            lastName,
+            email,
+            createdAt: new Date()
+        });
+
         res.status(201).json({message: "User registered successfully."});
     } catch (error) {
-        res.status(error.code === 11000 ? 400 : 500).json({error: error.code === 11000 ? "Email already exists." : "Internal server error."});
+        console.error('Registration error:', error);
+        if (error.code === 'auth/email-already-exists') {
+            res.status(400).json({error: "Email already exists."});
+        } else {
+            res.status(500).json({
+                error: "Internal server error",
+                message: process.env.NODE_ENV === 'development' ? error.message : undefined
+            });
+        }
     }
 });
 
 app.post("/api/login", async (req, res) => {
     const {email, password} = req.body;
+    
     try {
-        const user = await userData.findOne({email});
-        if (!user || user.password !== password) {
-            return res.status(user ? 401 : 404).json({message: user ? "Invalid credentials." : "Email not associated with any account."});
+        // Check if Firebase is disabled (development mode)
+        if (!firebaseConfig.isEnabled) {
+            const usersFilePath = path.join(paths.data, 'users.json');
+            
+            if (!fs.existsSync(usersFilePath)) {
+                return res.status(404).json({message: "No users found."});
+            }
+            
+            const users = JSON.parse(fs.readFileSync(usersFilePath, 'utf8'));
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (!user) {
+                return res.status(401).json({message: "Invalid credentials."});
+            }
+            
+            req.session.usernameLetter = email.charAt(0).toUpperCase();
+            req.session.email = email;
+            req.session.name = `${user.firstName} ${user.lastName}`;
+            
+            return res.status(200).json({message: "Login successful!"});
+        }
+        
+        // Firebase mode
+        const user = await firebaseConfig.signInWithEmail(email, password);
+        const userData = await userModel.findUserByEmail(email);
+
+        if (!userData) {
+            return res.status(404).json({message: "User data not found."});
         }
 
         req.session.usernameLetter = email.charAt(0).toUpperCase();
         req.session.email = email;
-        req.session.name = `${user.firstName} ${user.lastName}`;
+        req.session.name = `${userData.firstName} ${userData.lastName}`;
         res.status(200).json({message: "Login successful!"});
     } catch (error) {
-        res.status(500).json({message: "Internal server error."});
+        console.error('Login error:', error);
+        const errorMessage = {
+            'auth/user-not-found': "Email not associated with any account.",
+            'auth/wrong-password': "Invalid password.",
+            'auth/invalid-email': "Invalid email format.",
+            'auth/too-many-requests': "Too many failed login attempts. Please try again later."
+        }[error.code] || "Internal server error.";
+        
+        res.status(error.code?.includes('auth/') ? 400 : 500).json({message: errorMessage});
     }
 });
 
@@ -141,17 +256,33 @@ app.post("/api/forgot-password", async (req, res) => {
     if (!email) return res.status(400).json({error: "Email is required."});
 
     try {
-        const user = await userData.findOne({email});
-        if (!user) return res.status(404).json({error: "Email not associated with any account."});
-        res.status(200).json({password: user.password});
+        await firebaseConfig.auth.sendPasswordResetEmail(email);
+        res.status(200).json({message: "Password reset email sent successfully."});
     } catch (error) {
-        res.status(500).json({error: "Internal server error."});
+        res.status(error.code === 'auth/user-not-found' ? 404 : 500)
+           .json({error: error.code === 'auth/user-not-found' ? "Email not associated with any account." : "Internal server error."});
     }
+});
+
+// Add this after the other API routes
+app.get("/api/songs", (req, res) => {
+    console.log('Songs data requested');
+    console.log('Current songs:', JSON.stringify(songData, null, 2));
+    res.json(songData);
 });
 
 // 404 Error Handling
 app.use((req, res) => {
     res.status(404).send(`<h1>404 - Page Not Found</h1><p>The page you're looking for doesn't exist.</p><a href="/">Go back to homepage</a>`);
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Server error:', err);
+    res.status(500).json({
+        error: "Internal server error",
+        message: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
 });
 
 // Start the Server

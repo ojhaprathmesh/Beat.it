@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "firstName": "Prathmesh",
+    "lastName": "Ojha",
+    "email": "prathmesh.ojha.23cse@bmu.edu.in",
+    "password": "OwBX@816"
+  },
+  {
+    "id": 2,
+    "firstName": "Prathmesh",
+    "lastName": "Ojha",
+    "email": "prathmesh.ojha.23cse@bmue.edu.in",
+    "password": "OwBX@816"
+  }
+]

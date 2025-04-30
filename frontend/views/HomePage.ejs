@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description"
     content="Join the music revolution with Beat.it! Login now to enjoy an amazing experience.">
     <title>Beat.it</title>
@@ -20,12 +20,24 @@
     <link rel="stylesheet" href="/styles/profile.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/styles/background.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/styles/song-album.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/styles/responsive.css" media="print" onload="this.media='all'">
 
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .main-body {
+            padding: 20px 10px;
+            min-height: calc(100vh - 90px);
         }
     </style>
 </head>

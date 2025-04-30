@@ -1,0 +1,170 @@
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+    #song-container,
+    #album-container {
+        width: 95%;
+        max-width: 95%;
+        padding: 25px 20px;
+    }
+
+    .album-row {
+        column-gap: 40px;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .album-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .player-albuminfo,
+    .other-controls {
+        width: 30vw;
+    }
+
+    .playbar {
+        width: 40vw;
+    }
+
+    .music-progress-bar {
+        width: 100%;
+        max-width: 400px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #song-container,
+    #album-container {
+        width: 98%;
+        max-width: 98%;
+        padding: 20px 15px;
+        height: auto;
+        min-height: 290px;
+    }
+
+    .song-heading,
+    #album-heading {
+        font-size: 24px;
+    }
+
+    .player {
+        height: 100px;
+        flex-wrap: wrap;
+        padding: 10px;
+    }
+
+    .player-albuminfo {
+        width: 60vw;
+    }
+
+    .other-controls {
+        width: 40vw;
+    }
+
+    .playbar {
+        width: 100vw;
+        order: 3;
+    }
+
+    .controls {
+        width: 140px;
+        font-size: 22px;
+    }
+
+    .volume-control-bar {
+        width: 80px;
+    }
+
+    .player-songcover {
+        margin: 8px;
+        width: 60px;
+        height: 60px;
+    }
+
+    .player-songdetails {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .main-body {
+        gap: 30px;
+        margin-bottom: 120px;
+    }
+
+    #song-container,
+    #album-container {
+        border-radius: 30px;
+        padding: 15px 10px;
+    }
+
+    .song-heading,
+    #album-heading {
+        font-size: 20px;
+    }
+
+    .player {
+        height: 110px;
+    }
+
+    .player-albuminfo {
+        width: 70vw;
+    }
+
+    .other-controls {
+        width: 30vw;
+    }
+
+    .controls {
+        width: 120px;
+        font-size: 20px;
+    }
+
+    .volume-control-bar {
+        width: 60px;
+    }
+
+    .player-songcover {
+        width: 50px;
+        height: 50px;
+        margin: 5px;
+    }
+
+    .player-songdetails {
+        font-size: 12px;
+    }
+
+    .like-btn {
+        margin: 0 5px;
+    }
+}
+
+/* Fix for song scrolling on smaller screens */
+@media screen and (max-width: 1200px) {
+    .song-row-item {
+        animation-duration: calc(var(--duration) * 0.8);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .song-row-item {
+        animation-duration: calc(var(--duration) * 0.6);
+    }
+}
+
+/* Ensure content doesn't overflow on very small screens */
+@media screen and (max-width: 320px) {
+    .player-songdetails {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .controls {
+        width: 110px;
+        font-size: 18px;
+    }
+} 

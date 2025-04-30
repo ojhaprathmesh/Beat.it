@@ -113,7 +113,7 @@ class MusicControl {
 
         this.currentSongIndex = index;
         const song = this.songList[index];
-        this.audioSource.src = song.file;
+        this.audioSource.src = song.audioSrc;
         this.audio.load();
         this.updateSongUI(song);
 
@@ -130,13 +130,13 @@ class MusicControl {
         const songAlbumElement = document.querySelector(".player-songcover img");
 
         if (songTitleElement) {
-            songTitleElement.textContent = song.title; // Update the song title
+            songTitleElement.textContent = song.title;
         }
 
         if (songArtistElement) {
-            const finalName = song.artist.length > 1
+            const finalName = Array.isArray(song.artist) && song.artist.length > 1
                 ? song.artist.map(name => name.split(' ')[0]).join(', ').substring(0, 22) + '...'
-                : song.artist[0];
+                : Array.isArray(song.artist) ? song.artist[0] : song.artist;
 
             songArtistElement.textContent = finalName;
         }

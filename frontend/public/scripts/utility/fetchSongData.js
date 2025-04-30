@@ -1,5 +1,6 @@
 async function fetchSongData() {
     try {
+        console.log('Fetching song data...');
         const response = await fetch("http://localhost:3000/api/data/songsData", {
             cache: "no-store", // Disable caching for fetch requests
         });
@@ -8,9 +9,11 @@ async function fetchSongData() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         
-        return await response.json();
+        const data = await response.json();
+        console.log('Fetched song data:', data);
+        return data;
     } catch (error) {
-        console.warn("Failed to fetch song data:", error);
+        console.error("Failed to fetch song data:", error);
         return []; // Returning an empty array to handle the error!
     }
 }
