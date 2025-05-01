@@ -12,5 +12,12 @@
     "lastName": "Ojha",
     "email": "prathmesh.ojha.23cse@bmue.edu.in",
     "password": "OwBX@816"
+  },
+  {
+    "id": 3,
+    "firstName": "Mohit",
+    "lastName": "Khairwal",
+    "email": "mohit.khairwal.23cse@bmu.edu.in",
+    "password": "asdasdasd"
   }
 ]

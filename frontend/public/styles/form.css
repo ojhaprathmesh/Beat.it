@@ -3,9 +3,6 @@
     display: flex;
     flex-direction: column;
     gap: 25px;
-    height: 70%;
-    position: relative;
-    bottom: 30px;
 }
 
 /* Form heading */
@@ -22,7 +19,7 @@
 .form-inputs {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px 10px;
+    gap: 20px 15px;
 }
 
 /* First and last name input positioning */
@@ -70,24 +67,47 @@
     cursor: pointer;
 }
 
+/* Input container styling */
+.input-container {
+    position: relative;
+}
+
 /* General styling for input boxes */
 .box {
-    padding: 16px;
-    font-size: 16px;
-    border: 1px solid var(--grey);
-    border-radius: 5px;
     width: 100%;
+    padding: 15px;
+    font-size: 15px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.box:hover {
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.box:focus {
+    outline: none;
+    border-color: var(--form-blue);
+    box-shadow: 0 0 0 3px rgba(3, 75, 181, 0.1);
 }
 
 /* Input label styling */
 .input-container label {
-    display: inline-block;
-    position: relative;
-    bottom: 60px;
-    left: 30px;
-    color: var(--grey);
+    position: absolute;
+    left: 12px;
+    top: -8px;
     background-color: white;
-    text-align: center;
+    padding: 0 6px;
+    font-size: 12px;
+    color: var(--grey);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.box:focus + label {
+    color: var(--form-blue);
 }
 
 /* Email label width */
@@ -120,22 +140,37 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 15px;
     border: none;
-    font-size: 28px;
+    font-size: 16px;
+    font-weight: 500;
     color: white;
     background-color: var(--form-blue);
-    max-height: 52px;
+    border-radius: 8px;
     cursor: pointer;
-    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.form-btn:hover {
+    background-color: #0341a0;
+    transform: translateY(-1px);
+}
+
+.form-btn:active {
+    transform: translateY(0);
 }
 
 .error-messages {
-    color: red;
-    position: absolute;
+    color: #ff4545;
+    font-size: 14px;
+    margin-top: 5px;
 }
 
 /* Remove autofill background color */
-input {
-    box-shadow: 0 0 0 1000px white inset;
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: var(--primary-bg) !important;
+    transition: background-color 5000s ease-in-out 0s;
 }

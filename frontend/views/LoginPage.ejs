@@ -21,19 +21,35 @@
         }
 
         body {
-            background-color: var(--form-blue);
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #1B263B 100%);
             overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .login {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100vw;
+            width: 100%;
             height: 100vh;
+            position: relative;
+        }
+
+        .login::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image: url("/assets/login/Background.webp");
             background-size: cover;
             background-position: center;
+            opacity: 0.4;
+            z-index: 0;
         }
 
         .whiteFrame-login {
@@ -41,27 +57,74 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            width: 35%;
-            height: 65%;
-            background-color: white;
-            border: none;
-            border-radius: 20px;
+            width: min(90%, 450px);
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-container {
+            margin-bottom: 20px;
         }
 
         .form {
-            width: 80%;
+            width: 100%;
         }
 
         .form-heading {
             text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .main-heading {
+            font-size: clamp(28px, 5vw, 36px);
+            color: var(--primary-bg);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .sub-heading {
-            font-size: medium;
+            font-size: clamp(14px, 2vw, 16px);
+            color: var(--grey);
+            font-weight: 400;
         }
 
         .redirect {
             justify-content: space-between;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .redirect p {
+            color: var(--grey);
+        }
+
+        .redirect p:nth-child(2),
+        .redirect > p {
+            color: var(--form-blue);
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .redirect p:nth-child(2):hover,
+        .redirect > p:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 480px) {
+            .whiteFrame-login {
+                padding: 30px 20px;
+            }
+
+            .logo-container img {
+                width: 90px;
+                height: 90px;
+            }
         }
     </style>
 </head>
@@ -70,7 +133,7 @@
     <main class="login">
         <section class="whiteFrame-login">
             <div class="logo-container" id="logo-login">
-                <img src="/assets/Beat.it%20Logo.webp" alt="Beat.it" width="115px" height="115px">
+                <img src="/assets/Beat.it%20Logo.webp" alt="Beat.it" width="115" height="115">
             </div>
 
             <form class="form font-inter" id="login-form" method="POST">

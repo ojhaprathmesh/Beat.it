@@ -1,23 +1,29 @@
 /* Player Section Styles*/
 .player {
     display: flex;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
-    background-color: #172f67;
+    background-color: var(--card-bg);
+    backdrop-filter: blur(20px);
     width: 100%;
     height: 90px;
+    min-height: 90px;
     align-items: center;
-    box-shadow: 0 0 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     justify-content: space-between;
+    z-index: 100;
+    padding: 0 30px;
 }
 
 .player-albuminfo,
 .other-controls {
     display: flex;
-    width: 25vw;
+    width: 25%;
+    min-width: 200px;
     height: 100%;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .like-btn {
@@ -36,13 +42,15 @@
 }
 
 .like-btn .fa-heart {
-    color: black;
+    color: var(--white);
+    opacity: 0.7;
     font-weight: 100;
-    transition: color 0.2s ease-in, font-weight 0.15s ease-in;
+    transition: all 0.2s ease;
 }
 
 .like-btn.liked .fa-heart {
-    color: red;
+    color: #ff4545;
+    opacity: 1;
     font-weight: 900;
 }
 
@@ -51,9 +59,13 @@ input[type="checkbox"] {
 }
 
 .player-songcover {
-    margin: 12px 12px 12px 20px;
-    width: 75px;
-    height: 75px;
+    margin: 12px;
+    width: 65px;
+    height: 65px;
+    min-width: 65px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
 }
 
 .player-songdetails {
@@ -63,50 +75,83 @@ input[type="checkbox"] {
     justify-content: center;
     margin: auto 10px;
     color: var(--white);
+    min-width: 0;
+    overflow: hidden;
+    gap: 4px;
+}
+
+.player-songname,
+.player-artistname {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-songname {
+    font-weight: 500;
+}
+
+.player-artistname {
+    font-size: 14px;
+    opacity: 0.7;
 }
 
 /* Playbar Section Styles */
 .playbar {
     display: flex;
     flex-direction: column;
-    width: 50vw;
+    width: 50%;
+    min-width: 300px;
     align-items: center;
-    row-gap: 20px;
+    row-gap: 10px;
+    padding: 0 20px;
+    flex: 1;
 }
 
 .music-progress-bar {
     display: flex;
-    width: 500px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: var(--grey);
+    width: 100%;
+    max-width: 500px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.1);
     align-items: center;
 }
 
 .controls {
     display: flex;
-    font-size: 25px;
+    font-size: clamp(20px, 2.5vw, 25px);
     cursor: default;
     justify-content: space-between;
-    width: 160px;
+    width: clamp(140px, 15vw, 160px);
     color: var(--white);
 }
 
 .controls i {
     cursor: pointer;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+}
+
+.controls i:hover {
+    opacity: 1;
+    transform: scale(1.05);
 }
 
 .controls .shuffle {
-    transition: color 0.5s ease;
-    color: var(--white);
-    animation-duration: 0.5s;
+    transition: all 0.3s ease;
+}
+
+.controls .shuffle.active {
+    color: #4A9EFF;
+    opacity: 1;
 }
 
 /*Other Control Styles */
 .other-controls {
     justify-content: flex-end;
-    gap: 10px;
-    padding: 10px;
+    gap: 15px;
+    padding: 10px 0;
     color: var(--white);
 }
 
@@ -123,91 +168,93 @@ input[type="checkbox"] {
     align-items: center;
     justify-content: center;
     height: 100%;
-    gap: 10px;
+    gap: 12px;
+    min-width: 120px;
+}
+
+.volume i {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+}
+
+.volume i:hover {
+    opacity: 1;
 }
 
 .volume-control-bar {
     display: flex;
-    width: 100px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: var(--grey);
+    width: clamp(60px, 8vw, 100px);
+    height: 4px;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.1);
     align-items: center;
 }
 
-#seekMusic {
-    appearance: none;
-    width: 100%;
-    cursor: pointer;
-    outline: none;
-    border-radius: 5px;
-    background: var(--grey);
-}
-
-#seekMusic::-webkit-slider-runnable-track {
-    height: 10px;
-}
-
-#seekMusic::-webkit-slider-thumb {
-    position: relative;
-    top: -2px;
-    appearance: none;
-    height: 14px;
-    width: 14px;
-    background-color: var(--white);
-    border-radius: 50%;
-    z-index: 1;
-}
-
-#seekMusic::before {
-    position: absolute;
-    content: "";
-    height: 10px;
-    width: var(--width-m);
-    background-color: var(--color);
-    border-radius: 5px;
-    z-index: 1;
-}
-
+#seekMusic,
 #seekVolume {
     appearance: none;
     width: 100%;
     cursor: pointer;
     outline: none;
-    border-radius: 5px;
-    background: var(--grey);
-}
-
-#seekVolume::-webkit-slider-runnable-track {
-    height: 10px;
-}
-
-#seekVolume::-webkit-slider-thumb {
+    border-radius: 2px;
+    background: transparent;
     position: relative;
-    bottom: 2px;
+}
+
+#seekMusic::-webkit-slider-runnable-track,
+#seekVolume::-webkit-slider-runnable-track {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+#seekMusic::-webkit-slider-thumb,
+#seekVolume::-webkit-slider-thumb {
     appearance: none;
-    height: 14px;
-    width: 14px;
+    height: 12px;
+    width: 12px;
     background-color: var(--white);
     border-radius: 50%;
-    z-index: 1;
+    margin-top: -4px;
+    transition: transform 0.2s ease;
+}
+
+#seekMusic:hover::-webkit-slider-thumb,
+#seekVolume:hover::-webkit-slider-thumb {
+    transform: scale(1.2);
+}
+
+#seekMusic::before,
+#seekVolume::before {
+    content: "";
+    position: absolute;
+    height: 4px;
+    background-color: var(--white);
+    border-radius: 2px;
+    opacity: 0.8;
+}
+
+#seekMusic::before {
+    width: var(--width-m);
 }
 
 #seekVolume::before {
-    position: absolute;
-    content: "";
-    height: 10px;
     width: var(--width-v);
-    background-color: var(--white);
-    border-radius: 5px;
-    z-index: 1;
 }
 
 .seekbar-label {
     position: absolute;
-    bottom: 0;
+    bottom: 15px;
     right: 0;
-    color: #172f67;
+    background-color: var(--card-bg);
+    color: var(--white);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0.9;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 @keyframes shuffleAnimation {

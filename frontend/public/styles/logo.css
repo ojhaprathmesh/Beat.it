@@ -1,11 +1,25 @@
 /* Styling for logo image */
-#logo img {
-    border-radius: 30px;
-    box-shadow: 0 0 0 var(--shadow);
+#logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
     cursor: pointer;
-    transition: box-shadow 0.4s ease-in-out;
 }
 
-#logo img:hover {
-    box-shadow: 0 0 50px var(--shadow);
+#logo:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--card-hover-bg);
+    transform: scale(1.02);
+}
+
+#logo img {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
 }

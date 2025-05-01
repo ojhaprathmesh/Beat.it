@@ -1,11 +1,13 @@
 :root {
-    --grey: #605E72;
-    --white: #FEFFF1;
-    --song-blue: #7CBBDF;
+    --grey: #2A2B3A;
+    --white: #FFFFFF;
+    --song-blue: #4A6FA5;
     --form-blue: #034BB5;
-    --primary-bg: #022C6B;
-    --search-text: #AFAFB1;
-    --primary-text: #C3C2C9;
-    --shadow: rgb(24, 24, 24);
-    --main-body-bg: rgba(0, 39, 96, 0.55);
+    --primary-bg: #0A1128;
+    --search-text: #B4B4B7;
+    --primary-text: #E8E8E8;
+    --shadow: rgba(0, 0, 0, 0.2);
+    --main-body-bg: rgba(10, 17, 40, 0.85);
+    --card-hover-bg: rgba(255, 255, 255, 0.12);
+    --card-bg: rgba(255, 255, 255, 0.08);
 }

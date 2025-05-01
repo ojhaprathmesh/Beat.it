@@ -1,147 +1,237 @@
 /* Responsive Design */
-@media screen and (max-width: 1200px) {
-    #song-container,
-    #album-container {
-        width: 95%;
-        max-width: 95%;
-        padding: 25px 20px;
-    }
-
-    .album-row {
-        column-gap: 40px;
-        overflow-x: auto;
-        padding-bottom: 10px;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    .album-row::-webkit-scrollbar {
-        display: none;
-    }
-
+@media screen and (max-width: 1400px) {
     .player-albuminfo,
     .other-controls {
-        width: 30vw;
+        width: 25%;
     }
 
     .playbar {
-        width: 40vw;
-    }
-
-    .music-progress-bar {
-        width: 100%;
-        max-width: 400px;
+        width: 50%;
     }
 }
 
-@media screen and (max-width: 768px) {
-    #song-container,
-    #album-container {
-        width: 98%;
-        max-width: 98%;
-        padding: 20px 15px;
-        height: auto;
-        min-height: 290px;
+@media screen and (max-width: 1200px) {
+    .player-albuminfo,
+    .other-controls {
+        width: 30%;
     }
 
-    .song-heading,
-    #album-heading {
-        font-size: 24px;
+    .playbar {
+        width: 40%;
+    }
+
+    .song-row-item {
+        animation-duration: calc(var(--duration) * 0.8);
+    }
+}
+
+/* Tablet and smaller laptops */
+@media screen and (max-width: 1024px) {
+    .main-body {
+        gap: 25px;
+        padding: 15px 0 100px;
     }
 
     .player {
-        height: 100px;
+        height: auto;
+        min-height: 80px;
+        padding: 10px 0;
+    }
+
+    .player-albuminfo {
+        width: 35%;
+    }
+
+    .playbar {
+        width: 45%;
+    }
+
+    .other-controls {
+        width: 20%;
+    }
+
+    .song-row-item {
+        animation-duration: calc(var(--duration) * 0.7);
+    }
+}
+
+/* Mobile devices */
+@media screen and (max-width: 768px) {
+    .main-body {
+        gap: 20px;
+        padding: 10px 0 120px;
+    }
+
+    #song-container,
+    #album-container {
+        padding: 15px;
+        min-height: 250px;
+    }
+
+    .player {
+        height: auto;
+        min-height: 110px;
         flex-wrap: wrap;
         padding: 10px;
     }
 
     .player-albuminfo {
-        width: 60vw;
+        width: 60%;
+        min-width: 150px;
     }
 
     .other-controls {
-        width: 40vw;
+        width: 40%;
+        min-width: 100px;
     }
 
     .playbar {
-        width: 100vw;
+        width: 100%;
         order: 3;
+        padding: 10px;
     }
 
     .controls {
-        width: 140px;
-        font-size: 22px;
+        width: clamp(120px, 12vw, 140px);
+        font-size: clamp(18px, 2vw, 22px);
     }
 
     .volume-control-bar {
-        width: 80px;
-    }
-
-    .player-songcover {
-        margin: 8px;
-        width: 60px;
-        height: 60px;
-    }
-
-    .player-songdetails {
-        font-size: 14px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .main-body {
-        gap: 30px;
-        margin-bottom: 120px;
-    }
-
-    #song-container,
-    #album-container {
-        border-radius: 30px;
-        padding: 15px 10px;
-    }
-
-    .song-heading,
-    #album-heading {
-        font-size: 20px;
-    }
-
-    .player {
-        height: 110px;
-    }
-
-    .player-albuminfo {
-        width: 70vw;
-    }
-
-    .other-controls {
-        width: 30vw;
-    }
-
-    .controls {
-        width: 120px;
-        font-size: 20px;
-    }
-
-    .volume-control-bar {
-        width: 60px;
+        width: clamp(50px, 6vw, 80px);
     }
 
     .player-songcover {
         width: 50px;
         height: 50px;
-        margin: 5px;
+        min-width: 50px;
+        margin: 8px;
+    }
+
+    .player-songdetails {
+        font-size: 14px;
+        max-width: calc(100% - 70px);
+    }
+
+    .song-row-item {
+        animation-duration: calc(var(--duration) * 0.6);
+    }
+}
+
+/* Small mobile devices */
+@media screen and (max-width: 480px) {
+    .main-body {
+        padding: 10px 0 130px;
+    }
+
+    #song-container,
+    #album-container {
+        padding: 12px;
+        min-height: 220px;
+    }
+
+    .player {
+        min-height: 120px;
+    }
+
+    .player-albuminfo {
+        width: 65%;
+    }
+
+    .other-controls {
+        width: 35%;
+    }
+
+    .controls {
+        width: clamp(110px, 10vw, 120px);
+        font-size: clamp(16px, 1.8vw, 20px);
+    }
+
+    .volume-control-bar {
+        width: clamp(40px, 5vw, 60px);
     }
 
     .player-songdetails {
         font-size: 12px;
     }
 
-    .like-btn {
-        margin: 0 5px;
+    .song-row-item {
+        width: clamp(180px, 18vw, 200px);
     }
 }
 
-/* Fix for song scrolling on smaller screens */
+/* Very small devices */
+@media screen and (max-width: 320px) {
+    .main-body {
+        padding: 8px 0 140px;
+    }
+
+    #song-container,
+    #album-container {
+        padding: 10px;
+        min-height: 200px;
+    }
+
+    .player {
+        min-height: 130px;
+    }
+
+    .player-albuminfo {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .other-controls {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .playbar {
+        padding: 5px;
+    }
+
+    .player-songdetails {
+        max-width: 160px;
+        font-size: 11px;
+    }
+
+    .controls {
+        width: 100px;
+        font-size: 16px;
+    }
+
+    .song-row-item {
+        width: clamp(160px, 16vw, 180px);
+    }
+}
+
+/* Handle different aspect ratios */
+@media screen and (max-aspect-ratio: 16/10) {
+    .main-body {
+        padding-bottom: 100px;
+    }
+
+    #song-container,
+    #album-container {
+        min-height: 250px;
+    }
+}
+
+@media screen and (min-aspect-ratio: 16/9) {
+    .main-body {
+        padding-bottom: 90px;
+    }
+
+    .player {
+        height: 80px;
+        min-height: 80px;
+    }
+}
+
+/* Fix for song scrolling on different screens */
+.song-row-item {
+    animation-duration: var(--duration);
+}
+
 @media screen and (max-width: 1200px) {
     .song-row-item {
         animation-duration: calc(var(--duration) * 0.8);
@@ -152,19 +242,5 @@
     .song-row-item {
         animation-duration: calc(var(--duration) * 0.6);
     }
-}
-
-/* Ensure content doesn't overflow on very small screens */
-@media screen and (max-width: 320px) {
-    .player-songdetails {
-        max-width: 120px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .controls {
-        width: 110px;
-        font-size: 18px;
-    }
+} 
 } 

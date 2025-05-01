@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Join the music revolution with Beat.it! Login now to enjoy an amazing experience.">
-    <title>Beat.it</title>
+    <meta name="description" content="Manage your Beat.it profile and settings">
+    <title>Beat.it - Profile</title>
     <link rel="shortcut icon" type="image/x-icon" href="/assets/browserIcon.ico" />
 
     <!-- External stylesheet -->
@@ -19,7 +18,7 @@
     <link rel="stylesheet" href="/styles/player.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/styles/profile.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/styles/background.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="/styles/song-album.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/styles/form.css" media="print" onload="this.media='all'">
 
     <style>
         * {
@@ -28,96 +27,283 @@
             box-sizing: border-box;
         }
 
-        #logo {
-            display: block;
-            width: fit-content;
-            height: fit-content;
+        .profile-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
         }
 
-        .logout {
-            font-size: 50px;
-            color: darkred;
-            transition: color 0.4s ease-in-out;
-            cursor: pointer;
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .logout:hover {
-            color: red;
+        .profile-avatar {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Expanded Profile Styles */
-        .expanded-profile {
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            color: var(--white);
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .profile-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .profile-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            color: var(--white);
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            opacity: 0.7;
+        }
+
+        .profile-form {
             display: flex;
             flex-direction: column;
-            width: 80vw;
-            height: 50vh;
-            margin: auto;
-            align-items: center;
-            justify-content: center;
-            background-color: #022c6bd1;
+            gap: 1rem;
+        }
+
+        .form-group {
             position: relative;
-            top: 150px;
-            border-radius: 40px;
         }
 
-        .profile-pic {
-            position: fixed;
-            width: 400px;
-            height: 400px;
-            top: 60px;
+        .form-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
         }
 
-        .details-container {
+        .form-group input {
             width: 100%;
-            text-align: center;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             color: var(--white);
-            letter-spacing: 1px;
-            position: relative;
-            top: 40px;
-            font-size: xx-large;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
-        .username,
-        .usermail {
-            font-weight: 100;
-            padding: 8px;
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--form-blue);
+            background: rgba(255, 255, 255, 0.15);
         }
 
-        .usermail {
-            font-size: 1.2rem;
+        .save-btn {
+            background: var(--form-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .save-btn:hover {
+            background: #0341a0;
+            transform: translateY(-1px);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+        .danger-zone {
+            border-color: rgba(255, 69, 69, 0.3);
+        }
+
+        .danger-btn {
+            background: #ff4545;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .danger-btn:hover {
+            background: #ff2d2d;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
+            .profile-container {
+                padding: 0 1rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar">
-        <a href="/home">
-            <div id="logo">
-                <img src="/assets/Beat.it%20White%20Logo.webp" alt="Beat.it Logo" width="60px" height="60px">
+    <%- include('partials/navbar.ejs') %>
+
+    <main class="profile-container font-inter">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <img src="/assets/profile/default-avatar.webp" alt="Profile Image" id="profile-avatar">
             </div>
-        </a>
-
-        <a href="/login">
-            <div class="fa-solid fa-power-off logout"></div>
-        </a>
-    </nav>
-
-    <main class="expanded-profile">
-        <div class="profile-pic">
-            <img src="/assets/profile/Shrey%20Jaiswal%20Pic.webp" alt="Profile Image" width="400px" height="400px">
+            <div class="profile-info">
+                <h1 class="profile-name"><%= username %></h1>
+                <p class="profile-email"><%= usermail %></p>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Playlists</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Following</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="details-container font-syne">
-            <h1 class="username"><%= username %></h1>
-            <h5 class="usermail"><%= usermail %></h5>
+
+        <div class="profile-content">
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="fas fa-user"></i>
+                    Personal Information
+                </h2>
+                <form class="profile-form" id="personal-info-form">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" value="">
+                    </div>
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </form>
+            </div>
+
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="fas fa-lock"></i>
+                    Security
+                </h2>
+                <form class="profile-form" id="security-form">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" name="currentPassword">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" name="newPassword">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword">
+                    </div>
+                    <button type="submit" class="save-btn">Update Password</button>
+                </form>
+            </div>
+
+            <div class="profile-section danger-zone">
+                <h2 class="section-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Danger Zone
+                </h2>
+                <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1rem;">
+                    Once you delete your account, there is no going back. Please be certain.
+                </p>
+                <button class="danger-btn" id="delete-account">Delete Account</button>
+            </div>
         </div>
     </main>
 
     <%- include('partials/player.ejs') %>
 
     <script src="/scripts/utility/loading.js"></script>
-
     <script type="module" src="/scripts/handlers/playerHandler.js" defer></script>
-
+    <script type="module" src="/scripts/handlers/profileHandler.js" defer></script>
 </body>
 
 </html>

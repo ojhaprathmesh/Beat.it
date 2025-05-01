@@ -21,19 +21,20 @@
         }
 
         body {
-            background-color: #034BB5;
-            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #1B263B 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
         }
 
         .signup {
             display: flex;
-            height: 100vh;
-            align-items: center;
-            justify-content: center;
+            min-height: 100vh;
+            position: relative;
         }
 
         .graphics-signup {
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: space-between;
             height: 100vh;
@@ -41,24 +42,23 @@
             flex: 1;
         }
 
-        /* Brand tag styling */
         #brand-tag {
             color: white;
-            font-size: 40px;
+            font-size: clamp(28px, 3vw, 40px);
             position: absolute;
             left: 40px;
             top: 125px;
-            width: 395px;
-            height: auto;
+            max-width: 395px;
         }
 
         .image-container {
             position: absolute;
-            z-index: 10;
+            z-index: 1;
         }
 
         #image-container-1 {
-            z-index: -1;
+            z-index: 0;
+            opacity: 0.6;
         }
 
         #image-container-2 {
@@ -68,38 +68,64 @@
 
         #image-container-3 {
             right: 0;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
-        .image-container img {
-            object-fit: contain;
-        }
-
-        /* Styling for the main white frame (container of the form) */
         .whiteFrame-signup {
             display: flex;
-            background-color: white;
-            border-radius: 70px 0 0 70px;
-            width: 64%;
-            height: 100%;
-            justify-content: flex-start;
-            align-items: flex-end;
-            position: absolute;
-            right: 0;
-            column-gap: 100px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            width: min(90%, 450px);
+            margin: auto;
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
         }
 
-        #beatit-text {
-            transform: rotate(-90deg);
-            white-space: nowrap;
+        .form {
+            width: 100%;
         }
 
-        #beatit-text pre {
-            font-size: 40px;
+        .form-heading {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        #strength-indicator {
-            position: absolute;
-            bottom: 350px;
+        .main-heading {
+            font-size: clamp(28px, 5vw, 36px);
+            color: var(--primary-bg);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        @media (min-width: 1024px) {
+            .graphics-signup {
+                display: flex;
+            }
+
+            .whiteFrame-signup {
+                width: 450px;
+                margin: 0;
+                margin-right: 5%;
+                align-self: center;
+            }
+
+            .signup {
+                overflow: hidden;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .whiteFrame-signup {
+                padding: 30px 20px;
+            }
         }
     </style>
 </head>
@@ -111,23 +137,20 @@
                 Join us in the music revolution and just Beat it!
             </div>
 
-            <div class=" image-container" id="image-container-1">
-                <img src="/assets/signup/Graphic%20Design.webp" alt="Graphic Design Blob" width="725px" height="1024px">
+            <div class="image-container" id="image-container-1">
+                <img src="/assets/signup/Graphic%20Design.webp" alt="Graphic Design Blob" width="725" height="1024">
             </div>
 
             <div class="image-container" id="image-container-2">
-                <img src="/assets/signup/Singing%20Boy.webp" alt="Singing Boy" width="330px" height="382px">
+                <img src="/assets/signup/Singing%20Boy.webp" alt="Singing Boy" width="330" height="382">
             </div>
 
             <div class="image-container" id="image-container-3">
-                <img src="/assets/signup/DJ%20Girl.webp" alt="DJ Girl" width="288px" height="276px">
+                <img src="/assets/signup/DJ%20Girl.webp" alt="DJ Girl" width="288" height="276">
             </div>
         </section>
-        <section class="whiteFrame-signup">
-            <div id="beatit-text" style="width: 50px; position: relative; bottom: 65px;">
-                <pre class="font-syne">Beat.it     Beat.it     Beat.it     Beat.it     Beat.it</pre>
-            </div>
 
+        <section class="whiteFrame-signup">
             <form class="form font-inter" id="signup-form" method="POST">
                 <section class="form-heading">
                     <h1 class="main-heading">Create Account</h1>
@@ -135,12 +158,12 @@
 
                 <section class="form-inputs">
                     <div class="input-container name-input first-name">
-                        <input type="text" class="name box" id="first-name-label" name="firstName" required>
+                        <input type="text" class="box" id="first-name-label" name="firstName" required>
                         <label for="first-name-label">First Name</label>
                     </div>
 
                     <div class="input-container name-input last-name">
-                        <input type="text" class="name box" id="last-name-label" name="lastName">
+                        <input type="text" class="box" id="last-name-label" name="lastName">
                         <label for="last-name-label">Last Name</label>
                     </div>
 
@@ -166,9 +189,11 @@
                     </button>
                 </section>
 
-                <div class="font-inter redirect" id="redirect-login">
-                    <p>Already have an account? </p>
-                    <p>Login</p>
+                <div class="font-inter redirect">
+                    <div>
+                        <p>Already have an account? </p>
+                        <p>Login</p>
+                    </div>
                 </div>
             </form>
         </section>

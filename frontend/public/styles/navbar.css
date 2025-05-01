@@ -1,9 +1,11 @@
 /* Nav Bar Styles */
 .navbar {
     display: flex;
-    margin: 20px;
+    margin: 20px 30px;
     align-items: center;
     justify-content: space-between;
+    position: relative;
+    z-index: 2;
 }
 
 /* Search Bar Styles */
@@ -11,47 +13,117 @@
     display: flex;
     align-items: center;
     position: relative;
-    width: 725px;
-    height: 52px;
-    border-radius: 25px;
-    background-color: var(--grey);
-    box-shadow: 0 0 20px var(--shadow);
+    width: min(725px, 45vw);
+    height: 48px;
+    border-radius: 12px;
+    background-color: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.searchbar:hover,
+.searchbar:focus-within {
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--card-hover-bg);
 }
 
 #search-icon {
-    margin-left: 10px;
+    margin-left: 15px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.searchbar:focus-within #search-icon {
+    opacity: 1;
 }
 
 #line-separator {
-    width: 35px;
-    margin-left: 35px;
-    position: absolute;
-    transform: rotate(90deg);
-    border: 1px solid var(--white);
+    width: 1px;
+    height: 24px;
+    margin-left: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
 }
 
 #search-input {
-    margin-left: 25px;
+    margin-left: 15px;
     border: none;
-    font-size: larger;
-    color: var(--search-text);
-    background-color: var(--grey);
+    font-size: 15px;
+    color: var(--white);
+    background-color: transparent;
     width: 80%;
+    font-weight: 400;
 }
 
 #search-input:focus {
     outline: none;
-    color: var(--search-text);
-    background-color: var(--grey);
+    color: var(--white);
 }
 
 #search-input::placeholder {
     color: var(--search-text);
+    opacity: 0.7;
 }
 
-#search-input:-webkit-autofill {
-    background-color: var(--grey) !important;
-    color: var(--search-text) !important;
-    font-weight: 100 !important;
-    transition: background-color 5000s ease-in-out 0s;
+/* Menu Styles */
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.menu:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--card-hover-bg);
+}
+
+.menu #username-letter {
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.menu .overlay {
+    display: none;
+    position: fixed;
+    top: 80px;
+    right: 30px;
+    width: 180px;
+    background-color: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 8px 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.menu .overlay p {
+    color: var(--white);
+    padding: 12px 20px;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.menu .overlay p:hover {
+    background-color: var(--card-hover-bg);
+}
+
+.menu .overlay hr {
+    margin: 8px 0;
+    border: none;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu.show-overlay .overlay {
+    display: block;
 }
