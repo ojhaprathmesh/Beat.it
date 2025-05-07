@@ -2,6 +2,7 @@ async function fetchSongData() {
     try {
         const response = await fetch("http://localhost:3000/api/data/songsData", {
             cache: "no-store", // Disable caching for fetch requests
+            credentials: "include" // Include cookies for authentication
         });
 
         if (!response.ok) {

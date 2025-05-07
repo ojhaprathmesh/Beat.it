@@ -30,6 +30,64 @@ fs.readFile(path.join(__dirname, '../frontend/public/data/songsData.json'), 'utf
 
 const {shuffle} = require('../frontend/public/scripts/utility/shuffle');
 
+// Function to load songs from local directories instead of Firebase
+function loadLocalSongs() {
+  const uploadsDir = path.join(__dirname, '../frontend/public/uploads');
+  const albumCoversDir = path.join(__dirname, '../frontend/public/assets/album-covers');
+  
+  try {
+    // Get all mp3 files
+    const songFiles = fs.readdirSync(uploadsDir).filter(file => file.endsWith('.mp3'));
+    // Get all album covers
+    const albumCovers = fs.readdirSync(albumCoversDir).filter(file => file.endsWith('.webp'));
+    
+    // Map song files to song objects
+    const songs = songFiles.map((songFile, index) => {
+      // Extract song name from filename (remove extension)
+      const songName = songFile.replace('.mp3', '');
+      
+      // Find matching album cover - assume filename before .webp matches part of song name
+      const albumCover = albumCovers.find(cover => {
+        const albumName = cover.replace('.webp', '');
+        return songName.includes(albumName);
+      }) || albumCovers[0]; // Default to first cover if no match
+      
+      // Extract album name from album cover filename
+      const album = albumCover.replace('.webp', '');
+      
+      // Make a best guess for artist name (first part of song name before hyphen)
+      const parts = songName.split('-');
+      const artist = parts.length > 1 ? [parts[0].trim()] : ['Unknown Artist'];
+      
+      // Create song object
+      return {
+        id: index + 1,
+        title: songName.replace(/-/g, ' '),
+        artist: artist,
+        album: album.replace(/-/g, ' '),
+        genre: 'Pop',
+        file: `/uploads/${songFile}`,
+        albumCover: `/assets/album-covers/${albumCover}`,
+        duration: '3:30' // Default duration
+      };
+    });
+    
+    // Write to songsData.json
+    const dataDir = path.join(__dirname, '../frontend/public/data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    fs.writeFileSync(path.join(dataDir, 'songsData.json'), JSON.stringify(songs, null, 2));
+    console.log('Local songs data exported to songsData.json');
+    
+    return songs;
+  } catch (error) {
+    console.error('Error loading local songs:', error);
+    return [];
+  }
+}
+
 const app = express();
 const port = 3000;
 
@@ -75,18 +133,13 @@ if (shouldMigrate) {
       console.error('Migration failed:', error);
     });
 } else {
-  // If not migrating, ensure we have the latest data from Firebase
-  getAllSongs()
-    .then(songs => {
-      songData = songs;
-      return exportSongsToJSON();
-    })
-    .then(filePath => {
-      console.log(`Firebase songs data exported to ${filePath}`);
-    })
-    .catch(error => {
-      console.error('Error getting songs from Firebase:', error);
-    });
+  // Load songs from local directories instead of Firebase
+  try {
+    songData = loadLocalSongs();
+    console.log(`Loaded ${songData.length} songs from local directories`);
+  } catch (error) {
+    console.error('Error loading local songs:', error);
+  }
 }
 
 // Paths Configuration
@@ -159,8 +212,26 @@ app.get("/api/data/:type", (req, res) => {
 
     if (!allowedFiles.includes(type)) return res.status(404).json({error: "Invalid data request."});
 
+    // For song data specifically, try to get it from in-memory first
+    if (type === "songsData") {
+        // If songData is empty, try to reload it from local files
+        if (songData.length === 0) {
+            try {
+                songData = loadLocalSongs();
+            } catch (error) {
+                console.error('Error loading local songs:', error);
+            }
+        }
+        
+        // Return the in-memory song data
+        return res.json(songData);
+    }
+
     fs.readFile(path.join(paths.data, `${type}.json`), "utf-8", (err, data) => {
-        if (err) return res.status(500).json({error: "Error reading the file."});
+        if (err) {
+            console.error(`Error reading ${type}.json:`, err);
+            return res.status(500).json({error: "Error reading the file."});
+        }
         res.json(JSON.parse(data));
     });
 });
