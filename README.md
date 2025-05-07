@@ -14,7 +14,49 @@
    nodemon backend/server
    ```
 
+## Firebase Migration Guide
 
+This project has been updated to use Firebase for authentication and data storage instead of MongoDB. This allows for user authentication and song storage without needing to store files locally.
+
+### Migration Steps
+
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Firebase Configuration**:
+   Firebase config is already set up in `backend/sample.js`. The application uses these credentials for all Firebase services.
+
+3. **Migrate Existing Data**:
+   To migrate your existing MongoDB data to Firebase, run:
+   ```bash
+   npm run migrate
+   ```
+   This will:
+   - Move all user data to Firebase Authentication and Firestore
+   - Upload all song files to Firebase Storage
+   - Update song references to point to Firebase Storage URLs
+   - Export updated song data to the JSON file used by the frontend
+
+4. **Run the Application**:
+   ```bash
+   npm run dev
+   ```
+
+### Authentication Changes
+
+User authentication is now handled by Firebase Authentication:
+- User signup process creates a Firebase Auth account and stores additional user data in Firestore
+- Login process verifies credentials against Firebase Auth
+- The "Forgot Password" feature now sends a password reset email through Firebase
+
+### Storage Changes
+
+Songs are now stored in Firebase Storage:
+- Song metadata is stored in Firestore
+- Audio files are uploaded to Firebase Storage and accessed via secure URLs
+- The frontend still uses the same JSON format, so no UI changes were needed
 
 ## Project Structure
 

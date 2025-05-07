@@ -2,20 +2,40 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const session = require("express-session");
+const dotenv = require('dotenv');
 
-// Database and models
-const dbConnect = require("./dbconnect/dbcon.js");
-const {createDB, fetchJSON} = require('./model/dataModel.js');
-const userData = require("./model/userModel.js");
+dotenv.config();
+
+// Firebase Services (replacing MongoDB imports)
+// Comment out MongoDB imports but keep them for reference during transition
+// const dbConnect = require("./dbconnect/dbcon.js");
+// const {createDB, fetchJSON} = require('./model/dataModel.js');
+// const userData = require("./model/userModel.js");
+
+// Firebase imports
+const { auth, db } = require('./firebase/firebaseConfig');
+const { createUser, loginUser, forgotPassword } = require('./firebase/authService');
+const { getAllSongs, exportSongsToJSON } = require('./firebase/songsService');
+const { migrateFromMongoDB } = require('./firebase/migrationUtil');
 
 // Utilities
-const songData = require("../frontend/public/data/songsData.json");
+let songData = [];
+fs.readFile(path.join(__dirname, '../frontend/public/data/songsData.json'), 'utf8', (err, data) => {
+  if (!err) {
+    songData = JSON.parse(data);
+  } else {
+    console.warn('Could not load songsData.json, using empty array:', err);
+  }
+});
+
 const {shuffle} = require('../frontend/public/scripts/utility/shuffle');
 
 const app = express();
 const port = 3000;
 
-// Initialize Database Connection
+// Initialize Database - Using Firebase instead of MongoDB
+// Comment out MongoDB initialization but keep for reference
+/*
 dbConnect().then(() => {
     console.log("Connected to the database successfully!");
 
@@ -32,6 +52,42 @@ dbConnect().then(() => {
         console.error("Error during database creation or data insertion:", error.message);
     });
 });
+*/
+
+// Check if migration is needed - set this based on environment variable or first run
+const shouldMigrate = process.env.SHOULD_MIGRATE === 'true';
+
+if (shouldMigrate) {
+  console.log('Migration flag set, will migrate data from MongoDB to Firebase');
+  migrateFromMongoDB()
+    .then(() => {
+      console.log('Migration completed successfully');
+      // Update songData after migration
+      fs.readFile(path.join(__dirname, '../frontend/public/data/songsData.json'), 'utf8', (err, data) => {
+        if (!err) {
+          songData = JSON.parse(data);
+        } else {
+          console.error('Error reading updated songsData.json after migration:', err);
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Migration failed:', error);
+    });
+} else {
+  // If not migrating, ensure we have the latest data from Firebase
+  getAllSongs()
+    .then(songs => {
+      songData = songs;
+      return exportSongsToJSON();
+    })
+    .then(filePath => {
+      console.log(`Firebase songs data exported to ${filePath}`);
+    })
+    .catch(error => {
+      console.error('Error getting songs from Firebase:', error);
+    });
+}
 
 // Paths Configuration
 const paths = {
@@ -59,7 +115,7 @@ app.use((req, res, next) => {
     const albums = [...new Set(songData.map(song => song.album))];
     const albumData = songData.filter(song => albums.includes(song.album));
 
-    res.locals.song = songData[0]; // Placeholder song data
+    res.locals.song = songData.length > 0 ? songData[0] : {}; // Placeholder song data
     res.locals.songRow1 = shuffle([...songData]);
     res.locals.songRow2 = shuffle([...songData]);
     res.locals.albums = shuffle(albumData);
@@ -109,43 +165,55 @@ app.get("/api/data/:type", (req, res) => {
     });
 });
 
+// Updated to use Firebase Authentication
 app.post("/api/register", async (req, res) => {
     const {firstName, lastName, email, password} = req.body;
     try {
-        await new userData({firstName, lastName, email, password}).save();
+        await createUser({firstName, lastName, email, password});
         res.status(201).json({message: "User registered successfully."});
     } catch (error) {
-        res.status(error.code === 11000 ? 400 : 500).json({error: error.code === 11000 ? "Email already exists." : "Internal server error."});
+        res.status(error.code === 11000 ? 400 : 500).json({
+            error: error.code === 11000 ? "Email already exists." : "Internal server error."
+        });
     }
 });
 
+// Updated to use Firebase Authentication
 app.post("/api/login", async (req, res) => {
     const {email, password} = req.body;
     try {
-        const user = await userData.findOne({email});
-        if (!user || user.password !== password) {
-            return res.status(user ? 401 : 404).json({message: user ? "Invalid credentials." : "Email not associated with any account."});
-        }
-
+        const user = await loginUser(email, password);
+        
+        // Set session data
         req.session.usernameLetter = email.charAt(0).toUpperCase();
         req.session.email = email;
         req.session.name = `${user.firstName} ${user.lastName}`;
+        
         res.status(200).json({message: "Login successful!"});
     } catch (error) {
-        res.status(500).json({message: "Internal server error."});
+        const isInvalidCredentials = error.message === 'Invalid credentials.';
+        const isUserNotFound = error.message === 'User profile not found';
+        
+        res.status(isInvalidCredentials || isUserNotFound ? 401 : 500).json({
+            message: isInvalidCredentials ? "Invalid credentials." : 
+                     isUserNotFound ? "Email not associated with any account." : "Internal server error."
+        });
     }
 });
 
+// Updated to use Firebase Authentication
 app.post("/api/forgot-password", async (req, res) => {
     const {email} = req.body;
     if (!email) return res.status(400).json({error: "Email is required."});
 
     try {
-        const user = await userData.findOne({email});
-        if (!user) return res.status(404).json({error: "Email not associated with any account."});
-        res.status(200).json({password: user.password});
+        await forgotPassword(email);
+        res.status(200).json({message: "Password reset email sent."});
     } catch (error) {
-        res.status(500).json({error: "Internal server error."});
+        const isUserNotFound = error.message === 'Email not associated with any account.';
+        res.status(isUserNotFound ? 404 : 500).json({
+            error: isUserNotFound ? "Email not associated with any account." : "Internal server error."
+        });
     }
 });
 
