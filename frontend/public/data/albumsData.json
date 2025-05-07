@@ -148,5 +148,71 @@
                 "file": "../love-dose.mp3"
             }
         ]
+    },
+    {
+        "albumName": "Bhool Bhulaiyaa",
+        "albumCover": "/bhool-bhulaiyaa.webp",
+        "songs": [
+            {
+                "id": 13,
+                "title": "Bhool Bhulaiyaa",
+                "artist": [
+                    "Neeraj Shridhar"
+                ],
+                "genre": "Bollywood",
+                "file": "../bhool-bhulaiyaa.mp3"
+            },
+            {
+                "id": 14,
+                "title": "Labon Ko",
+                "artist": [
+                    "Kavita Krishnamurthy"
+                ],
+                "genre": "Bollywood",
+                "file": "../labon-ko-bhool-bhulaiyaa.mp3"
+            },
+            {
+                "id": 15,
+                "title": "Mere Dholna",
+                "artist": [
+                    "Shreya Ghoshal"
+                ],
+                "genre": "Bollywood",
+                "file": "../mere-dholna-bhool-bhulaiyaa.mp3"
+            }
+        ]
+    },
+    {
+        "albumName": "Cocktail",
+        "albumCover": "/cocktail.webp",
+        "songs": [
+            {
+                "id": 16,
+                "title": "Daaru Desi",
+                "artist": [
+                    "Benny Dayal"
+                ],
+                "genre": "Bollywood",
+                "file": "../daaru-desi.mp3"
+            },
+            {
+                "id": 17,
+                "title": "Second Hand Jawaani",
+                "artist": [
+                    "Neha Kakkar"
+                ],
+                "genre": "Bollywood",
+                "file": "../second-hand-jawaani.mp3"
+            },
+            {
+                "id": 18,
+                "title": "Tera Nam Japdi Phiran",
+                "artist": [
+                    "Shefali Alvares"
+                ],
+                "genre": "Bollywood",
+                "file": "../tera-nam-japdi-phiran.mp3"
+            }
+        ]
     }
 ]

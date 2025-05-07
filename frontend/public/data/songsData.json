@@ -1,203 +1,218 @@
 [
   {
     "id": 1,
-    "title": "bhool bhulaiyaa",
+    "title": "Bhool Bhulaiyaa",
     "artist": [
-      "bhool"
+      "Neeraj Shridhar"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Bhool Bhulaiyaa",
+    "genre": "Bollywood",
     "file": "/uploads/bhool-bhulaiyaa.mp3",
     "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
     "duration": "3:30"
   },
   {
     "id": 2,
-    "title": "daaru desi",
+    "title": "Daaru Desi",
     "artist": [
-      "daaru"
+      "Benny Dayal"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Cocktail",
+    "genre": "Bollywood",
     "file": "/uploads/daaru-desi.mp3",
-    "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
+    "albumCover": "/assets/album-covers/cocktail.webp",
     "duration": "3:30"
   },
   {
     "id": 3,
-    "title": "desi kalakaar",
+    "title": "Desi Kalakaar",
     "artist": [
-      "desi"
+      "Yo Yo Honey Singh"
     ],
-    "album": "desi kalakaar",
-    "genre": "Pop",
+    "album": "Desi Kalakaar",
+    "genre": "Bollywood",
     "file": "/uploads/desi-kalakaar.mp3",
     "albumCover": "/assets/album-covers/desi-kalakaar.webp",
     "duration": "3:30"
   },
   {
     "id": 4,
-    "title": "dil dhadakne do",
+    "title": "Dil Dhadakne Do",
     "artist": [
-      "dil"
+      "Shankar-Ehsaan-Loy",
+      "Suraj Jagan",
+      "Shankar Mahadevan"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Zindagi Na Milegi Dobara",
+    "genre": "Bollywood",
     "file": "/uploads/dil-dhadakne-do.mp3",
-    "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
+    "albumCover": "/assets/album-covers/sooraj-ki-baahon-mein.webp",
     "duration": "3:30"
   },
   {
     "id": 5,
-    "title": "do pal",
+    "title": "Do Pal",
     "artist": [
-      "do"
+      "Lata Mangeshkar",
+      "Sonu Nigam",
+      "Madan Mohan",
+      "Javed Akhtar"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Veer-Zaara",
+    "genre": "Bollywood",
     "file": "/uploads/do-pal.mp3",
-    "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
+    "albumCover": "/assets/album-covers/veer-zaara.webp",
     "duration": "3:30"
   },
   {
     "id": 6,
-    "title": "im your dj tonight",
+    "title": "I'm Your DJ Tonight",
     "artist": [
-      "im"
+      "Yo Yo Honey Singh"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Desi Kalakaar",
+    "genre": "Bollywood",
     "file": "/uploads/im-your-dj-tonight.mp3",
-    "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
+    "albumCover": "/assets/album-covers/desi-kalakaar.webp",
     "duration": "3:30"
   },
   {
     "id": 7,
-    "title": "kabhi kabhi aditi",
+    "title": "Kabhi Kabhi Aditi",
     "artist": [
-      "kabhi"
+      "Rashid Ali"
     ],
-    "album": "kabhi kabhi aditi",
-    "genre": "Pop",
+    "album": "Jaane Tu... Ya Jaane Na",
+    "genre": "Bollywood",
     "file": "/uploads/kabhi-kabhi-aditi.mp3",
     "albumCover": "/assets/album-covers/kabhi-kabhi-aditi.webp",
     "duration": "3:30"
   },
   {
     "id": 8,
-    "title": "labon ko bhool bhulaiyaa",
+    "title": "Labon Ko",
     "artist": [
-      "labon"
+      "Kavita Krishnamurthy"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Bhool Bhulaiyaa",
+    "genre": "Bollywood",
     "file": "/uploads/labon-ko-bhool-bhulaiyaa.mp3",
     "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
     "duration": "3:30"
   },
   {
     "id": 9,
-    "title": "love dose",
+    "title": "Love Dose",
     "artist": [
-      "love"
+      "Yo Yo Honey Singh"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Desi Kalakaar",
+    "genre": "Bollywood",
     "file": "/uploads/love-dose.mp3",
-    "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
+    "albumCover": "/assets/album-covers/desi-kalakaar.webp",
     "duration": "3:30"
   },
   {
     "id": 10,
-    "title": "main yahaan hoon",
+    "title": "Main Yahaan Hoon",
     "artist": [
-      "main"
+      "Sonu Nigam",
+      "Madan Mohan",
+      "Javed Akhtar"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Veer-Zaara",
+    "genre": "Bollywood",
     "file": "/uploads/main-yahaan-hoon.mp3",
-    "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
+    "albumCover": "/assets/album-covers/veer-zaara.webp",
     "duration": "3:30"
   },
   {
     "id": 11,
-    "title": "mere dholna bhool bhulaiyaa",
+    "title": "Mere Dholna",
     "artist": [
-      "mere"
+      "Shreya Ghoshal"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Bhool Bhulaiyaa",
+    "genre": "Bollywood",
     "file": "/uploads/mere-dholna-bhool-bhulaiyaa.mp3",
     "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
     "duration": "3:30"
   },
   {
     "id": 12,
-    "title": "nazrein milaana nazrein churaana",
+    "title": "Nazrein Milana Nazrein Churana",
     "artist": [
-      "nazrein"
+      "Benny Dayal",
+      "Satish Chakravarthy",
+      "Sayonara"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Jaane Tu... Ya Jaane Na",
+    "genre": "Bollywood",
     "file": "/uploads/nazrein-milaana-nazrein-churaana.mp3",
-    "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
+    "albumCover": "/assets/album-covers/kabhi-kabhi-aditi.webp",
     "duration": "3:30"
   },
   {
     "id": 13,
-    "title": "pappu cant dance",
+    "title": "Pappu Can't Dance",
     "artist": [
-      "pappu"
+      "Benny Dayal",
+      "Naresh Iyer",
+      "Satish Chakravarthy"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Jaane Tu... Ya Jaane Na",
+    "genre": "Bollywood",
     "file": "/uploads/pappu-cant-dance.mp3",
-    "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
+    "albumCover": "/assets/album-covers/kabhi-kabhi-aditi.webp",
     "duration": "3:30"
   },
   {
     "id": 14,
-    "title": "second hand jawaani",
+    "title": "Second Hand Jawaani",
     "artist": [
-      "second"
+      "Neha Kakkar"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Cocktail",
+    "genre": "Bollywood",
     "file": "/uploads/second-hand-jawaani.mp3",
-    "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
+    "albumCover": "/assets/album-covers/cocktail.webp",
     "duration": "3:30"
   },
   {
     "id": 15,
-    "title": "senorita",
+    "title": "Senorita",
     "artist": [
-      "Unknown Artist"
+      "Shankar-Ehsaan-Loy",
+      "Farhan Akhtar",
+      "Hrithik Roshan"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Zindagi Na Milegi Dobara",
+    "genre": "Bollywood",
     "file": "/uploads/senorita.mp3",
-    "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
+    "albumCover": "/assets/album-covers/sooraj-ki-baahon-mein.webp",
     "duration": "3:30"
   },
   {
     "id": 16,
-    "title": "sooraj ki baahon mein",
+    "title": "Sooraj Ki Baahon Mein",
     "artist": [
-      "sooraj"
+      "Shankar-Ehsaan-Loy",
+      "Clinton Cerejo",
+      "Dominique Cerejo"
     ],
-    "album": "sooraj ki baahon mein",
-    "genre": "Pop",
+    "album": "Zindagi Na Milegi Dobara",
+    "genre": "Bollywood",
     "file": "/uploads/sooraj-ki-baahon-mein.mp3",
     "albumCover": "/assets/album-covers/sooraj-ki-baahon-mein.webp",
     "duration": "3:30"
   },
   {
     "id": 17,
-    "title": "tera naam japdi phiran",
+    "title": "Tera Naam Japdi Phiran",
     "artist": [
-      "tera"
+      "Shefali Alvares"
     ],
-    "album": "bhool bhulaiyaa",
+    "album": "Cocktail",
     "genre": "Pop",
     "file": "/uploads/tera-naam-japdi-phiran.mp3",
     "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
@@ -205,14 +220,17 @@
   },
   {
     "id": 18,
-    "title": "tere liye",
+    "title": "Tere Liye",
     "artist": [
-      "tere"
+      "Lata Mangeshkar",
+      "Roopkumar Rathod",
+      "Salim-Sulaiman",
+      "Javed Akhtar"
     ],
-    "album": "bhool bhulaiyaa",
-    "genre": "Pop",
+    "album": "Veer-Zaara",
+    "genre": "Bollywood",
     "file": "/uploads/tere-liye.mp3",
-    "albumCover": "/assets/album-covers/bhool-bhulaiyaa.webp",
+    "albumCover": "/assets/album-covers/veer-zaara.webp",
     "duration": "3:30"
   }
 ]

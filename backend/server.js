@@ -22,7 +22,12 @@ const { migrateFromMongoDB } = require('./firebase/migrationUtil');
 let songData = [];
 fs.readFile(path.join(__dirname, '../frontend/public/data/songsData.json'), 'utf8', (err, data) => {
   if (!err) {
-    songData = JSON.parse(data);
+    try {
+      songData = JSON.parse(data);
+      console.log(`Loaded ${songData.length} songs from songsData.json`);
+    } catch (parseError) {
+      console.error('Error parsing songsData.json:', parseError);
+    }
   } else {
     console.warn('Could not load songsData.json, using empty array:', err);
   }
@@ -30,60 +35,30 @@ fs.readFile(path.join(__dirname, '../frontend/public/data/songsData.json'), 'utf
 
 const {shuffle} = require('../frontend/public/scripts/utility/shuffle');
 
-// Function to load songs from local directories instead of Firebase
+// Function to load songs from local files without overwriting
 function loadLocalSongs() {
-  const uploadsDir = path.join(__dirname, '../frontend/public/uploads');
-  const albumCoversDir = path.join(__dirname, '../frontend/public/assets/album-covers');
+  const dataFilePath = path.join(__dirname, '../frontend/public/data/songsData.json');
   
   try {
-    // Get all mp3 files
-    const songFiles = fs.readdirSync(uploadsDir).filter(file => file.endsWith('.mp3'));
-    // Get all album covers
-    const albumCovers = fs.readdirSync(albumCoversDir).filter(file => file.endsWith('.webp'));
-    
-    // Map song files to song objects
-    const songs = songFiles.map((songFile, index) => {
-      // Extract song name from filename (remove extension)
-      const songName = songFile.replace('.mp3', '');
-      
-      // Find matching album cover - assume filename before .webp matches part of song name
-      const albumCover = albumCovers.find(cover => {
-        const albumName = cover.replace('.webp', '');
-        return songName.includes(albumName);
-      }) || albumCovers[0]; // Default to first cover if no match
-      
-      // Extract album name from album cover filename
-      const album = albumCover.replace('.webp', '');
-      
-      // Make a best guess for artist name (first part of song name before hyphen)
-      const parts = songName.split('-');
-      const artist = parts.length > 1 ? [parts[0].trim()] : ['Unknown Artist'];
-      
-      // Create song object
-      return {
-        id: index + 1,
-        title: songName.replace(/-/g, ' '),
-        artist: artist,
-        album: album.replace(/-/g, ' '),
-        genre: 'Pop',
-        file: `/uploads/${songFile}`,
-        albumCover: `/assets/album-covers/${albumCover}`,
-        duration: '3:30' // Default duration
-      };
-    });
-    
-    // Write to songsData.json
-    const dataDir = path.join(__dirname, '../frontend/public/data');
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
+    // Check if songsData.json exists and has content
+    if (fs.existsSync(dataFilePath)) {
+      const fileContent = fs.readFileSync(dataFilePath, 'utf8');
+      try {
+        const songData = JSON.parse(fileContent);
+        if (songData && Array.isArray(songData) && songData.length > 0) {
+          console.log(`Loaded ${songData.length} songs from existing songsData.json`);
+          return songData;
+        }
+      } catch (parseError) {
+        console.error('Error parsing songsData.json:', parseError);
+      }
     }
     
-    fs.writeFileSync(path.join(dataDir, 'songsData.json'), JSON.stringify(songs, null, 2));
-    console.log('Local songs data exported to songsData.json');
-    
-    return songs;
+    // If we couldn't load data from the file, return empty array
+    console.warn('Could not load data from songsData.json');
+    return [];
   } catch (error) {
-    console.error('Error loading local songs:', error);
+    console.error('Error loading songs:', error);
     return [];
   }
 }
@@ -133,12 +108,13 @@ if (shouldMigrate) {
       console.error('Migration failed:', error);
     });
 } else {
-  // Load songs from local directories instead of Firebase
-  try {
-    songData = loadLocalSongs();
-    console.log(`Loaded ${songData.length} songs from local directories`);
-  } catch (error) {
-    console.error('Error loading local songs:', error);
+  // Load songs from file if they weren't loaded earlier
+  if (songData.length === 0) {
+    try {
+      songData = loadLocalSongs();
+    } catch (error) {
+      console.error('Error loading songs data:', error);
+    }
   }
 }
 
@@ -212,21 +188,12 @@ app.get("/api/data/:type", (req, res) => {
 
     if (!allowedFiles.includes(type)) return res.status(404).json({error: "Invalid data request."});
 
-    // For song data specifically, try to get it from in-memory first
-    if (type === "songsData") {
-        // If songData is empty, try to reload it from local files
-        if (songData.length === 0) {
-            try {
-                songData = loadLocalSongs();
-            } catch (error) {
-                console.error('Error loading local songs:', error);
-            }
-        }
-        
-        // Return the in-memory song data
+    // For song data, return the in-memory data if available
+    if (type === "songsData" && songData.length > 0) {
         return res.json(songData);
     }
 
+    // Otherwise read from file
     fs.readFile(path.join(paths.data, `${type}.json`), "utf-8", (err, data) => {
         if (err) {
             console.error(`Error reading ${type}.json:`, err);
