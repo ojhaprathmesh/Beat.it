@@ -2,7 +2,9 @@ const { auth, db } = require('./firebaseConfig');
 const { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
-  sendPasswordResetEmail 
+  sendPasswordResetEmail,
+  verifyPasswordResetCode,
+  confirmPasswordReset
 } = require('firebase/auth');
 const { doc, setDoc, getDoc } = require('firebase/firestore');
 
@@ -71,11 +73,20 @@ const loginUser = async (email, password) => {
 };
 
 /**
- * Send password reset email
+ * Send password reset email using Firebase Auth
  */
 const forgotPassword = async (email) => {
   try {
-    await sendPasswordResetEmail(auth, email);
+    // Get the action code settings
+    const actionCodeSettings = {
+      // URL you want to redirect back to after password reset.
+      // Must include oobCode in the URL it redirects to
+      url: `${process.env.APP_URL || 'http://localhost:3000'}/reset-password`,
+      // Pass the oobCode to the reset page via the URL
+      handleCodeInApp: true
+    };
+    
+    await sendPasswordResetEmail(auth, email, actionCodeSettings);
     return true;
   } catch (error) {
     if (error.code === 'auth/user-not-found') {
@@ -85,4 +96,25 @@ const forgotPassword = async (email) => {
   }
 };
 
-module.exports = { createUser, loginUser, forgotPassword }; 
+/**
+ * Reset password with token
+ */
+const resetPassword = async (token, newPassword) => {
+  try {
+    // Verify the password reset code
+    const email = await verifyPasswordResetCode(auth, token);
+    
+    // Confirm the password reset if code is valid
+    await confirmPasswordReset(auth, token, newPassword);
+    
+    return true;
+  } catch (error) {
+    if (error.code === 'auth/invalid-action-code' || 
+        error.code === 'auth/expired-action-code') {
+      throw new Error('Invalid or expired token.');
+    }
+    throw error;
+  }
+};
+
+module.exports = { createUser, loginUser, forgotPassword, resetPassword }; 

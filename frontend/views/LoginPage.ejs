@@ -71,6 +71,11 @@
             // Forgot Password Handler
             forgotPasswordLink.addEventListener("click", async () => {
                 const email = loginForm.querySelector("#email-label").value.trim();
+                
+                if (!email) {
+                    alert("Please enter your email address first");
+                    return;
+                }
 
                 try {
                     const response = await fetch("/api/forgot-password", {
@@ -79,10 +84,13 @@
                         body: JSON.stringify({ email })
                     });
                     const data = await response.json();
-                    if (!response.ok) throw new Error(data.error || "Unable to retrieve password.");
-                    alert(`Your password is: ${data.password}`);
+                    
+                    if (!response.ok) throw new Error(data.error || "Unable to send password reset email.");
+                    
+                    // Show success message
+                    alert("Password reset link has been sent to your email address. Please check your inbox.");
                 } catch (error) {
-                    alert(error);
+                    alert(error.message);
                 }
             });
 

@@ -14,7 +14,7 @@ dotenv.config();
 
 // Firebase imports
 const { auth, db } = require('./firebase/firebaseConfig');
-const { createUser, loginUser, forgotPassword } = require('./firebase/authService');
+const { createUser, loginUser, forgotPassword, resetPassword } = require('./firebase/authService');
 const { getAllSongs, exportSongsToJSON } = require('./firebase/songsService');
 const { migrateFromMongoDB } = require('./firebase/migrationUtil');
 
@@ -161,6 +161,7 @@ const pageRoutes = {
     "/profile": "ProfilePage",
     "/search": "SearchPage",
     "/album": "AlbumPage",
+    "/reset-password": "ResetPasswordPage",
 };
 
 Object.entries(pageRoutes).forEach(([route, view]) => {
@@ -251,6 +252,25 @@ app.post("/api/forgot-password", async (req, res) => {
         const isUserNotFound = error.message === 'Email not associated with any account.';
         res.status(isUserNotFound ? 404 : 500).json({
             error: isUserNotFound ? "Email not associated with any account." : "Internal server error."
+        });
+    }
+});
+
+// New endpoint for resetting password with token
+app.post("/api/reset-password", async (req, res) => {
+    const {token, password} = req.body;
+    
+    if (!token || !password) {
+        return res.status(400).json({error: "Token and password are required."});
+    }
+
+    try {
+        await resetPassword(token, password);
+        res.status(200).json({message: "Password reset successful."});
+    } catch (error) {
+        const isInvalidToken = error.message === 'Invalid or expired token.';
+        res.status(isInvalidToken ? 400 : 500).json({
+            error: isInvalidToken ? "Invalid or expired token. Please request a new password reset." : "Internal server error."
         });
     }
 });
