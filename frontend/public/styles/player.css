@@ -75,11 +75,19 @@ input[type="checkbox"] {
 
 .music-progress-bar {
     display: flex;
-    width: 500px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: var(--grey);
     align-items: center;
+    width: 100%;
+    margin: 0px 0 5px;
+}
+
+.player-current-time,
+.player-duration {
+    color: var(--white);
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    margin: 0 10px;
+    min-width: 35px;
+    text-align: center;
 }
 
 .controls {

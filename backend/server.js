@@ -141,13 +141,34 @@ app.set("views", paths.views);
 
 // Set song data in response locals for rendering
 app.use((req, res, next) => {
-    const albums = [...new Set(songData.map(song => song.album))];
-    const albumData = songData.filter(song => albums.includes(song.album));
-
-    res.locals.song = songData.length > 0 ? songData[0] : {}; // Placeholder song data
-    res.locals.songRow1 = shuffle([...songData]);
-    res.locals.songRow2 = shuffle([...songData]);
-    res.locals.albums = shuffle(albumData);
+    // Load albums data from albumsData.json for correct album names
+    try {
+        const albumsDataPath = path.join(paths.data, 'albumsData.json');
+        const albumsData = fs.existsSync(albumsDataPath) ? 
+            JSON.parse(fs.readFileSync(albumsDataPath, 'utf8')) : [];
+        
+        // Transform albumsData to have the same structure as songs for compatibility
+        const formattedAlbums = albumsData.map(album => ({
+            album: album.albumName,
+            albumCover: `/assets/album-covers${album.albumCover}`,
+            id: album.songs?.[0]?.id || 0
+        }));
+        
+        res.locals.song = songData.length > 0 ? songData[0] : {}; // Placeholder song data
+        res.locals.songRow1 = shuffle([...songData]);
+        res.locals.songRow2 = shuffle([...songData]);
+        res.locals.albums = shuffle(formattedAlbums);
+    } catch (error) {
+        console.error('Error loading albums data:', error);
+        // Fallback to the old method if there's an error
+        const albums = [...new Set(songData.map(song => song.album))];
+        const albumData = songData.filter(song => albums.includes(song.album));
+        
+        res.locals.song = songData.length > 0 ? songData[0] : {}; // Placeholder song data
+        res.locals.songRow1 = shuffle([...songData]);
+        res.locals.songRow2 = shuffle([...songData]);
+        res.locals.albums = shuffle(albumData);
+    }
 
     next();
 });

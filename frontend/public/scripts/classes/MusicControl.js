@@ -128,6 +128,7 @@ class MusicControl {
         const songTitleElement = document.querySelector(".player-songname");
         const songArtistElement = document.querySelector(".player-artistname");
         const songAlbumElement = document.querySelector(".player-songcover img");
+        const durationElement = document.querySelector(".player-duration");
 
         if (songTitleElement) {
             songTitleElement.textContent = song.title; // Update the song title
@@ -144,6 +145,18 @@ class MusicControl {
         if (songAlbumElement) {
             songAlbumElement.src = song.albumCover;
         }
+        
+        // Update duration after audio metadata is loaded
+        this.audio.addEventListener('loadedmetadata', () => {
+            if (durationElement) {
+                const minutes = Math.floor(this.audio.duration / 60);
+                const seconds = Math.floor(this.audio.duration % 60);
+                durationElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                
+                // Also update the song data with actual duration
+                song.duration = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            }
+        }, { once: true });
     }
 
     updateSeekBar() {
@@ -161,6 +174,14 @@ class MusicControl {
         this.seekBar.value = parseFloat(progress.toFixed(2));
         this.seekBar.style.setProperty("--width-m", width);
         this.seekBar.style.setProperty("--color", "var(--white)");
+        
+        // Update current time display
+        const currentTimeElement = document.querySelector(".player-current-time");
+        if (currentTimeElement) {
+            const minutes = Math.floor(this.audio.currentTime / 60);
+            const seconds = Math.floor(this.audio.currentTime % 60);
+            currentTimeElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
 
         this.seekBar.dispatchEvent(new CustomEvent("updatedSeekbar", {
             detail: this.seekBar.value
