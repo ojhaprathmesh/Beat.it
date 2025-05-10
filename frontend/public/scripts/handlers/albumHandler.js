@@ -1,5 +1,29 @@
 import { fetchSongData } from "../utility/fetchSongData.js";
 
+// Function to get actual song duration
+const getActualDuration = (audioSrc) => {
+    return new Promise((resolve) => {
+        const audio = new Audio();
+        audio.addEventListener('loadedmetadata', () => {
+            const minutes = Math.floor(audio.duration / 60);
+            const seconds = Math.floor(audio.duration % 60);
+            resolve(`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
+        });
+        
+        // Set error handler in case audio can't be loaded
+        audio.addEventListener('error', () => {
+            resolve("0:00"); // Default fallback duration
+        });
+        
+        // Set timeout in case metadata never loads
+        setTimeout(() => {
+            resolve("0:00");
+        }, 3000);
+        
+        audio.src = audioSrc;
+    });
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
     const pathname = window.location.pathname;
     const isHomeOrSearch = ["/home", "/search"].includes(pathname);
@@ -55,14 +79,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             const albumSongsContainer = document.querySelector(".album-songs");
             albumSongsContainer.innerHTML = ""; // Clear existing items
 
-            albumSongs.forEach((song, index) => {
+            // Create all song items with loading durations
+            const songItems = await Promise.all(albumSongs.map(async (song, index) => {
+                // Get actual duration if possible
+                const actualDuration = await getActualDuration(song.file);
+                
                 const songItem = document.createElement("div");
                 songItem.className = "album-song-item";
                 songItem.id = `song-${index + 1}`;
                 songItem.innerHTML = `
                     <div class="index">${index + 1}.</div>
                     <div class="song-name">${song.title}</div>
-                    <div class="song-duration">${song.duration}</div>
+                    <div class="song-duration">${actualDuration}</div>
                     <div class="like-btn">
                         <i class="fas fa-heart" style="font-size: larger;">
                             <input type="checkbox" class="like-check" />
@@ -78,8 +106,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                     document.dispatchEvent(songClickEvent);
                 });
 
-                albumSongsContainer.appendChild(songItem);
-            });
+                return songItem;
+            }));
+            
+            // Append all song items to the container
+            songItems.forEach(item => albumSongsContainer.appendChild(item));
+            
         } catch (error) {
             console.error("Error setting up album page:", error);
         }

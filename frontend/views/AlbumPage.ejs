@@ -38,17 +38,21 @@
         }
 
         .main-body {
+            display: flex;
             flex-direction: row;
+            align-items: flex-start;
             background-color: var(--main-body-bg);
             width: 90%;
             max-width: 90%;
-            height: 630px;
             border-radius: 50px;
             padding: 30px 75px;
             margin: 0 auto;
+            margin-bottom: 120px;
             font-size: 18px;
             box-shadow: 0 0 20px var(--shadow);
             color: var(--white);
+            justify-content: space-between;
+            overflow: hidden;
         }
 
         .main-body>section {
@@ -59,6 +63,8 @@
             flex-direction: column;
             justify-content: flex-start;
             height: 100%;
+            width: 60%;
+            overflow: hidden;
         }
 
         .album-content .controls {
@@ -70,10 +76,16 @@
 
         .album-songs {
             position: relative;
-            overflow: hidden;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
             flex-direction: column;
-            width: 800px;
+            width: 100%;
             height: 100%;
+        }
+
+        .album-songs::-webkit-scrollbar {
+            display: none;
         }
 
         .album-song-item {
@@ -89,7 +101,7 @@
             cursor: pointer;
             position: relative;
             transition: all 750ms ease;
-            top: 100%; /*Comment this to remove effect*/
+            top: 100%;
         }
 
         #song-1 {
@@ -128,9 +140,11 @@
         }
 
         .album-details {
-            width: 345px;
+            width: 35%;
             padding-top: 32px;
             flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
         .album-details img {
