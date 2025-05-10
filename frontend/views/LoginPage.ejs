@@ -9,114 +9,59 @@
     <title>Beat.it</title>
     <link rel="shortcut icon" type="image/x-icon" href="/assets/browserIcon.ico" />
 
-    <link rel="stylesheet" href="/styles/font.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="/styles/form.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="/styles/colors.css" media="print" onload="this.media='all'">
-
-    <style>
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--form-blue);
-            overflow: hidden;
-        }
-
-        .login {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100vw;
-            height: 100vh;
-            background-image: url("/assets/login/Background.webp");
-            background-size: cover;
-            background-position: center;
-        }
-
-        .whiteFrame-login {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 35%;
-            height: 65%;
-            background-color: white;
-            border: none;
-            border-radius: 20px;
-        }
-
-        .form {
-            width: 80%;
-        }
-
-        .form-heading {
-            text-align: center;
-        }
-
-        .sub-heading {
-            font-size: medium;
-        }
-
-        .redirect {
-            justify-content: space-between;
-        }
-    </style>
+    <link rel="stylesheet" href="/styles/font.css">
+    <link rel="stylesheet" href="/styles/colors.css">
+    <link rel="stylesheet" href="/styles/modern-theme.css">
 </head>
 
 <body>
-    <main class="login">
-        <section class="whiteFrame-login">
-            <div class="logo-container" id="logo-login">
-                <img src="/assets/Beat.it%20Logo.webp" alt="Beat.it" width="115px" height="115px">
+    <div class="animated-background"></div>
+    
+    <main class="auth-container">
+        <div class="auth-form-container">
+            <div class="brand">
+                <img src="/assets/Beat.it%20Logo.webp" alt="Beat.it" width="80" height="80">
+                <h1>Beat.it</h1>
+                <p>Welcome back! Please enter your details to continue</p>
             </div>
 
-            <form class="form font-inter" id="login-form" method="POST">
-                <section class="form-heading">
-                    <h1 class="main-heading">Welcome back!</h1>
-                    <h2 class="sub-heading">Please enter your details</h2>
-                </section>
+            <form id="login-form" method="POST">
+                <div class="form-group">
+                    <input type="email" class="form-control" id="email-label" required autocomplete="username">
+                    <label for="email-label" class="form-label">Email</label>
+                </div>
 
-                <section class="form-inputs">
-                    <div class="input-container email">
-                        <input type="email" class="box" id="email-label" required autocomplete="username">
-                        <label for="email-label">Email</label>
-                    </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="password-label" required autocomplete="current-password">
+                    <label for="password-label" class="form-label">Password</label>
+                </div>
 
-                    <div class="input-container password">
-                        <input type="password" class="box" id="password-label" required autocomplete="current-password">
-                        <label for="password-label">Password</label>
-                    </div>
+                <button class="btn btn-primary" id="login-btn" type="submit">
+                    Login
+                </button>
 
-                    <button class="form-btn font-inter" id="login-btn" type="submit">
-                        Login
-                    </button>
-                </section>
-
-                <div class="font-inter redirect" id="redirect-login">
-                    <div>
-                        <p>Don't have an account? </p>
-                        <p>Sign up</p>
-                    </div>
-                    <p>Forgot password?</p>
+                <div class="form-footer">
+                    <span>Don't have an account? <a id="redirect-signup">Sign up</a></span>
+                    <p><a id="forgot-password">Forgot password?</a></p>
                 </div>
             </form>
-        </section>
+        </div>
     </main>
 
     <script src="/scripts/utility/loading.js"></script>
+    <script src="/scripts/utility/themeUtils.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // Initialize theme
+            window.themeUtils.initializeTheme();
+            
             const loginForm = document.getElementById("login-form");
             const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
-            const redirectLink = document.querySelector(".redirect p:nth-child(2)");
-            const forgotPasswordLink = document.querySelector(".redirect > p");
+            const redirectLink = document.getElementById("redirect-signup");
+            const forgotPasswordLink = document.getElementById("forgot-password");
 
             errorContainer.className = "error-messages";
-            errorContainer.style.bottom = "0px"
 
             const showError = (message) => {
                 errorContainer.textContent = message;
@@ -168,7 +113,6 @@
             });
         });
     </script>
-
 </body>
 
 </html>

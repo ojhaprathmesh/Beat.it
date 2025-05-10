@@ -1,0 +1,256 @@
+/* Modern Theme for Beat.it Authentication Pages */
+:root {
+    --primary: #6200ea;
+    --primary-light: #9d46ff;
+    --primary-dark: #0a00b6;
+    --secondary: #03dac6;
+    --secondary-light: #66fff9;
+    --secondary-dark: #00a896;
+    --error: #CF6679;
+    --text-primary: #121212;
+    --text-secondary: #555555;
+    --text-on-primary: #ffffff;
+    --background: #f5f5f7;
+    --card-bg: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Base Styles */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    transition: all 0.3s ease;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  
+  /* Container Layout */
+  .auth-container {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+  }
+  
+  .auth-form-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 40px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+  }
+  
+  @media (min-width: 768px) {
+    .auth-container {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    }
+    
+    .auth-form-container {
+      margin: 40px auto;
+      border-radius: 24px;
+      background-color: var(--card-bg);
+      box-shadow: 0 12px 32px var(--shadow-color);
+    }
+  }
+  
+  /* Branding */
+  .brand {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .brand img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .brand h1 {
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .brand p {
+    color: var(--text-secondary);
+    font-size: 16px;
+  }
+  
+  /* Form Styling */
+  .form-group {
+    position: relative;
+    margin-bottom: 24px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: transparent;
+    color: var(--text-primary);
+    outline: none;
+  }
+  
+  .form-control:focus {
+    border-color: var(--primary);
+  }
+  
+  .form-label {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    color: var(--text-secondary);
+    font-size: 16px;
+    pointer-events: none;
+    transition: 0.2s ease all;
+  }
+  
+  .form-control:focus ~ .form-label,
+  .form-control.has-value ~ .form-label,
+  .form-group.has-initial-value .form-label {
+    top: -12px;
+    left: 12px;
+    font-size: 12px;
+    padding: 0 4px;
+    background-color: var(--card-bg);
+    color: var(--primary);
+  }
+  
+  .form-group.focused .form-label {
+    color: var(--primary);
+  }
+  
+  /* Fix for initial state */
+  .form-control[required] ~ .form-label {
+    top: -12px;
+    left: 12px;
+    font-size: 12px;
+    padding: 0 4px;
+    background-color: var(--card-bg);
+    color: var(--primary);
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .form-row .form-group {
+    flex: 1;
+  }
+  
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: var(--text-on-primary);
+  }
+  
+  .btn-primary:hover {
+    box-shadow: 0 6px 12px rgba(98, 0, 234, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  /* Form Footer */
+  .form-footer {
+    margin-top: 24px;
+    text-align: center;
+    color: var(--text-secondary);
+  }
+  
+  .form-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .form-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Error messages */
+  .error-messages {
+    color: var(--error);
+    font-size: 14px;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+  
+  /* Strength indicator */
+  #strength-indicator {
+    font-size: 14px;
+    margin-top: 8px;
+    font-weight: 500;
+    position: static;
+  }
+  
+  /* Background Animation */
+  .animated-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+  .animated-bubble {
+    position: absolute;
+    bottom: -150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+    opacity: 0.07;
+    animation: float 20s infinite ease-in-out;
+  }
+  
+  @keyframes float {
+    0% {
+      transform: translateY(0) rotate(0deg) scale(1);
+    }
+    50% {
+      transform: translateY(-800px) rotate(180deg) scale(1.5);
+    }
+    100% {
+      transform: translateY(-1600px) rotate(360deg) scale(0.8);
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 767px) {
+    .auth-form-container {
+      padding: 24px;
+      max-width: 100%;
+    }
+    
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
