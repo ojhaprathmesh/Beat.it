@@ -22,6 +22,18 @@
     box-shadow: 0 0 20px var(--shadow);
 }
 
+#album-container {
+    margin-bottom: 140px;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+#album-container::-webkit-scrollbar {
+    display: none;
+}
+
 #song-heading,
 #album-heading {
     color: var(--primary-text);

@@ -3,6 +3,6 @@ body {
     background-image: url(../assets/bg-graphic.webp);
     background-size: cover;
     width: 100vw;
-    height: 100vw;
-    overflow: hidden;
+    height: fit-content;
+    overflow-x: hidden;
 }
