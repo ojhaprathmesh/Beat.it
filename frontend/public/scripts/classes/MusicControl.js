@@ -169,7 +169,9 @@ class MusicControl {
         }
 
         const progress = (this.audio.currentTime / this.audio.duration) * 100;
-        const width = progress < 50 ? `calc(${5 * progress}px + 5px)` : `${5 * progress}px`;
+        
+        // Update width using percentage for better alignment
+        const width = progress < 40 ? `${progress + 1}%` : `${progress}%`;
 
         this.seekBar.value = parseFloat(progress.toFixed(2));
         this.seekBar.style.setProperty("--width-m", width);

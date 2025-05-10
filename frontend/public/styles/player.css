@@ -149,26 +149,32 @@ input[type="checkbox"] {
     outline: none;
     border-radius: 5px;
     background: var(--grey);
+    position: relative;
+    height: 10px;
 }
 
 #seekMusic::-webkit-slider-runnable-track {
     height: 10px;
+    border-radius: 5px;
+    background: var(--grey);
 }
 
 #seekMusic::-webkit-slider-thumb {
     position: relative;
-    top: -2px;
     appearance: none;
     height: 14px;
     width: 14px;
     background-color: var(--white);
     border-radius: 50%;
-    z-index: 1;
+    top: -2px;
+    z-index: 2;
 }
 
 #seekMusic::before {
     position: absolute;
     content: "";
+    top: 0;
+    left: 0;
     height: 10px;
     width: var(--width-m);
     background-color: var(--color);
@@ -183,26 +189,32 @@ input[type="checkbox"] {
     outline: none;
     border-radius: 5px;
     background: var(--grey);
+    position: relative;
+    height: 10px;
 }
 
 #seekVolume::-webkit-slider-runnable-track {
     height: 10px;
+    border-radius: 5px;
+    background: var(--grey);
 }
 
 #seekVolume::-webkit-slider-thumb {
     position: relative;
-    bottom: 2px;
     appearance: none;
     height: 14px;
     width: 14px;
     background-color: var(--white);
     border-radius: 50%;
-    z-index: 1;
+    top: -2px;
+    z-index: 2;
 }
 
 #seekVolume::before {
     position: absolute;
     content: "";
+    top: 0;
+    left: 0;
     height: 10px;
     width: var(--width-v);
     background-color: var(--white);
