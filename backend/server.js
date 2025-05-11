@@ -4,7 +4,6 @@ const fs = require('fs');
 const session = require("express-session");
 const dotenv = require('dotenv');
 const multer = require('multer');
-const { v4: uuidv4 } = require('uuid');
 const http = require('http');
 const socketIo = require('socket.io');
 
@@ -12,9 +11,8 @@ dotenv.config();
 
 // Firebase imports
 const { auth, db } = require('./firebase/firebaseConfig');
-const { getFirestore, collection, query, where, getDocs, doc, updateDoc, getDoc, limit } = require('firebase/firestore');
+const { collection, query, where, getDocs, doc, updateDoc, limit } = require('firebase/firestore');
 const { createUser, loginUser, forgotPassword, resetPassword } = require('./firebase/authService');
-const { getAllSongs, exportSongsToJSON } = require('./firebase/songsService');
 
 // Import Cloudinary image service
 const { uploadProfilePicture, getProfilePictureURL } = require('./cloudinary/imageService');
@@ -127,6 +125,22 @@ const upload = multer({
 app.set("view engine", "ejs");
 app.set("views", paths.views);
 
+// Helper function to fetch user by email - eliminates duplicate code
+async function getUserByEmail(email) {
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('email', '==', email), limit(1));
+    const userSnapshot = await getDocs(q);
+    
+    if (userSnapshot.empty) {
+        return null;
+    }
+    
+    const userData = userSnapshot.docs[0].data();
+    const userId = userSnapshot.docs[0].id;
+    
+    return { userData, userId };
+}
+
 // Set song data in response locals for rendering
 app.use((req, res, next) => {
     // Load albums data from albumsData.json for correct album names
@@ -186,14 +200,9 @@ Object.entries(pageRoutes).forEach(([route, view]) => {
         let profilePicture = null;
         if (email) {
             try {
-                // Get user ID
-                const usersRef = collection(db, 'users');
-                const q = query(usersRef, where('email', '==', email), limit(1));
-                const userSnapshot = await getDocs(q);
-                
-                if (!userSnapshot.empty) {
-                    const userData = userSnapshot.docs[0].data();
-                    profilePicture = userData.profilePicture || '/assets/profile/default-avatar.jpg';
+                const user = await getUserByEmail(email);
+                if (user) {
+                    profilePicture = user.userData.profilePicture || '/assets/profile/default-avatar.jpg';
                 }
             } catch (error) {
                 console.error('Error fetching profile picture:', error);
@@ -311,19 +320,14 @@ app.get('/api/user/profile', async (req, res) => {
     }
     
     try {
-        // Get user data from Firestore
-        const userEmail = req.session.email;
+        // Get user data from Firestore using helper function
+        const user = await getUserByEmail(req.session.email);
         
-        // Get user profile from Firebase
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('email', '==', userEmail), limit(1));
-        const userSnapshot = await getDocs(q);
-        
-        if (userSnapshot.empty) {
+        if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
         
-        const userData = userSnapshot.docs[0].data();
+        const userData = user.userData;
         
         res.json({
             firstName: userData.firstName || '',
@@ -348,18 +352,13 @@ app.put('/api/user/profile', async (req, res) => {
     
     try {
         const { firstName, lastName, username, phoneNumber } = req.body;
-        const userEmail = req.session.email;
+        const user = await getUserByEmail(req.session.email);
         
-        // Get user reference
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('email', '==', userEmail), limit(1));
-        const userSnapshot = await getDocs(q);
-            
-        if (userSnapshot.empty) {
+        if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
         
-        const userRef = doc(db, "users", userSnapshot.docs[0].id);
+        const userRef = doc(db, "users", user.userId);
         
         // Update user data
         await updateDoc(userRef, {
@@ -390,23 +389,16 @@ app.post('/api/user/profile-picture', upload.single('profilePicture'), async (re
             return res.status(400).json({ error: 'No file uploaded' });
         }
         
-        const userEmail = req.session.email;
+        const user = await getUserByEmail(req.session.email);
         
-        // Get user ID
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('email', '==', userEmail), limit(1));
-        const userSnapshot = await getDocs(q);
-            
-        if (userSnapshot.empty) {
+        if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-        
-        const userId = userSnapshot.docs[0].id;
         
         // Upload image to Cloudinary
         const imageURL = await uploadProfilePicture(
             req.file.buffer,
-            userId,
+            user.userId,
             req.file.mimetype,
             // Callback to run after successful Cloudinary upload and Firebase update
             (secureUrl) => {
@@ -431,21 +423,14 @@ app.get('/api/user/preferences', async (req, res) => {
     }
     
     try {
-        const userEmail = req.session.email;
+        const user = await getUserByEmail(req.session.email);
         
-        // Get user profile
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('email', '==', userEmail), limit(1));
-        const userSnapshot = await getDocs(q);
-            
-        if (userSnapshot.empty) {
+        if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
         
-        const userData = userSnapshot.docs[0].data();
-        
         // Ensure preferences exist, default to light theme and auto quality if not
-        const preferences = userData.preferences || { theme: 'light', audioQuality: 'auto' };
+        const preferences = user.userData.preferences || { theme: 'light', audioQuality: 'auto' };
         
         res.json(preferences);
     } catch (error) {
@@ -462,19 +447,13 @@ app.put('/api/user/preferences', async (req, res) => {
     
     try {
         const preferences = req.body;
-        const userEmail = req.session.email;
+        const user = await getUserByEmail(req.session.email);
         
-        // Get user reference
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('email', '==', userEmail), limit(1));
-        const userSnapshot = await getDocs(q);
-            
-        if (userSnapshot.empty) {
+        if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
         
-        const userDocId = userSnapshot.docs[0].id;
-        const userRef = doc(db, "users", userDocId);
+        const userRef = doc(db, "users", user.userId);
         
         // Update preferences
         await updateDoc(userRef, {
@@ -498,19 +477,13 @@ app.get('/api/user/favorites', async (req, res) => {
     }
     
     try {
-        const userEmail = req.session.email;
+        const user = await getUserByEmail(req.session.email);
         
-        // Get user favorites
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('email', '==', userEmail), limit(1));
-        const userSnapshot = await getDocs(q);
-            
-        if (userSnapshot.empty) {
+        if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
         
-        const userData = userSnapshot.docs[0].data();
-        const favorites = userData.favorites || [];
+        const favorites = user.userData.favorites || [];
         
         console.log('Fetched user favorites:', favorites);
         
@@ -534,6 +507,40 @@ app.get('/api/user/favorites', async (req, res) => {
     }
 });
 
+// Helper function to update favorites
+async function updateFavorites(email, songId, action) {
+    const user = await getUserByEmail(email);
+    if (!user) {
+        throw new Error('User not found');
+    }
+    
+    const userDocId = user.userId;
+    const userData = user.userData;
+    const favorites = (userData.favorites || []).map(id => id.toString());
+    
+    let updatedFavorites = favorites;
+    
+    if (action === 'add') {
+        // Check if song is already a favorite
+        if (favorites.includes(songId)) {
+            return { message: 'Song already in favorites' };
+        }
+        updatedFavorites = [...favorites, songId];
+    } else if (action === 'remove') {
+        updatedFavorites = favorites.filter(id => id !== songId);
+    }
+    
+    // Update user document
+    const userRef = doc(db, "users", userDocId);
+    await updateDoc(userRef, {
+        favorites: updatedFavorites
+    });
+    
+    console.log(`${action === 'add' ? 'Added to' : 'Removed from'} favorites:`, songId);
+    
+    return { message: action === 'add' ? 'Song added to favorites' : 'Song removed from favorites' };
+}
+
 // Add song to favorites
 app.post('/api/user/favorites/:songId', async (req, res) => {
     if (!req.session.email) {
@@ -542,41 +549,12 @@ app.post('/api/user/favorites/:songId', async (req, res) => {
     
     try {
         const songId = req.params.songId.toString(); // Ensure it's a string
-        const userEmail = req.session.email;
+        const result = await updateFavorites(req.session.email, songId, 'add');
         
-        // Get user reference
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('email', '==', userEmail), limit(1));
-        const userSnapshot = await getDocs(q);
-            
-        if (userSnapshot.empty) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-        
-        const userDocId = userSnapshot.docs[0].id;
-        const userData = userSnapshot.docs[0].data();
-        const favorites = (userData.favorites || []).map(id => id.toString());
-        
-        // Check if song is already a favorite
-        if (favorites.includes(songId)) {
-            return res.json({ message: 'Song already in favorites' });
-        }
-        
-        // Add song to favorites
-        favorites.push(songId);
-        
-        // Update user document
-        const userRef = doc(db, "users", userDocId);
-        await updateDoc(userRef, {
-            favorites: favorites
-        });
-        
-        console.log('Added to favorites:', songId);
-        
-        // Emit targeted refresh event instead of a full refresh
+        // Emit targeted refresh event
         io.emit('refresh-favorites', songId);
         
-        res.json({ message: 'Song added to favorites' });
+        res.json(result);
     } catch (error) {
         console.error('Error adding song to favorites:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -591,36 +569,12 @@ app.delete('/api/user/favorites/:songId', async (req, res) => {
     
     try {
         const songId = req.params.songId.toString(); // Ensure it's a string
-        const userEmail = req.session.email;
+        const result = await updateFavorites(req.session.email, songId, 'remove');
         
-        // Get user reference
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('email', '==', userEmail), limit(1));
-        const userSnapshot = await getDocs(q);
-            
-        if (userSnapshot.empty) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-        
-        const userDocId = userSnapshot.docs[0].id;
-        const userData = userSnapshot.docs[0].data();
-        const favorites = (userData.favorites || []).map(id => id.toString());
-        
-        // Remove song from favorites
-        const updatedFavorites = favorites.filter(id => id !== songId);
-        
-        // Update user document
-        const userRef = doc(db, "users", userDocId);
-        await updateDoc(userRef, {
-            favorites: updatedFavorites
-        });
-        
-        console.log('Removed from favorites:', songId);
-        
-        // Emit targeted refresh event instead of a full refresh
+        // Emit targeted refresh event
         io.emit('refresh-favorites', songId);
         
-        res.json({ message: 'Song removed from favorites' });
+        res.json(result);
     } catch (error) {
         console.error('Error removing song from favorites:', error);
         res.status(500).json({ error: 'Internal server error' });
