@@ -3,6 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const session = require("express-session");
 const dotenv = require('dotenv');
+const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
 
 dotenv.config();
 
@@ -14,9 +16,13 @@ dotenv.config();
 
 // Firebase imports
 const { auth, db } = require('./firebase/firebaseConfig');
+const { getFirestore, collection, query, where, getDocs, doc, updateDoc, getDoc, limit } = require('firebase/firestore');
 const { createUser, loginUser, forgotPassword, resetPassword } = require('./firebase/authService');
 const { getAllSongs, exportSongsToJSON } = require('./firebase/songsService');
 const { migrateFromMongoDB } = require('./firebase/migrationUtil');
+
+// Import Cloudinary image service
+const { uploadProfilePicture, getProfilePictureURL } = require('./cloudinary/imageService');
 
 // Utilities
 let songData = [];
@@ -132,8 +138,19 @@ app.use(session({
     secret: "your-secret-key",
     resave: false,
     saveUninitialized: true,
-    cookie: {secure: false}
+    cookie: { 
+        secure: false,
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
+    }
 }));
+
+// Configure multer for memory storage
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    }
+});
 
 // View Engine Setup
 app.set("view engine", "ejs");
@@ -186,20 +203,39 @@ const pageRoutes = {
 };
 
 Object.entries(pageRoutes).forEach(([route, view]) => {
-    app.get(route, (req, res) => {
+    app.get(route, async (req, res) => {
         const {usernameLetter, name, email} = req.session;
 
         // Redirect to login if not authenticated
-        if (!usernameLetter && !['/login', '/signup'].includes(route)) {
+        if (!usernameLetter && !['/login', '/signup', '/reset-password'].includes(route)) {
             return res.redirect("/login");
+        }
+
+        // Get the user's profile picture if logged in
+        let profilePicture = null;
+        if (email) {
+            try {
+                // Get user ID
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, where('email', '==', email), limit(1));
+                const userSnapshot = await getDocs(q);
+                
+                if (!userSnapshot.empty) {
+                    const userData = userSnapshot.docs[0].data();
+                    profilePicture = userData.profilePicture || '/assets/profile/default-avatar.jpg';
+                }
+            } catch (error) {
+                console.error('Error fetching profile picture:', error);
+                profilePicture = '/assets/profile/default-avatar.jpg';
+            }
         }
 
         // If route is "/profile", pass user details
         if (route === "/profile") {
-            return res.render(view, {username: name, usermail: email});
+            return res.render(view, {username: name, usermail: email, usernameLetter, profilePicture});
         }
 
-        res.render(view, {usernameLetter});
+        res.render(view, {usernameLetter, profilePicture});
     });
 });
 
@@ -227,9 +263,10 @@ app.get("/api/data/:type", (req, res) => {
 
 // Updated to use Firebase Authentication
 app.post("/api/register", async (req, res) => {
-    const {firstName, lastName, email, password} = req.body;
+    const {firstName, lastName, email, password, phoneNumber, username} = req.body;
     try {
-        await createUser({firstName, lastName, email, password});
+        // Create the user with auth service
+        await createUser({firstName, lastName, email, password, phoneNumber, username});
         res.status(201).json({message: "User registered successfully."});
     } catch (error) {
         res.status(error.code === 11000 ? 400 : 500).json({
@@ -294,6 +331,326 @@ app.post("/api/reset-password", async (req, res) => {
             error: isInvalidToken ? "Invalid or expired token. Please request a new password reset." : "Internal server error."
         });
     }
+});
+
+// Add API routes for user profile and favorites
+app.get('/api/user/profile', async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    try {
+        // Get user data from Firestore
+        const userEmail = req.session.email;
+        
+        // Get user profile from Firebase
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', userEmail), limit(1));
+        const userSnapshot = await getDocs(q);
+        
+        if (userSnapshot.empty) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        const userData = userSnapshot.docs[0].data();
+        
+        res.json({
+            firstName: userData.firstName || '',
+            lastName: userData.lastName || '',
+            email: userData.email,
+            username: userData.username || '',
+            phoneNumber: userData.phoneNumber || '',
+            profilePicture: userData.profilePicture || '/assets/profile/default-avatar.jpg',
+            preferences: userData.preferences || { theme: 'light', audioQuality: 'auto' }
+        });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Update profile update endpoint to include phone number
+app.put('/api/user/profile', async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    try {
+        const { firstName, lastName, username, phoneNumber } = req.body;
+        const userEmail = req.session.email;
+        
+        // Get user reference
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', userEmail), limit(1));
+        const userSnapshot = await getDocs(q);
+            
+        if (userSnapshot.empty) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        const userRef = doc(db, "users", userSnapshot.docs[0].id);
+        
+        // Update user data
+        await updateDoc(userRef, {
+            firstName: firstName || '',
+            lastName: lastName || '',
+            username: username || '',
+            phoneNumber: phoneNumber || ''
+        });
+        
+        // Update session data
+        req.session.name = `${firstName} ${lastName}`;
+        
+        res.json({ message: 'Profile updated successfully' });
+    } catch (error) {
+        console.error('Error updating user profile:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Update the profile picture upload endpoint to use Cloudinary
+app.post('/api/user/profile-picture', upload.single('profilePicture'), async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+        
+        const userEmail = req.session.email;
+        
+        // Get user ID
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', userEmail), limit(1));
+        const userSnapshot = await getDocs(q);
+            
+        if (userSnapshot.empty) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        const userId = userSnapshot.docs[0].id;
+        
+        // Upload image to Cloudinary
+        const imageURL = await uploadProfilePicture(
+            req.file.buffer,
+            userId,
+            req.file.mimetype
+        );
+        
+        // Return the Cloudinary URL
+        res.json({ profilePicture: imageURL });
+    } catch (error) {
+        console.error('Error updating profile picture:', error);
+        res.status(500).json({ error: 'Failed to update profile picture' });
+    }
+});
+
+// Get user preferences
+app.get('/api/user/preferences', async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    try {
+        const userEmail = req.session.email;
+        
+        // Get user profile
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', userEmail), limit(1));
+        const userSnapshot = await getDocs(q);
+            
+        if (userSnapshot.empty) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        const userData = userSnapshot.docs[0].data();
+        
+        // Ensure preferences exist, default to light theme and auto quality if not
+        const preferences = userData.preferences || { theme: 'light', audioQuality: 'auto' };
+        
+        res.json(preferences);
+    } catch (error) {
+        console.error('Error fetching user preferences:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Update user preferences
+app.put('/api/user/preferences', async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    try {
+        const preferences = req.body;
+        const userEmail = req.session.email;
+        
+        // Get user reference
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', userEmail), limit(1));
+        const userSnapshot = await getDocs(q);
+            
+        if (userSnapshot.empty) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        const userDocId = userSnapshot.docs[0].id;
+        const userRef = doc(db, "users", userDocId);
+        
+        // Update preferences
+        await updateDoc(userRef, {
+            preferences: preferences
+        });
+        
+        // Log success for debugging
+        console.log('Preferences updated successfully:', preferences);
+        
+        res.json({ message: 'Preferences updated successfully' });
+    } catch (error) {
+        console.error('Error updating user preferences:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get user favorites
+app.get('/api/user/favorites', async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    try {
+        const userEmail = req.session.email;
+        
+        // Get user favorites
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', userEmail), limit(1));
+        const userSnapshot = await getDocs(q);
+            
+        if (userSnapshot.empty) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        const userData = userSnapshot.docs[0].data();
+        const favorites = userData.favorites || [];
+        
+        console.log('Fetched user favorites:', favorites);
+        
+        // If no favorites, return empty array
+        if (favorites.length === 0) {
+            return res.json([]);
+        }
+        
+        // Get song details for favorites
+        const favoriteTracksData = songData.filter(song => favorites.includes(song.id.toString()) || favorites.includes(parseInt(song.id)));
+        
+        console.log('Matched favorites with song data:', favoriteTracksData.length, 'songs');
+        
+        res.json(favoriteTracksData);
+    } catch (error) {
+        console.error('Error fetching user favorites:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Add song to favorites
+app.post('/api/user/favorites/:songId', async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    try {
+        const songId = req.params.songId;
+        const userEmail = req.session.email;
+        
+        // Get user reference
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', userEmail), limit(1));
+        const userSnapshot = await getDocs(q);
+            
+        if (userSnapshot.empty) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        const userDocId = userSnapshot.docs[0].id;
+        const userData = userSnapshot.docs[0].data();
+        const favorites = userData.favorites || [];
+        
+        // Check if song is already a favorite
+        if (favorites.includes(songId)) {
+            return res.json({ message: 'Song already in favorites' });
+        }
+        
+        // Add song to favorites
+        favorites.push(songId);
+        
+        // Update user document
+        const userRef = doc(db, "users", userDocId);
+        await updateDoc(userRef, {
+            favorites: favorites
+        });
+        
+        console.log('Added to favorites:', songId);
+        
+        res.json({ message: 'Song added to favorites' });
+    } catch (error) {
+        console.error('Error adding song to favorites:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Remove song from favorites
+app.delete('/api/user/favorites/:songId', async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    try {
+        const songId = req.params.songId;
+        const userEmail = req.session.email;
+        
+        // Get user reference
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', userEmail), limit(1));
+        const userSnapshot = await getDocs(q);
+            
+        if (userSnapshot.empty) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        const userDocId = userSnapshot.docs[0].id;
+        const userData = userSnapshot.docs[0].data();
+        const favorites = userData.favorites || [];
+        
+        // Remove song from favorites
+        const updatedFavorites = favorites.filter(id => id.toString() !== songId.toString());
+        
+        // Update user document
+        const userRef = doc(db, "users", userDocId);
+        await updateDoc(userRef, {
+            favorites: updatedFavorites
+        });
+        
+        console.log('Removed from favorites:', songId);
+        
+        res.json({ message: 'Song removed from favorites' });
+    } catch (error) {
+        console.error('Error removing song from favorites:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Add logout route if it doesn't exist
+app.post('/api/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Error during logout:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        res.clearCookie('connect.sid');
+        res.status(200).json({ message: 'Logged out successfully' });
+    });
 });
 
 // 404 Error Handling

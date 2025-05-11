@@ -1,7 +1,7 @@
 <nav class="navbar">
     <div id="logo">
         <img src="/assets/Beat.it White Logo.webp" alt="Beat.it Logo" width="60px" height="60px"
-            onclick="window.location='/home'">
+            onclick="window.location.href='/home'">
     </div>
 
     <form class="searchbar" action="/search" method="GET">
@@ -12,16 +12,62 @@
     </form>
 
     <div class="menu font-inter">
-        <!-- Dynamically rendering username letter -->
-        <h1 id="username-letter" style="font-weight: 100;">
-            <%= usernameLetter %>
-        </h1>
-        <div class="overlay">
-            <p id="profile" onclick="window.location='/profile'">Profile</p>
+        <!-- Dynamically rendering profile picture or username letter -->
+        <div class="profile-letter" id="profile-menu-button">
+            <% if (typeof profilePicture !== 'undefined' && profilePicture && profilePicture !== '/assets/profile/default-avatar.jpg') { %>
+                <img src="<%= profilePicture %>" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+            <% } else { %>
+                <%= usernameLetter %>
+            <% } %>
+        </div>
+        <div class="overlay" id="profileMenu">
+            <p id="profile">Profile</p>
             <div>
                 <hr style="width: 90%; border: 1px solid #3E3E3E">
             </div>
-            <p id="logout" onclick="window.location='/login'">Log Out</p>
+            <p id="logout">Log Out</p>
         </div>
     </div>
 </nav>
+
+<script>
+// Immediate script to handle menu toggling
+(function() {
+    // Get the menu element
+    const menuBtn = document.querySelector('.menu');
+    const menuOverlay = document.getElementById('profileMenu');
+    
+    console.log('Navbar script initialized');
+    
+    // Add click event directly
+    if (menuBtn) {
+        menuBtn.onclick = function(e) {
+            console.log('Menu clicked directly');
+            const isVisible = menuOverlay.style.display === 'flex';
+            menuOverlay.style.display = isVisible ? 'none' : 'flex';
+            e.stopPropagation();
+        };
+        
+        // Profile navigation
+        document.getElementById('profile').onclick = function(e) {
+            console.log('Profile clicked directly');
+            window.location.href = '/profile';
+            e.stopPropagation();
+        };
+        
+        // Logout navigation
+        document.getElementById('logout').onclick = function(e) {
+            console.log('Logout clicked directly');
+            window.location.href = '/login';
+            e.stopPropagation();
+        };
+        
+        // Close when clicking elsewhere
+        document.body.addEventListener('click', function() {
+            menuOverlay.style.display = 'none';
+        });
+    }
+})();
+</script>
+
+<script src="/scripts/handlers/navbarHandler.js"></script>

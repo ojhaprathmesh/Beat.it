@@ -25,6 +25,11 @@ const createUser = async (userData) => {
       firstName: userData.firstName,
       lastName: userData.lastName,
       email: userData.email,
+      username: userData.username || '',
+      phoneNumber: userData.phoneNumber || '',
+      profilePicture: '/assets/profile/default-avatar.jpg',
+      favorites: [],
+      preferences: { theme: 'light', audioQuality: 'auto' },
       createdAt: new Date().toISOString()
       // Do not store password in Firestore as Firebase Auth handles this
     });
@@ -61,7 +66,10 @@ const loginUser = async (email, password) => {
       uid: userCredential.user.uid,
       email: userCredential.user.email,
       firstName: userData.firstName,
-      lastName: userData.lastName
+      lastName: userData.lastName,
+      username: userData.username,
+      phoneNumber: userData.phoneNumber,
+      profilePicture: userData.profilePicture
     };
   } catch (error) {
     // Translate Firebase error codes to match your existing API

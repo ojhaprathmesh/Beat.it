@@ -115,6 +115,10 @@ class MusicControl {
         const song = this.songList[index];
         this.audioSource.src = song.file;
         this.audio.load();
+        
+        // Set the song ID as a data attribute on the audio element
+        this.audio.setAttribute('data-song-id', song.id);
+        
         this.updateSongUI(song);
 
         this.loadSongCallCount === 0
@@ -122,6 +126,11 @@ class MusicControl {
             : this.handlePlay()
 
         this.loadSongCallCount++;
+        
+        // Dispatch a custom event to notify other components that the song has changed
+        document.dispatchEvent(new CustomEvent('song-changed', { 
+            detail: { id: song.id, song: song }
+        }));
     }
 
     updateSongUI(song) {

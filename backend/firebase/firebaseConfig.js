@@ -2,23 +2,24 @@
 const { initializeApp } = require("firebase/app");
 const { getAuth } = require("firebase/auth");
 const { getFirestore } = require("firebase/firestore");
-const { getStorage } = require("firebase/storage");
+// Remove Firebase Storage
+// const { getStorage } = require("firebase/storage");
 
 // Firebase configuration from sample.js
 const firebaseConfig = {
-  apiKey: "AIzaSyCMgX5pNFu3yvZgIlYWkYxI-8bhjJ_ljl4",
-  authDomain: "beat-it-a792a.firebaseapp.com",
-  projectId: "beat-it-a792a",
-  storageBucket: "beat-it-a792a.firebasestorage.app",
-  messagingSenderId: "34902992651",
-  appId: "1:34902992651:web:8bb5535c4b4844f215640e",
-  measurementId: "G-MNP1M5XKS1"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
+// Remove Storage initialization
+// const storage = getStorage(app);
 
-module.exports = { app, auth, db, storage }; 
+module.exports = { app, auth, db }; 

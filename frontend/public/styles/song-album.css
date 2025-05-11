@@ -24,9 +24,6 @@
 
 #album-container {
     margin-bottom: 140px;
-    overflow-y: auto;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -51,6 +48,9 @@
 .album-row {
     display: flex;
     column-gap: 85px;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }
 
 .song-row-1,

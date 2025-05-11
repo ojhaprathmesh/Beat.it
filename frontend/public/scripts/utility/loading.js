@@ -6,7 +6,7 @@ loaderStyle.width = "100vw";
 loaderStyle.height = "100vh";
 loaderStyle.position = "fixed";
 loaderStyle.top = 0;
-loaderStyle.zIndex = 100;
+loaderStyle.zIndex = 1000;
 loaderStyle.background = 'white url(../assets/loading.gif) no-repeat center center';
 
 document.querySelector("body").appendChild(loader);
