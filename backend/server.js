@@ -10,18 +10,11 @@ const socketIo = require('socket.io');
 
 dotenv.config();
 
-// Firebase Services (replacing MongoDB imports)
-// Comment out MongoDB imports but keep them for reference during transition
-// const dbConnect = require("./dbconnect/dbcon.js");
-// const {createDB, fetchJSON} = require('./model/dataModel.js');
-// const userData = require("./model/userModel.js");
-
 // Firebase imports
 const { auth, db } = require('./firebase/firebaseConfig');
 const { getFirestore, collection, query, where, getDocs, doc, updateDoc, getDoc, limit } = require('firebase/firestore');
 const { createUser, loginUser, forgotPassword, resetPassword } = require('./firebase/authService');
 const { getAllSongs, exportSongsToJSON } = require('./firebase/songsService');
-const { migrateFromMongoDB } = require('./firebase/migrationUtil');
 
 // Import Cloudinary image service
 const { uploadProfilePicture, getProfilePictureURL } = require('./cloudinary/imageService');
@@ -93,55 +86,12 @@ io.on('connection', (socket) => {
   });
 });
 
-// Initialize Database - Using Firebase instead of MongoDB
-// Comment out MongoDB initialization but keep for reference
-/*
-dbConnect().then(() => {
-    console.log("Connected to the database successfully!");
-
-    createDB().then(() => {
-        console.log("Database created and data inserted.");
-
-        // After the database is created, call fetchJSON() and log the file path
-        fetchJSON().then((filePath) => {
-            console.log(`Data successfully saved to ${filePath}`);
-        }).catch((error) => {
-            console.error("Error saving data to file:", error);
-        });
-    }).catch((error) => {
-        console.error("Error during database creation or data insertion:", error.message);
-    });
-});
-*/
-
-// Check if migration is needed - set this based on environment variable or first run
-const shouldMigrate = process.env.SHOULD_MIGRATE === 'true';
-
-if (shouldMigrate) {
-  console.log('Migration flag set, will migrate data from MongoDB to Firebase');
-  migrateFromMongoDB()
-    .then(() => {
-      console.log('Migration completed successfully');
-      // Update songData after migration
-      fs.readFile(path.join(__dirname, '../frontend/public/data/songsData.json'), 'utf8', (err, data) => {
-        if (!err) {
-          songData = JSON.parse(data);
-        } else {
-          console.error('Error reading updated songsData.json after migration:', err);
-        }
-      });
-    })
-    .catch(error => {
-      console.error('Migration failed:', error);
-    });
-} else {
-  // Load songs from file if they weren't loaded earlier
-  if (songData.length === 0) {
-    try {
-      songData = loadLocalSongs();
-    } catch (error) {
-      console.error('Error loading songs data:', error);
-    }
+// Load songs from file if they weren't loaded earlier
+if (songData.length === 0) {
+  try {
+    songData = loadLocalSongs();
+  } catch (error) {
+    console.error('Error loading songs data:', error);
   }
 }
 

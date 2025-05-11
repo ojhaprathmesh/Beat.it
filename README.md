@@ -14,11 +14,11 @@
    nodemon backend/server
    ```
 
-## Firebase Migration Guide
+## Firebase Integration
 
-This project has been updated to use Firebase for authentication and data storage instead of MongoDB. This allows for user authentication and song storage without needing to store files locally.
+This project uses Firebase for authentication and data storage. This allows for user authentication and song storage without needing to store files locally.
 
-### Migration Steps
+### Setup
 
 1. **Install Dependencies**:
    ```bash
@@ -26,37 +26,26 @@ This project has been updated to use Firebase for authentication and data storag
    ```
 
 2. **Firebase Configuration**:
-   Firebase config is already set up in `backend/sample.js`. The application uses these credentials for all Firebase services.
+   Firebase config is already set up in `backend/firebase/firebaseConfig.js`. The application uses these credentials for all Firebase services.
 
-3. **Migrate Existing Data**:
-   To migrate your existing MongoDB data to Firebase, run:
-   ```bash
-   npm run migrate
-   ```
-   This will:
-   - Move all user data to Firebase Authentication and Firestore
-   - Upload all song files to Firebase Storage
-   - Update song references to point to Firebase Storage URLs
-   - Export updated song data to the JSON file used by the frontend
-
-4. **Run the Application**:
+3. **Run the Application**:
    ```bash
    npm run dev
    ```
 
-### Authentication Changes
+### Authentication Features
 
-User authentication is now handled by Firebase Authentication:
+User authentication is handled by Firebase Authentication:
 - User signup process creates a Firebase Auth account and stores additional user data in Firestore
 - Login process verifies credentials against Firebase Auth
-- The "Forgot Password" feature now sends a password reset email through Firebase
+- The "Forgot Password" feature sends a password reset email through Firebase
 
-### Storage Changes
+### Storage Features
 
-Songs are now stored in Firebase Storage:
+Songs are stored in Firebase Storage:
 - Song metadata is stored in Firestore
-- Audio files are uploaded to Firebase Storage and accessed via secure URLs
-- The frontend still uses the same JSON format, so no UI changes were needed
+- Audio files are accessed via secure URLs
+- Profile pictures are stored in Cloudinary
 
 ## Project Structure
 
@@ -164,10 +153,23 @@ Beat.it/
 ├── package.json                               # Package configuration
 ```
 
-## Contributors ✨
+## 👥 Contributors
 
-Thanks to these wonderful people for their contributions!
-
-<a href="https://github.com/ojhaprathmesh/Beat.it/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ojhaprathmesh/Beat.it" />
-</a> 
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/ojhaprathmesh">
+        <img src="https://github.com/ojhaprathmesh.png" width="100px;" style="border-radius: 50%;" alt="Prathmesh Ojha"/>
+        <br />
+        <sub><b>Prathmesh Ojha</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/jaisw07">
+        <img src="https://github.com/jaisw07.png" width="100px;" style="border-radius: 50%;" alt="Shrey Jaiswal"/>
+        <br />
+        <sub><b>Shrey Jaiswal</b> (v1.0 only)</sub>
+      </a>
+    </td>
+  </tr>
+</table>

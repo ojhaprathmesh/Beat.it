@@ -2,10 +2,8 @@
 echo ====================================
 echo Firebase Setup for Beat.it Music App
 echo ====================================
-echo.
-
-@REM echo Step 1: Installing Firebase dependencies...
-@REM npm install firebase firebase-admin cross-env
+echo Step 1: Installing dependencies...
+npm install
 
 echo.
 echo Step 2: Creating Firebase directory structure...
@@ -22,10 +20,7 @@ if %ERRORLEVEL% EQU 0 (
   echo ====================================
   echo.
   echo Next steps:
-  echo 1. To migrate data from MongoDB to Firebase:
-  echo    npm run migrate
-  echo.
-  echo 2. To start the application:
+  echo To start the application:
   echo    npm run dev
 ) else (
   echo.
@@ -34,6 +29,7 @@ if %ERRORLEVEL% EQU 0 (
   echo ====================================
   echo.
   echo Please follow the instructions above to resolve any Firebase configuration issues.
+
   echo After fixing the issues, run this setup script again.
 )
 

@@ -39,7 +39,7 @@ const createUser = async (userData) => {
     // Translate Firebase error codes to match your existing API response format
     if (error.code === 'auth/email-already-in-use') {
       const customError = new Error('Email already exists.');
-      customError.code = 11000; // MongoDB duplicate key error code
+      customError.code = 'auth/email-already-exists';
       throw customError;
     }
     throw error;
