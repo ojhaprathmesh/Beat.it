@@ -97,99 +97,223 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load user favorites
     async function loadFavorites() {
-    try {
-        const response = await fetch('/api/user/favorites');
-        
-        if (!response.ok) {
-            throw new Error('Failed to load favorites');
-        }
-        
-        const favorites = await response.json();
-        console.log('Loaded favorites:', favorites);
+        try {
+            const response = await fetch('/api/user/favorites');
             
-        // Show/hide no favorites message
-        if (favorites.length === 0) {
-            if (noFavoritesElement) {
-                noFavoritesElement.style.display = 'block';
+            if (!response.ok) {
+                throw new Error('Failed to load favorites');
             }
             
-            // Clear the container if there are no favorites
-            if (favoritesContainer) {
+            const favorites = await response.json();
+            console.log('Loaded favorites:', favorites);
+                
+            // Ensure favoritesContainer is available
+            if (!favoritesContainer) {
+                console.error('Favorites container not found in the DOM');
+                return;
+            }
+                
+            // Show/hide no favorites message
+            if (!favorites || favorites.length === 0) {
+                // Clear the container and show no favorites message
                 favoritesContainer.innerHTML = `
                     <div class="no-favorites">
                         <p>You haven't added any favorites yet. Start by liking songs while listening!</p>
                     </div>
                 `;
+                return;
             }
-            return;
-        } else if (noFavoritesElement) {
-            noFavoritesElement.style.display = 'none';
-        }
-            
-        // Clear existing favorites
-        if (favoritesContainer) {
+                
+            // Clear existing favorites
             favoritesContainer.innerHTML = '';
-        
+            
+            // Add CSS for hover effects
+            const style = document.createElement('style');
+            style.textContent = `
+                .favorite-track {
+                    transition: all 0.2s ease;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    position: relative;
+                }
+                .favorite-track:hover {
+                    background-color: rgba(255, 59, 92, 0.1);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
+                .favorite-track .play-icon {
+                    opacity: 0.7;
+                    transition: opacity 0.2s ease;
+                }
+                .favorite-track:hover .play-icon {
+                    opacity: 1;
+                    color: var(--primary);
+                }
+                .favorite-track .track-cover {
+                    border-radius: 6px;
+                    transition: transform 0.2s ease;
+                }
+                .favorite-track:hover .track-cover {
+                    transform: scale(1.05);
+                }
+            `;
+            document.head.appendChild(style);
+            
             // Add favorites to container
             favorites.forEach(track => {
                 const trackElement = createTrackElement(track);
                 favoritesContainer.appendChild(trackElement);
             });
-        }
-    } catch (error) {
-        console.error('Error loading favorites:', error);
-        if (favoritesContainer) {
-            favoritesContainer.innerHTML = `
-                <div class="error-message">
-                    <p>There was an error loading your favorites. Please try again later.</p>
-                </div>
-            `;
+            
+            // Add event listeners to the new track elements
+            addTrackEventListeners();
+        } catch (error) {
+            console.error('Error loading favorites:', error);
+            if (favoritesContainer) {
+                favoritesContainer.innerHTML = `
+                    <div class="error-message">
+                        <p>There was an error loading your favorites. Please try again later.</p>
+                    </div>
+                `;
+            }
         }
     }
-}
         
     // Create track element for favorites
     function createTrackElement(track) {
-            const trackElement = document.createElement('div');
-            trackElement.className = 'favorite-track';
+        const trackElement = document.createElement('div');
+        trackElement.className = 'favorite-track';
         trackElement.dataset.songId = track.id;
-            
-            trackElement.innerHTML = `
-            <img src="${track.thumbnail || `/assets/thumbnails/${track.id}.jpg`}" alt="${track.title}" class="track-cover">
-                <div class="track-info">
-                    <div class="track-title">${track.title}</div>
-                <div class="track-artist">${track.artist}</div>
-                </div>
-                <div class="track-actions">
+        trackElement.style.cursor = 'pointer';
+        
+        // Use albumCover if available, otherwise fallback to thumbnails or a default image
+        const coverImage = track.albumCover || track.thumbnail || `/assets/album-covers/${track.id}.jpg` || '/assets/default-cover.jpg';
+        
+        trackElement.innerHTML = `
+            <img src="${coverImage}" alt="${track.title}" class="track-cover">
+            <div class="track-info">
+                <div class="track-title">${track.title}</div>
+                <div class="track-artist">${typeof track.artist === 'string' ? track.artist : Array.isArray(track.artist) ? track.artist.join(', ') : ''}</div>
+            </div>
+            <div class="track-actions">
                 <i class="fas fa-play play-icon" title="Play"></i>
                 <i class="fas fa-heart remove-favorite" style="color: var(--primary);" title="Remove from favorites"></i>
-                </div>
-            `;
-            
-        // Add event listeners
-        const playIcon = trackElement.querySelector('.play-icon');
-        const removeIcon = trackElement.querySelector('.remove-favorite');
+            </div>
+        `;
         
-        if (playIcon) {
-            playIcon.addEventListener('click', function() {
-                playSong(track);
+        // Make the whole track element clickable to play the song
+        trackElement.addEventListener('click', function(e) {
+            // Only handle the click if it's not on the remove-favorite button
+            if (!e.target.closest('.remove-favorite')) {
+                e.preventDefault();
+                const songId = this.dataset.songId;
+                console.log('Clicked favorite track with ID:', songId);
+                playSongById(songId);
+            }
+        });
+        
+        // Add specific event listeners for action buttons
+        const removeIcon = trackElement.querySelector('.remove-favorite');
+        if (removeIcon) {
+            removeIcon.addEventListener('click', function(e) {
+                // Stop event propagation to prevent the track click handler from firing
+                e.stopPropagation();
+                const trackElement = this.closest('.favorite-track');
+                const songId = trackElement.dataset.songId;
+                removeFavorite(songId);
             });
         }
         
-        if (removeIcon) {
-            removeIcon.addEventListener('click', function() {
-                removeFavorite(track.id);
+        // Add specific event listener for play icon to make sure it works
+        const playIcon = trackElement.querySelector('.play-icon');
+        if (playIcon) {
+            playIcon.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent double triggering with parent
+                const trackElement = this.closest('.favorite-track');
+                const songId = trackElement.dataset.songId;
+                console.log('Play icon clicked for song ID:', songId);
+                playSongById(songId);
             });
         }
         
         return trackElement;
     }
 
+    // Add event listeners to track elements
+    function addTrackEventListeners() {
+        // Play buttons
+        document.querySelectorAll('.play-icon').forEach(playIcon => {
+            playIcon.addEventListener('click', function() {
+                const trackElement = this.closest('.favorite-track');
+                const songId = trackElement.dataset.songId;
+                playSongById(songId);
+            });
+        });
+        
+        // Remove from favorites buttons
+        document.querySelectorAll('.remove-favorite').forEach(removeIcon => {
+            removeIcon.addEventListener('click', function() {
+                const trackElement = this.closest('.favorite-track');
+                const songId = trackElement.dataset.songId;
+                removeFavorite(songId);
+            });
+        });
+    }
+    
+    // Play song by ID
+    async function playSongById(songId) {
+        try {
+            console.log('Finding song with ID:', songId);
+            const response = await fetch('/api/data/songsData');
+            if (!response.ok) throw new Error('Failed to load songs data');
+            
+            const songs = await response.json();
+            console.log('Loaded songs data, total songs:', songs.length);
+            
+            // Convert IDs to strings for reliable comparison
+            const songIdStr = songId.toString();
+            const song = songs.find(s => s.id.toString() === songIdStr);
+            
+            if (song) {
+                console.log('Found song to play:', song.title, 'by', song.artist);
+                playSong(song);
+            } else {
+                console.error('Song not found with ID:', songId);
+                alert('Sorry, the song could not be found.');
+            }
+        } catch (error) {
+            console.error('Error playing song by ID:', error);
+            alert('Sorry, there was an error playing the song.');
+        }
+    }
+
     // Play song function
     function playSong(song) {
-        // Dispatch custom event to be caught by the player handler
-        const event = new CustomEvent('play-song', { detail: song });
+        console.log('Dispatching play-song event with song:', song.title);
+        
+        // Check if MusicControl is available globally to play directly
+        if (window.musicPlayer && typeof window.musicPlayer.loadAndPlaySong === 'function') {
+            window.musicPlayer.loadAndPlaySong(song);
+            return;
+        }
+        
+        // Otherwise dispatch event for other components to handle
+        const event = new CustomEvent('play-song', { 
+            detail: song
+        });
         document.dispatchEvent(event);
+        
+        // Also try to play using the audio element directly
+        const audioElement = document.getElementById('songPlayer');
+        if (audioElement) {
+            // Update the source
+            const source = audioElement.querySelector('source');
+            if (source && song.audioSrc) {
+                source.src = song.audioSrc;
+                audioElement.load();
+                audioElement.play().catch(err => console.error('Error playing audio:', err));
+            }
+        }
     }
 
     // Remove favorite function
@@ -203,13 +327,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('Failed to remove favorite');
             }
             
-            // Reload favorites
-            loadFavorites();
+            // Remove the track element from the DOM instead of reloading all favorites
+            const trackElement = document.querySelector(`.favorite-track[data-song-id="${songId}"]`);
+            if (trackElement) {
+                // Add a fade-out animation
+                trackElement.style.opacity = '0';
+                trackElement.style.transform = 'translateX(20px)';
+                trackElement.style.transition = 'opacity 0.3s, transform 0.3s';
+                
+                // Remove after animation completes
+                setTimeout(() => {
+                    trackElement.remove();
+                    
+                    // Check if there are any favorites left
+                    if (!document.querySelector('.favorite-track')) {
+                        // No favorites left, show the no-favorites message
+                        if (favoritesContainer) {
+                            favoritesContainer.innerHTML = `
+                                <div class="no-favorites">
+                                    <p>You haven't added any favorites yet. Start by liking songs while listening!</p>
+                                </div>
+                            `;
+                        }
+                    }
+                }, 300);
+            }
             
             // Update any heart icons in the player or elsewhere
             updateHeartIcons();
-    } catch (error) {
+            
+            // If socket.io is available, emit the refresh event
+            if (window.socket) {
+                window.socket.emit('refresh-favorites', songId);
+            }
+        } catch (error) {
             console.error('Error removing favorite:', error);
+            alert('Failed to remove from favorites. Please try again.');
         }
     }
 

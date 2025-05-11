@@ -15,7 +15,7 @@
                 </div>
             </div>
 
-            <div class="like-btn">
+            <div class="like-btn" data-song-id="<%= song.id %>">
                 <i class="fas fa-heart" style="font-size: larger;">
                     <input type="checkbox" class="like-check" />
                 </i>
@@ -23,7 +23,7 @@
         </div>
 
         <div class="playbar">
-            <audio id="songPlayer">
+            <audio id="songPlayer" data-song-id="<%= song.id %>">
                 <source src="<%= song.audioSrc %>" type="audio/mpeg">
             </audio>
             <div class="music-progress-bar">
@@ -78,3 +78,48 @@
             <p>No song data available to render the player.</p>
             <% } %>
 </footer>
+
+<script>
+    // Initialize socket connection if available
+    if (typeof io !== 'undefined') {
+        const socket = io();
+        
+        // Make socket available globally so other scripts can access it
+        window.socket = socket;
+        
+        // Listen for favorites refresh events
+        socket.on('refresh-favorites', (songId) => {
+            console.log('Received refresh-favorites event for song ID:', songId);
+            
+            // Get the current song ID from the audio element
+            const audioElement = document.getElementById('songPlayer');
+            if (audioElement) {
+                const currentSongId = audioElement.getAttribute('data-song-id');
+                
+                // If the updated song is the current song, update the like button
+                if (currentSongId === songId.toString()) {
+                    // Trigger an update on the like button state
+                    if (typeof updateLikeButtonState === 'function') {
+                        updateLikeButtonState(currentSongId);
+                    }
+                }
+            }
+        });
+        
+        // Also listen for general refresh events (like profile picture updates)
+        socket.on('refresh', () => {
+            // Handle profile picture updates without full page refresh
+            // This could update specific elements based on what changed
+            console.log('Received general refresh event');
+            
+            // You can add specific DOM updates here if needed
+            // For example, refresh the profile picture if it's visible
+            const profilePic = document.querySelector('.profile-picture img');
+            if (profilePic) {
+                // Add a cache-busting parameter to force a refresh
+                const currentSrc = profilePic.src.split('?')[0];
+                profilePic.src = `${currentSrc}?t=${new Date().getTime()}`;
+            }
+        });
+    }
+</script>

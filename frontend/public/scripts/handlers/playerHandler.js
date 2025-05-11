@@ -1,40 +1,124 @@
 import { MusicControl } from "../classes/MusicControl.js";
 
+// Keep track of current song ID
+let currentSongId = null;
+
 const toggleLike = (likeBtnSelector, checkboxSelector) => {
     const likeBtns = document.querySelectorAll(likeBtnSelector);
 
     likeBtns.forEach((likeBtn) => {
-        // Remove the global selector that affects all heart icons
-        // document.querySelector(".player-albuminfo .fa-heart").style.color = "#FEFFF1";
-
-        likeBtn.addEventListener("click", () => {
-            const checkbox = likeBtn.querySelector(checkboxSelector);
+        // Remove existing event listener first to prevent duplicates
+        const newLikeBtn = likeBtn.cloneNode(true);
+        likeBtn.parentNode.replaceChild(newLikeBtn, likeBtn);
+        
+        newLikeBtn.addEventListener("click", async (e) => {
+            // Prevent default behavior
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const checkbox = newLikeBtn.querySelector(checkboxSelector);
             const isLiked = !checkbox.checked;
-            checkbox.checked = isLiked;
-            likeBtn.classList.toggle("liked", isLiked);
-
-            const parent = likeBtn.closest(".player-albuminfo");
-            if (parent) {
-                const heartIcon = likeBtn.querySelector(".fa-heart");
+            
+            // Get the song ID from the audio element (most reliable source)
+            const audioElement = document.getElementById('songPlayer');
+            const songId = audioElement ? audioElement.getAttribute('data-song-id') : null;
+            
+            if (!songId) {
+                console.error("No song ID found for like button");
+                return;
+            }
+            
+            try {
+                // Update UI first for immediate feedback
+                checkbox.checked = isLiked;
+                newLikeBtn.classList.toggle("liked", isLiked);
+                
+                const heartIcon = newLikeBtn.querySelector(".fa-heart");
                 if (heartIcon) {
                     heartIcon.style.color = isLiked ? "red" : "#FEFFF1";
                 }
-            }
-            
-            // Get the song ID from the parent element or data attribute
-            const songId = likeBtn.dataset.songId || (parent ? parent.dataset.songId : null);
-            if (songId) {
+                
                 // Update server - save the like status
-                fetch(`/api/user/favorites/${songId}`, {
+                const response = await fetch(`/api/user/favorites/${songId}`, {
                     method: isLiked ? 'POST' : 'DELETE'
-                }).catch(error => {
-                    console.error('Error updating favorite status:', error);
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to ${isLiked ? 'add' : 'remove'} favorite`);
+                }
+                
+                console.log(`Song ${isLiked ? 'added to' : 'removed from'} favorites:`, songId);
+                
+                // Emit refresh event to update other parts of the UI
+                if (window.socket) {
+                    window.socket.emit('refresh-favorites', songId);
+                }
+            } catch (error) {
+                console.error('Error updating favorite status:', error);
+                // Revert UI changes on error
+                checkbox.checked = !isLiked;
+                newLikeBtn.classList.toggle("liked", !isLiked);
+                if (heartIcon) {
+                    heartIcon.style.color = !isLiked ? "red" : "#FEFFF1";
+                }
+                
+                // Show an error notification
+                alert(`Failed to ${isLiked ? 'add to' : 'remove from'} favorites. Please try again.`);
             }
         });
     });
 };
 
+// Update like button state based on the current song
+async function updateLikeButtonState(songId) {
+    if (!songId) return;
+    
+    // Store current song ID
+    currentSongId = songId;
+    
+    try {
+        // Get favorites
+        const response = await fetch('/api/user/favorites');
+        if (!response.ok) {
+            throw new Error('Failed to fetch favorites');
+        }
+        
+        const favorites = await response.json();
+        
+        // Ensure we compare strings to strings for IDs
+        const songIdStr = songId.toString();
+        
+        // Check if current song is in favorites
+        const isLiked = favorites.some(song => {
+            const favSongId = song.id ? song.id.toString() : '';
+            return favSongId === songIdStr;
+        });
+        
+        console.log(`Song ${songId} is ${isLiked ? 'liked' : 'not liked'}`);
+        
+        // Update all like buttons for this song
+        const likeBtns = document.querySelectorAll('.like-btn');
+        likeBtns.forEach(btn => {
+            const checkbox = btn.querySelector('.like-check');
+            if (checkbox) checkbox.checked = isLiked;
+            btn.classList.toggle('liked', isLiked);
+            
+            const heartIcon = btn.querySelector('.fa-heart');
+            if (heartIcon) {
+                heartIcon.style.color = isLiked ? "red" : "#FEFFF1";
+            }
+            
+            // Update data-song-id attribute
+            btn.dataset.songId = songIdStr;
+        });
+        
+        // Ensure no page refresh is triggered
+        return isLiked;
+    } catch (error) {
+        console.error('Error updating like button state:', error);
+        return false;
+    }
+}
 
 const updateVolumeUI = (volume, [muteIcon, lowIcon, midIcon, highIcon], audioElement, sliderElement) => {
     // Set audio volume and update slider
@@ -138,6 +222,15 @@ function handleHeartClick() {
     }
 }
 
+// This function will be called when a play-song event is triggered
+function playSong() {
+    const audio = document.getElementById('songPlayer');
+    if (audio) {
+        console.log('Playing song');
+        audio.play().catch(err => console.error('Error playing song:', err));
+    }
+}
+
 // Add event listener to heart icon
 document.addEventListener('DOMContentLoaded', function() {
     const heartIcon = document.querySelector('.heart-icon');
@@ -148,17 +241,74 @@ document.addEventListener('DOMContentLoaded', function() {
     // Listen for play-song events from other components
     document.addEventListener('play-song', function(event) {
         const song = event.detail;
-        if (song) {
-            loadSong(song);
-            playSong();
+        if (!song) {
+            console.error('No song data in play-song event');
+            return;
+        }
+        
+        console.log('Received play-song event:', song.title || song.id);
+        
+        // Make sure we have access to the MusicControl instance
+        const musicControl = window.musicPlayer || new MusicControl(".playbar");
+        window.musicPlayer = musicControl; // Store it globally for other components
+        
+        // Load the song data into the player
+        try {
+            // If the song has a direct loadSong method, use it
+            if (typeof musicControl.loadSong === 'function') {
+                // Find the song index in the musicControl's song list
+                const songIndex = musicControl.songList.findIndex(s => 
+                    s.id.toString() === song.id.toString());
+                
+                if (songIndex !== -1) {
+                    console.log('Loading song at index:', songIndex);
+                    musicControl.loadSong(songIndex);
+                    musicControl.handlePlay();
+                } else {
+                    console.log('Song not in list, trying to play directly');
+                    // Direct audio element manipulation if the song isn't in the list
+                    const audio = document.getElementById('songPlayer');
+                    if (audio) {
+                        const source = audio.querySelector('source');
+                        if (source && song.audioSrc) {
+                            source.src = song.audioSrc;
+                            audio.load();
+                            audio.play();
+                        } else if (source && song.file) {
+                            source.src = song.file;
+                            audio.load();
+                            audio.play();
+                        }
+                    }
+                }
+            } else {
+                console.log('No loadSong method, playing directly');
+                playSong();
+            }
+        } catch (error) {
+            console.error('Error handling play-song event:', error);
         }
     });
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
+    // Get the initial song ID from the audio element
+    const audioElement = document.getElementById('songPlayer');
+    if (audioElement) {
+        const initialSongId = audioElement.getAttribute('data-song-id');
+        if (initialSongId) {
+            // Update like button state for the initial song
+            await updateLikeButtonState(initialSongId);
+        }
+    }
+
+    // Initialize the like buttons after getting the initial state
     toggleLike(".like-btn", ".like-check");
 
+    // Create music control and make it globally available
     const musicControl = new MusicControl(".playbar");
+    window.musicPlayer = musicControl; // Make it available globally
+    
     const volumeSlider = document.getElementById("seekVolume");
     const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
@@ -233,29 +383,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // When song changes, check if it's in favorites
-    document.addEventListener('songClicked', async (event) => {
-        const songId = event.detail;
-        
-        // Check if song is in favorites
-        try {
-            const response = await fetch('/api/user/favorites');
-            if (response.ok) {
-                const favorites = await response.json();
-                const isLiked = favorites.some(song => song.id === songId);
-                
-                if (likeButton) {
-                    if (isLiked) {
-                        likeButton.classList.add('liked');
-                        likeButton.style.color = '#ff3b5c';
-                    } else {
-                        likeButton.classList.remove('liked');
-                        likeButton.style.color = 'white';
-                    }
-                }
+    // Add event listener for audio source changes
+    if (musicControl && musicControl.audio) {
+        // Listen for source changes
+        musicControl.audio.addEventListener('loadeddata', function() {
+            const songId = this.getAttribute('data-song-id');
+            if (songId) {
+                updateLikeButtonState(songId);
             }
-        } catch (error) {
-            console.error('Error checking favorites:', error);
-        }
-    });
+        });
+    }
+});
+
+// Listen for song-changed event
+document.addEventListener('song-changed', async function(event) {
+    const songData = event.detail;
+    if (songData && songData.id) {
+        // Update like button for the new song
+        await updateLikeButtonState(songData.id);
+        
+        // Also update the data-song-id attribute on any like buttons
+        const likeBtns = document.querySelectorAll('.like-btn');
+        likeBtns.forEach(btn => {
+            btn.setAttribute('data-song-id', songData.id);
+        });
+        
+        console.log(`Song changed to: ${songData.title} (ID: ${songData.id})`);
+    }
 });

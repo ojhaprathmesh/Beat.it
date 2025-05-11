@@ -82,6 +82,12 @@ const io = socketIo(server);
 io.on('connection', (socket) => {
   console.log('New client connected');
   
+  // Handle refresh-favorites event
+  socket.on('refresh-favorites', (songId) => {
+    // Broadcast to all clients except sender
+    socket.broadcast.emit('refresh-favorites', songId);
+  });
+  
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });
@@ -563,8 +569,11 @@ app.get('/api/user/favorites', async (req, res) => {
             return res.json([]);
         }
         
-        // Get song details for favorites
-        const favoriteTracksData = songData.filter(song => favorites.includes(song.id.toString()) || favorites.includes(parseInt(song.id)));
+        // Get song details for favorites - ensure we're comparing strings
+        const favoriteTracksData = songData.filter(song => {
+            const songIdStr = song.id.toString();
+            return favorites.some(favId => favId.toString() === songIdStr);
+        });
         
         console.log('Matched favorites with song data:', favoriteTracksData.length, 'songs');
         
@@ -582,7 +591,7 @@ app.post('/api/user/favorites/:songId', async (req, res) => {
     }
     
     try {
-        const songId = req.params.songId;
+        const songId = req.params.songId.toString(); // Ensure it's a string
         const userEmail = req.session.email;
         
         // Get user reference
@@ -596,7 +605,7 @@ app.post('/api/user/favorites/:songId', async (req, res) => {
         
         const userDocId = userSnapshot.docs[0].id;
         const userData = userSnapshot.docs[0].data();
-        const favorites = userData.favorites || [];
+        const favorites = (userData.favorites || []).map(id => id.toString());
         
         // Check if song is already a favorite
         if (favorites.includes(songId)) {
@@ -614,6 +623,9 @@ app.post('/api/user/favorites/:songId', async (req, res) => {
         
         console.log('Added to favorites:', songId);
         
+        // Emit targeted refresh event instead of a full refresh
+        io.emit('refresh-favorites', songId);
+        
         res.json({ message: 'Song added to favorites' });
     } catch (error) {
         console.error('Error adding song to favorites:', error);
@@ -628,7 +640,7 @@ app.delete('/api/user/favorites/:songId', async (req, res) => {
     }
     
     try {
-        const songId = req.params.songId;
+        const songId = req.params.songId.toString(); // Ensure it's a string
         const userEmail = req.session.email;
         
         // Get user reference
@@ -642,10 +654,10 @@ app.delete('/api/user/favorites/:songId', async (req, res) => {
         
         const userDocId = userSnapshot.docs[0].id;
         const userData = userSnapshot.docs[0].data();
-        const favorites = userData.favorites || [];
+        const favorites = (userData.favorites || []).map(id => id.toString());
         
         // Remove song from favorites
-        const updatedFavorites = favorites.filter(id => id.toString() !== songId.toString());
+        const updatedFavorites = favorites.filter(id => id !== songId);
         
         // Update user document
         const userRef = doc(db, "users", userDocId);
@@ -654,6 +666,9 @@ app.delete('/api/user/favorites/:songId', async (req, res) => {
         });
         
         console.log('Removed from favorites:', songId);
+        
+        // Emit targeted refresh event instead of a full refresh
+        io.emit('refresh-favorites', songId);
         
         res.json({ message: 'Song removed from favorites' });
     } catch (error) {

@@ -117,7 +117,8 @@ class MusicControl {
         this.audio.load();
         
         // Set the song ID as a data attribute on the audio element
-        this.audio.setAttribute('data-song-id', song.id);
+        // Ensure it's a string for consistent comparison
+        this.audio.setAttribute('data-song-id', song.id.toString());
         
         this.updateSongUI(song);
 
@@ -128,8 +129,15 @@ class MusicControl {
         this.loadSongCallCount++;
         
         // Dispatch a custom event to notify other components that the song has changed
+        // Include the full song object for easier access to song properties
         document.dispatchEvent(new CustomEvent('song-changed', { 
-            detail: { id: song.id, song: song }
+            detail: {
+                id: song.id.toString(),
+                title: song.title,
+                artist: song.artist,
+                albumCover: song.albumCover,
+                songObject: song
+            }
         }));
     }
 
@@ -373,6 +381,50 @@ class MusicControl {
         if (this.albumControls) {
             this.albumPlayBtn.style.display = isPlaying ? "none" : "block";
             this.albumPauseBtn.style.display = isPlaying ? "block" : "none";
+        }
+    }
+
+    // Add a utility method to load and play a specific song
+    loadAndPlaySong(song) {
+        // Find the song in the song list by ID
+        const songIndex = this.songList.findIndex(s => 
+            s.id.toString() === song.id.toString());
+        
+        if (songIndex !== -1) {
+            console.log('Found song in playlist at index', songIndex);
+            this.loadSong(songIndex);
+            this.handlePlay();
+            return true;
+        } else {
+            console.log('Song not in playlist, attempting to play directly', song.title);
+            
+            // For songs not in the original playlist, we can try loading it directly
+            try {
+                // Create a temporary song object with required properties
+                const tempSong = {
+                    id: song.id,
+                    title: song.title,
+                    artist: song.artist,
+                    albumCover: song.albumCover,
+                    file: song.audioSrc || song.file
+                };
+                
+                // Temporarily add it to our song list
+                this.songList.push(tempSong);
+                const newIndex = this.songList.length - 1;
+                
+                // Load and play
+                this.loadSong(newIndex);
+                this.handlePlay();
+                
+                // Set a flag that this is a temporary song
+                this.isTemporarySong = true;
+                
+                return true;
+            } catch (error) {
+                console.error('Error directly loading song:', error);
+                return false;
+            }
         }
     }
 }
