@@ -8,9 +8,10 @@ const stream = require('stream');
  * @param {Buffer} fileBuffer - The file buffer to upload
  * @param {string} userId - The user ID
  * @param {string} fileType - The file type (e.g., image/jpeg)
+ * @param {Function} [onSuccess] - Optional callback to run after successful upload
  * @returns {Promise<string>} - The download URL of the uploaded image
  */
-async function uploadProfilePicture(fileBuffer, userId, fileType) {
+async function uploadProfilePicture(fileBuffer, userId, fileType, onSuccess) {
   try {
     // Create a stream from the buffer
     const uploadStream = cloudinary.uploader.upload_stream(
@@ -32,6 +33,11 @@ async function uploadProfilePicture(fileBuffer, userId, fileType) {
           await updateDoc(userRef, {
             profilePicture: result.secure_url
           });
+          
+          // If a success callback was provided, call it with the secure URL
+          if (typeof onSuccess === 'function') {
+            onSuccess(result.secure_url);
+          }
         } catch (dbError) {
           console.error('Error updating user profile with image URL:', dbError);
           throw dbError;

@@ -13,12 +13,14 @@
 
     <link rel="stylesheet" href="/styles/font.css">
     <link rel="stylesheet" href="/styles/colors.css">
+    <link rel="stylesheet" href="/styles/logo.css">
     <link rel="stylesheet" href="/styles/navbar.css">
     <link rel="stylesheet" href="/styles/player.css">
     <link rel="stylesheet" href="/styles/background.css">
     <link rel="stylesheet" href="/styles/song-album.css">
     <link rel="stylesheet" href="/styles/modern-theme.css">
     <link rel="stylesheet" href="/styles/profile.css">
+    <link rel="stylesheet" href="/styles/profile-letter.css">
 
     <style>
         * {
@@ -42,18 +44,7 @@
             gap: 20px;
         }
 
-        .profile-letter {
-            width: 40px;
-            height: 40px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            font-weight: bold;
-            cursor: pointer;
-        }
+        /* Profile styling is now in profile.css */
 
         .profile-container {
             display: flex;
@@ -354,16 +345,22 @@
                 gap: 0;
             }
         }
+
+        #logo img {
+            border-radius: 30px;
+            box-shadow: 0 0 15px var(--shadow);
+            cursor: pointer;
+            transition: box-shadow 0.4s ease-in-out;
+        }
+        
+        #logo img:hover {
+            box-shadow: 0 0 30px var(--shadow);
+        }
     </style>
 </head>
 
 <body>
     <script src="/scripts/utility/loading.js"></script>
-
-    <!-- Debug info, will be hidden in production -->
-    <div style="position: fixed; top: 0; left: 0; background: rgba(0,0,0,0.7); color: white; padding: 5px; font-size: 12px; z-index: 9999;">
-        usernameLetter: <%= typeof usernameLetter !== 'undefined' ? usernameLetter : 'undefined' %>
-    </div>
 
     <%- include('partials/navbar.ejs') %>
 
@@ -472,11 +469,41 @@
 
     <script src="/scripts/utility/loading.js"></script>
     <script src="/scripts/utility/themeUtils.js"></script>
+    <script src="/scripts/utility/profileUtils.js"></script>
     <script src="/scripts/handlers/profileHandler.js"></script>
     <script type="module" src="/scripts/handlers/playerHandler.js" defer></script>
+    <script src="/socket.io/socket.io.js"></script>
     
     <!-- Direct fix for profile picture upload -->
     <script>
+        // Socket setup for page refresh on profile updates
+        // Initialize socket with reconnection options
+        const socket = io({
+            reconnection: true,          // Enable reconnection
+            reconnectionAttempts: 5,     // Try to reconnect 5 times
+            reconnectionDelay: 1000,     // How long to initially wait before reconnecting (1 second)
+            reconnectionDelayMax: 5000,  // Maximum reconnection delay (5 seconds)
+        });
+        
+        // Listen for reconnect events
+        socket.on('reconnect', (attemptNumber) => {
+            console.log(`Reconnected after ${attemptNumber} attempts`);
+        });
+        
+        socket.on('reconnect_error', (error) => {
+            console.error('Reconnect error:', error);
+        });
+        
+        socket.on('reconnect_failed', () => {
+            console.error('Failed to reconnect to server');
+        });
+        
+        // Listen for the refresh signal from server
+        socket.on("refresh", () => {
+            console.log("Received refresh signal from server");
+            location.reload();
+        });
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Get elements
             const photoUpload = document.getElementById('photo-upload');
@@ -521,23 +548,31 @@
                         
                         // Update profile picture with the returned URL
                         if (data && data.profilePicture) {
-                            // Apply the new image URL directly to the avatar
-                            profileAvatar.src = data.profilePicture;
+                            // No need for complex client-side updates anymore
+                            // The server will emit a refresh signal to all clients
                             
-                            // Update any other UI elements that show the profile picture
-                            const navProfileImg = document.querySelector('.profile-letter');
-                            if (navProfileImg) {
-                                // If there's already an image in the navbar profile, update it
-                                const existingImg = navProfileImg.querySelector('img');
-                                if (existingImg) {
-                                    existingImg.src = data.profilePicture;
-                                } else {
-                                    // If there's no image yet, create one and replace the letter
-                                    navProfileImg.innerHTML = `<img src="${data.profilePicture}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-                                }
-                            }
+                            // Create a small preview to show successful upload
+                            const successMessage = document.createElement('div');
+                            successMessage.style.position = 'fixed';
+                            successMessage.style.top = '20px';
+                            successMessage.style.left = '50%';
+                            successMessage.style.transform = 'translateX(-50%)';
+                            successMessage.style.backgroundColor = '#4CAF50';
+                            successMessage.style.color = 'white';
+                            successMessage.style.padding = '15px 20px';
+                            successMessage.style.borderRadius = '5px';
+                            successMessage.style.zIndex = '9999';
+                            successMessage.textContent = 'Profile picture updated successfully!';
+                            document.body.appendChild(successMessage);
                             
-                            console.log('Updated profile picture src:', profileAvatar.src);
+                            // Remove the success message after 3 seconds
+                            setTimeout(() => {
+                                successMessage.style.opacity = '0';
+                                successMessage.style.transition = 'opacity 0.5s';
+                                setTimeout(() => {
+                                    document.body.removeChild(successMessage);
+                                }, 500);
+                            }, 2000);
                         }
                         
                     } catch (error) {
@@ -554,7 +589,7 @@
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', async function() {
                     try {
-                        const response = await fetch('/api/auth/logout', {
+                        const response = await fetch('/api/logout', {
                             method: 'POST'
                         });
                         

@@ -5,6 +5,8 @@ const session = require("express-session");
 const dotenv = require('dotenv');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
+const http = require('http');
+const socketIo = require('socket.io');
 
 dotenv.config();
 
@@ -71,6 +73,19 @@ function loadLocalSongs() {
 
 const app = express();
 const port = 3000;
+
+// Create HTTP server and initialize Socket.io
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// Initialize Socket.io connection
+io.on('connection', (socket) => {
+  console.log('New client connected');
+  
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+});
 
 // Initialize Database - Using Firebase instead of MongoDB
 // Comment out MongoDB initialization but keep for reference
@@ -436,10 +451,16 @@ app.post('/api/user/profile-picture', upload.single('profilePicture'), async (re
         const imageURL = await uploadProfilePicture(
             req.file.buffer,
             userId,
-            req.file.mimetype
+            req.file.mimetype,
+            // Callback to run after successful Cloudinary upload and Firebase update
+            (secureUrl) => {
+                // Emit refresh signal to all clients only after confirmed upload
+                io.emit('refresh');
+                console.log('Emitted refresh signal to all clients after Cloudinary confirmation');
+            }
         );
         
-        // Return the Cloudinary URL
+        // Return the Cloudinary URL immediately so client gets a response
         res.json({ profilePicture: imageURL });
     } catch (error) {
         console.error('Error updating profile picture:', error);
@@ -659,6 +680,6 @@ app.use((req, res) => {
 });
 
 // Start the Server
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server hosting at http://localhost:${port}`);
 });

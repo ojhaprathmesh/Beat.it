@@ -13,7 +13,7 @@
 
     <div class="menu font-inter">
         <!-- Dynamically rendering profile picture or username letter -->
-        <div class="profile-letter" id="profile-menu-button">
+        <div class="profile" id="profile-menu-button">
             <% if (typeof profilePicture !== 'undefined' && profilePicture && profilePicture !== '/assets/profile/default-avatar.jpg') { %>
                 <img src="<%= profilePicture %>" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
             <% } else { %>
@@ -30,19 +30,28 @@
     </div>
 </nav>
 
+<script src="/socket.io/socket.io.js"></script>
 <script>
+// Socket setup for page refresh
+const socket = io();
+
+socket.on("refresh", () => {
+  location.reload();
+});
+
 // Immediate script to handle menu toggling
 (function() {
     // Get the menu element
     const menuBtn = document.querySelector('.menu');
+    const profileMenuBtn = document.getElementById('profile-menu-button');
     const menuOverlay = document.getElementById('profileMenu');
     
     console.log('Navbar script initialized');
     
     // Add click event directly
-    if (menuBtn) {
-        menuBtn.onclick = function(e) {
-            console.log('Menu clicked directly');
+    if (menuBtn && profileMenuBtn) {
+        profileMenuBtn.onclick = function(e) {
+            console.log('Profile menu clicked');
             const isVisible = menuOverlay.style.display === 'flex';
             menuOverlay.style.display = isVisible ? 'none' : 'flex';
             e.stopPropagation();
@@ -55,11 +64,28 @@
             e.stopPropagation();
         };
         
-        // Logout navigation
-        document.getElementById('logout').onclick = function(e) {
+        // Logout navigation with API call
+        document.getElementById('logout').onclick = async function(e) {
             console.log('Logout clicked directly');
-            window.location.href = '/login';
             e.stopPropagation();
+            
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    console.error('Logout failed:', await response.text());
+                    // Fallback to redirect if API fails
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('Error during logout:', error);
+                // Fallback to redirect if API fails
+                window.location.href = '/login';
+            }
         };
         
         // Close when clicking elsewhere
@@ -67,7 +93,37 @@
             menuOverlay.style.display = 'none';
         });
     }
+    
+    // Listen for profile image updates
+    window.addEventListener('profileImageUpdated', function(e) {
+        const imageUrl = e.detail.imageUrl;
+        console.log('Navbar received profile update event with image:', imageUrl);
+        
+        const profileElement = document.getElementById('profile-menu-button');
+        if (profileElement) {
+            // Check if there's already an image
+            let img = profileElement.querySelector('img');
+            if (img) {
+                // Force a reload by creating a new image element
+                const newImg = document.createElement('img');
+                newImg.src = imageUrl;
+                newImg.alt = 'Profile';
+                newImg.style.width = '100%';
+                newImg.style.height = '100%';
+                newImg.style.borderRadius = '50%';
+                newImg.style.objectFit = 'cover';
+                
+                // Replace the old image with the new one
+                profileElement.innerHTML = '';
+                profileElement.appendChild(newImg);
+            } else {
+                // If there's no image yet, create one and replace the letter
+                profileElement.innerHTML = `<img src="${imageUrl}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            }
+        }
+    });
 })();
 </script>
 
 <script src="/scripts/handlers/navbarHandler.js"></script>
+<script src="/scripts/utility/profileUtils.js"></script>

@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="/styles/navbar.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/styles/player.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/styles/profile.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/styles/profile-letter.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/styles/background.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/styles/song-album.css" media="print" onload="this.media='all'">
 
@@ -58,10 +59,20 @@
 
         <%- include('partials/player.ejs') %>
 
+            <script src="/socket.io/socket.io.js"></script>
+            <script>
+                // Socket setup for page refresh on profile updates
+                const socket = io();
+                socket.on("refresh", () => {
+                    console.log("Received refresh signal from server");
+                    location.reload();
+                });
+            </script>
             <script type="module" src="/scripts/handlers/navbarHandler.js" defer></script>
             <script type="module" src="/scripts/handlers/songHandler.js" defer></script>
             <script type="module" src="/scripts/handlers/albumHandler.js" defer></script>
             <script type="module" src="/scripts/handlers/playerHandler.js" defer></script>
+            <script src="/scripts/utility/profileUtils.js"></script>
 </body>
 
 </html>
