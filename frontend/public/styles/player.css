@@ -65,8 +65,8 @@ input[type="checkbox"] {
     color: var(--white);
 }
 
-/* Playbar Section Styles */
-.playbar {
+/* Playback Section Styles */
+.playback {
     display: flex;
     flex-direction: column;
     width: 50vw;

@@ -1,7 +1,7 @@
-import { fetchSongData } from "../utility/fetchSongData.js";
+import {fetchSongData} from "../utility/fetchSongData.js";
 
 // Function to get actual song duration
-const getActualDuration = (audioSrc) => {
+const getActualDuration = (file) => {
     return new Promise((resolve) => {
         const audio = new Audio();
         audio.addEventListener('loadedmetadata', () => {
@@ -9,18 +9,18 @@ const getActualDuration = (audioSrc) => {
             const seconds = Math.floor(audio.duration % 60);
             resolve(`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
         });
-        
-        // Set error handler in case audio can't be loaded
+
+        // Set an error handler in case audio can't be loaded
         audio.addEventListener('error', () => {
             resolve("0:00"); // Default fallback duration
         });
-        
+
         // Set timeout in case metadata never loads
         setTimeout(() => {
             resolve("0:00");
         }, 3000);
-        
-        audio.src = audioSrc;
+
+        audio.src = file;
     });
 };
 
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const songItems = await Promise.all(albumSongs.map(async (song, index) => {
                 // Get actual duration if possible
                 const actualDuration = await getActualDuration(song.file);
-                
+
                 const songItem = document.createElement("div");
                 songItem.className = "album-song-item";
                 songItem.id = `song-${index + 1}`;
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>
                 `;
 
-                // Add click listener for song item
+                // Add click listener for the song item
                 songItem.addEventListener("click", () => {
                     const songClickEvent = new CustomEvent("songClicked", {
                         detail: `${song.id}`,
@@ -108,10 +108,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 return songItem;
             }));
-            
+
             // Append all song items to the container
             songItems.forEach(item => albumSongsContainer.appendChild(item));
-            
+
         } catch (error) {
             console.error("Error setting up album page:", error);
         }

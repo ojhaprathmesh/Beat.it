@@ -17,14 +17,16 @@
 
             <div class="like-btn" data-song-id="<%= song.id %>">
                 <i class="fas fa-heart" style="font-size: larger;">
-                    <input type="checkbox" class="like-check" />
+                    <label>
+                        <input type="checkbox" class="like-check" />
+                    </label>
                 </i>
             </div>
         </div>
 
-        <div class="playbar">
+        <div class="playback">
             <audio id="songPlayer" data-song-id="<%= song.id %>">
-                <source src="<%= song.audioSrc %>" type="audio/mpeg">
+                <source src="<%= song.file %>" type="audio/mpeg">
             </audio>
             <div class="music-progress-bar">
                 <span class="player-current-time">0:00</span>
@@ -48,7 +50,7 @@
                         bottom: 24px;
                         font-size: 12px;
                         font-weight: bold;
-                        font-family: 'Segoe UI';
+                        font-family: 'Segoe UI',serif;
                         cursor: pointer;
                     ">1
                     </p>

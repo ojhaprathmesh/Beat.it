@@ -13,34 +13,36 @@
     --background: #f5f5f7;
     --card-bg: #ffffff;
     --shadow-color: rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Base Styles */
-  * {
+}
+
+/* Base Styles */
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     transition: all 0.3s ease;
-  }
-  
-  body {
+}
+
+body {
     font-family: 'Inter', sans-serif;
     background-color: var(--background);
     color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;
-  }
-  
-  /* Container Layout */
-  .auth-container {
+}
+
+/* Container Layout */
+.auth-container {
     display: flex;
     min-height: 100vh;
     position: relative;
-  }
-  
-  .auth-form-container {
+    align-items: center;
+}
+
+.auth-form-container {
     width: 100%;
     max-width: 500px;
+    max-height: fit-content;
     padding: 40px;
     margin: 0 auto;
     display: flex;
@@ -48,53 +50,53 @@
     justify-content: center;
     position: relative;
     z-index: 10;
-  }
-  
-  @media (min-width: 768px) {
+}
+
+@media (min-width: 768px) {
     .auth-container {
-      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary));
     }
-    
+
     .auth-form-container {
-      margin: 40px auto;
-      border-radius: 24px;
-      background-color: var(--card-bg);
-      box-shadow: 0 12px 32px var(--shadow-color);
+        margin: 40px auto;
+        border-radius: 24px;
+        background-color: var(--card-bg);
+        box-shadow: 0 12px 32px var(--shadow-color);
     }
-  }
-  
-  /* Branding */
-  .brand {
+}
+
+/* Branding */
+.brand {
     text-align: center;
     margin-bottom: 20px;
-  }
-  
-  .brand img {
+}
+
+.brand img {
     width: 80px;
     height: 80px;
-  }
-  
-  .brand h1 {
+}
+
+.brand h1 {
     font-size: 28px;
     font-weight: 800;
     background: linear-gradient(90deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-  }
-  
-  .brand p {
+}
+
+.brand p {
     color: var(--text-secondary);
     font-size: 16px;
-  }
-  
-  /* Form Styling */
-  .form-group {
+}
+
+/* Form Styling */
+.form-group {
     position: relative;
     margin-bottom: 24px;
-  }
-  
-  .form-control {
+}
+
+.form-control {
     width: 100%;
     padding: 16px;
     font-size: 16px;
@@ -103,13 +105,13 @@
     background-color: transparent;
     color: var(--text-primary);
     outline: none;
-  }
-  
-  .form-control:focus {
+}
+
+.form-control:focus {
     border-color: var(--primary);
-  }
-  
-  .form-label {
+}
+
+.form-label {
     position: absolute;
     left: 16px;
     top: 16px;
@@ -117,43 +119,43 @@
     font-size: 16px;
     pointer-events: none;
     transition: 0.2s ease all;
-  }
-  
-  .form-control:focus ~ .form-label,
-  .form-control.has-value ~ .form-label,
-  .form-group.has-initial-value .form-label {
+}
+
+.form-control:focus ~ .form-label,
+.form-control.has-value ~ .form-label,
+.form-group.has-initial-value .form-label {
     top: -12px;
     left: 12px;
     font-size: 12px;
     padding: 0 4px;
     background-color: var(--card-bg);
     color: var(--primary);
-  }
-  
-  .form-group.focused .form-label {
+}
+
+.form-group.focused .form-label {
     color: var(--primary);
-  }
-  
-  /* Fix for initial state */
-  .form-control[required] ~ .form-label {
+}
+
+/* Fix for initial state */
+.form-control[required] ~ .form-label {
     top: -12px;
     left: 12px;
     font-size: 12px;
     padding: 0 4px;
     background-color: var(--card-bg);
     color: var(--primary);
-  }
-  
-  .form-row {
+}
+
+.form-row {
     display: flex;
     gap: 16px;
-  }
-  
-  .form-row .form-group {
+}
+
+.form-row .form-group {
     flex: 1;
-  }
-  
-  .btn {
+}
+
+.btn {
     display: block;
     width: 100%;
     padding: 14px;
@@ -164,54 +166,54 @@
     text-align: center;
     cursor: pointer;
     transition: 0.3s;
-  }
-  
-  .btn-primary {
+}
+
+.btn-primary {
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
     color: var(--text-on-primary);
-  }
-  
-  .btn-primary:hover {
+}
+
+.btn-primary:hover {
     box-shadow: 0 6px 12px rgba(98, 0, 234, 0.3);
     transform: translateY(-2px);
-  }
-  
-  /* Form Footer */
-  .form-footer {
+}
+
+/* Form Footer */
+.form-footer {
     margin-top: 24px;
     text-align: center;
     color: var(--text-secondary);
-  }
-  
-  .form-footer a {
+}
+
+.form-footer a {
     color: var(--primary);
     text-decoration: none;
     font-weight: 600;
     cursor: pointer;
-  }
-  
-  .form-footer a:hover {
+}
+
+.form-footer a:hover {
     text-decoration: underline;
-  }
-  
-  /* Error messages */
-  .error-messages {
+}
+
+/* Error messages */
+.error-messages {
     color: var(--error);
     font-size: 14px;
     margin-top: 8px;
     font-weight: 500;
-  }
-  
-  /* Strength indicator */
-  #strength-indicator {
+}
+
+/* Strength indicator */
+#strength-indicator {
     font-size: 14px;
     margin-top: 8px;
     font-weight: 500;
     position: static;
-  }
-  
-  /* Background Animation */
-  .animated-background {
+}
+
+/* Background Animation */
+.animated-background {
     position: fixed;
     top: 0;
     left: 0;
@@ -219,38 +221,38 @@
     height: 100%;
     overflow: hidden;
     z-index: 1;
-  }
-  
-  .animated-bubble {
+}
+
+.animated-bubble {
     position: absolute;
     bottom: -150px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
     opacity: 0.07;
     animation: float 20s infinite ease-in-out;
-  }
-  
-  @keyframes float {
+}
+
+@keyframes float {
     0% {
-      transform: translateY(0) rotate(0deg) scale(1);
+        transform: translateY(0) rotate(0deg) scale(1);
     }
     50% {
-      transform: translateY(-800px) rotate(180deg) scale(1.5);
+        transform: translateY(-800px) rotate(180deg) scale(1.5);
     }
     100% {
-      transform: translateY(-1600px) rotate(360deg) scale(0.8);
+        transform: translateY(-1600px) rotate(360deg) scale(0.8);
     }
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 767px) {
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
     .auth-form-container {
-      padding: 24px;
-      max-width: 100%;
+        padding: 24px;
+        max-width: 100%;
     }
-    
+
     .form-row {
-      flex-direction: column;
-      gap: 0;
+        flex-direction: column;
+        gap: 0;
     }
-  }
+}

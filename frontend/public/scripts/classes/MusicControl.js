@@ -1,9 +1,9 @@
-import { fetchSongData } from "../utility/fetchSongData.js";
-import { shuffle } from "../utility/shuffle.js";
+import {fetchSongData} from "../utility/fetchSongData.js";
+import {shuffle} from "../utility/shuffle.js";
 
 class MusicControl {
     constructor() {
-        this.controls = document.querySelector(`.playbar .controls`);
+        this.controls = document.querySelector(`.playback .controls`);
         this.playBtn = this.controls.querySelector(".play");
         this.pauseBtn = this.controls.querySelector(".pause");
         this.reverseBtn = this.controls.querySelector(".reverse");
@@ -29,7 +29,9 @@ class MusicControl {
         this.repeatStates = ['isNotRepeating', 'isSingleRepeat', 'isMultiRepeat'];
         this.isShuffling = false;
 
-        this.init();
+        this.init().then(() => {
+            console.log("MusicControl initialized successfully!");
+        }).catch(e => console.error("Error initializing MusicControl:", e));
     }
 
     async init() {
@@ -115,11 +117,11 @@ class MusicControl {
         const song = this.songList[index];
         this.audioSource.src = song.file;
         this.audio.load();
-        
+
         // Set the song ID as a data attribute on the audio element
         // Ensure it's a string for consistent comparison
         this.audio.setAttribute('data-song-id', song.id.toString());
-        
+
         this.updateSongUI(song);
 
         this.loadSongCallCount === 0
@@ -127,10 +129,10 @@ class MusicControl {
             : this.handlePlay()
 
         this.loadSongCallCount++;
-        
+
         // Dispatch a custom event to notify other components that the song has changed
         // Include the full song object for easier access to song properties
-        document.dispatchEvent(new CustomEvent('song-changed', { 
+        document.dispatchEvent(new CustomEvent('song-changed', {
             detail: {
                 id: song.id.toString(),
                 title: song.title,
@@ -152,28 +154,26 @@ class MusicControl {
         }
 
         if (songArtistElement) {
-            const finalName = song.artist.length > 1
+            songArtistElement.textContent = song.artist.length > 1
                 ? song.artist.map(name => name.split(' ')[0]).join(', ').substring(0, 22) + '...'
                 : song.artist[0];
-
-            songArtistElement.textContent = finalName;
         }
 
         if (songAlbumElement) {
             songAlbumElement.src = song.albumCover;
         }
-        
+
         // Update duration after audio metadata is loaded
         this.audio.addEventListener('loadedmetadata', () => {
             if (durationElement) {
                 const minutes = Math.floor(this.audio.duration / 60);
                 const seconds = Math.floor(this.audio.duration % 60);
                 durationElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                
+
                 // Also update the song data with actual duration
                 song.duration = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             }
-        }, { once: true });
+        }, {once: true});
     }
 
     updateSeekBar() {
@@ -186,15 +186,15 @@ class MusicControl {
         }
 
         const progress = (this.audio.currentTime / this.audio.duration) * 100;
-        
+
         // Update width using percentage for better alignment
         const width = progress < 40 ? `${progress + 1}%` : `${progress}%`;
 
         this.seekBar.value = parseFloat(progress.toFixed(2));
         this.seekBar.style.setProperty("--width-m", width);
         this.seekBar.style.setProperty("--color", "var(--white)");
-        
-        // Update current time display
+
+        // Update the current time display
         const currentTimeElement = document.querySelector(".player-current-time");
         if (currentTimeElement) {
             const minutes = Math.floor(this.audio.currentTime / 60);
@@ -211,8 +211,7 @@ class MusicControl {
 
     seekAudio() {
         if (!isNaN(this.audio.duration)) {
-            const seekTime = (parseFloat(this.seekBar.value / 100)) * this.audio.duration;
-            this.audio.currentTime = seekTime;
+            this.audio.currentTime = (parseFloat(this.seekBar.value) / 100) * this.audio.duration;
         }
     }
 
@@ -281,7 +280,7 @@ class MusicControl {
     handleShuffle(songs) {
         if (this.isShuffling) {
             console.warn("Shuffle is already in progress.");
-            return; // Prevent re-entry if shuffle is ongoing
+            return; // Prevent re-entry if the shuffle is ongoing
         }
 
         this.isShuffling = true; // Lock the shuffle
@@ -289,20 +288,18 @@ class MusicControl {
         this.shuffleBtn.style.animation = "shuffleAnimation 750ms forwards ease-in-out";
         this.shuffleBtn.addEventListener("animationend", () => {
             this.shuffleBtn.style.animation = "";
-        }, { once: true });
-
+        }, {once: true});
 
 
         setTimeout(() => {
             const currentSong = songs[this.currentSongIndex];
             const remainingSongs = songs.filter((_, index) => index !== this.currentSongIndex);
 
-            const shuffledSongs = [currentSong, ...shuffle(remainingSongs)];
-            this.songList = shuffledSongs;
+            this.songList = [currentSong, ...shuffle(remainingSongs)];
 
             this.currentSongIndex = 0;
 
-            this.isShuffling = false; // Unlock after shuffle is complete
+            this.isShuffling = false; // Unlock after the shuffle is complete
         }, 750); // Simulate shuffle time (matches animation duration)
     }
 
@@ -336,8 +333,7 @@ class MusicControl {
     }
 
     loadState() {
-        const songState = JSON.parse(localStorage.getItem("songState"));
-        return songState;
+        return JSON.parse(localStorage.getItem("songState"));
     }
 
     saveState() {
@@ -387,9 +383,9 @@ class MusicControl {
     // Add a utility method to load and play a specific song
     loadAndPlaySong(song) {
         // Find the song in the song list by ID
-        const songIndex = this.songList.findIndex(s => 
+        const songIndex = this.songList.findIndex(s =>
             s.id.toString() === song.id.toString());
-        
+
         if (songIndex !== -1) {
             console.log('Found song in playlist at index', songIndex);
             this.loadSong(songIndex);
@@ -397,7 +393,7 @@ class MusicControl {
             return true;
         } else {
             console.log('Song not in playlist, attempting to play directly', song.title);
-            
+
             // For songs not in the original playlist, we can try loading it directly
             try {
                 // Create a temporary song object with required properties
@@ -406,20 +402,18 @@ class MusicControl {
                     title: song.title,
                     artist: song.artist,
                     albumCover: song.albumCover,
-                    file: song.audioSrc || song.file
+                    file: song.file
                 };
-                
+
                 // Temporarily add it to our song list
                 this.songList.push(tempSong);
                 const newIndex = this.songList.length - 1;
-                
+
                 // Load and play
                 this.loadSong(newIndex);
                 this.handlePlay();
-                
+
                 // Set a flag that this is a temporary song
-                this.isTemporarySong = true;
-                
                 return true;
             } catch (error) {
                 console.error('Error directly loading song:', error);
@@ -429,4 +423,4 @@ class MusicControl {
     }
 }
 
-export { MusicControl };
+export {MusicControl};

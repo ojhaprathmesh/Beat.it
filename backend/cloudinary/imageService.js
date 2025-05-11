@@ -40,7 +40,6 @@ async function uploadProfilePicture(fileBuffer, userId, fileType, onSuccess) {
           }
         } catch (dbError) {
           console.error('Error updating user profile with image URL:', dbError);
-          throw dbError;
         }
       }
     );
