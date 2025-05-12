@@ -34,8 +34,8 @@ async function loadAdminEmails() {
     if (adminEmailsLoaded) return ADMIN_EMAILS; // Skip if already loaded
     
     try {
-        const adminCollection = db.collection('admins');
-        const snapshot = await adminCollection.get();
+        const adminCollection = collection(db, 'admins');
+        const snapshot = await getDocs(adminCollection);
         ADMIN_EMAILS = snapshot.docs.map(doc => doc.data().email);
         adminEmailsLoaded = true; // Set the flag to true after loading
         console.log(`Loaded ${ADMIN_EMAILS.length} admin emails from Firestore`);
@@ -71,6 +71,19 @@ const createUser = async (userData) => {
         // Create a readable document ID from username or email
         const username = userData.username || userData.email.split('@')[0];
         const readableId = createReadableId(username);
+        
+        // Check if there are any references to this email in existing documents
+        // that might have been left over from a previous deletion
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', userData.email), limit(1));
+        const existingUserSnapshot = await getDocs(q);
+        
+        // If there's an existing document with this email, delete it to avoid conflicts
+        if (!existingUserSnapshot.empty) {
+            const oldDocId = existingUserSnapshot.docs[0].id;
+            await deleteDoc(doc(db, 'users', oldDocId));
+            console.log(`Deleted existing document for email ${userData.email} with ID ${oldDocId}`);
+        }
         
         // Store user data in Firestore using the readable ID
         await setDoc(doc(db, 'users', readableId), {

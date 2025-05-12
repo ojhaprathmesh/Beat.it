@@ -22,11 +22,18 @@ const AdminDashboard = {
      */
     loadStats: async function() {
         try {
-            // Show loading indicators
-            document.getElementById('total-songs').innerText = 'Loading...';
-            document.getElementById('total-users').innerText = 'Loading...';
-            document.getElementById('storage-used').innerText = 'Loading...';
-            document.getElementById('most-played').innerText = 'Loading...';
+            // Find the stat value elements - check if they exist before updating
+            const totalSongsElement = document.getElementById('total-songs');
+            const totalUsersElement = document.getElementById('total-users');
+            const storageUsedElement = document.getElementById('storage-used');
+            const mostPlayedElement = document.getElementById('most-played');
+            const recentActivityElement = document.getElementById('recent-activity');
+            
+            // Show loading indicators if elements exist
+            if (totalSongsElement) totalSongsElement.innerText = 'Loading...';
+            if (totalUsersElement) totalUsersElement.innerText = 'Loading...';
+            if (storageUsedElement) storageUsedElement.innerText = 'Loading...';
+            if (mostPlayedElement) mostPlayedElement.innerText = 'Loading...';
             
             // Fetch stats from API
             const response = await fetch('/api/admin/stats');
@@ -37,21 +44,25 @@ const AdminDashboard = {
             
             const stats = await response.json();
             
-            // Update stats in the UI
-            document.getElementById('total-songs').innerText = stats.totalSongs || 0;
-            document.getElementById('total-users').innerText = stats.totalUsers || 0;
-            document.getElementById('storage-used').innerText = stats.storageUsed?.used || '0 MB';
+            // Update stats in the UI if elements exist
+            if (totalSongsElement) totalSongsElement.innerText = stats.totalSongs || 0;
+            if (totalUsersElement) totalUsersElement.innerText = stats.totalUsers || 0;
+            if (storageUsedElement) storageUsedElement.innerText = stats.storageUsed?.used || '0 MB';
             
             // Get most played song if available
-            if (stats.topPlayedSongs && stats.topPlayedSongs.length > 0) {
-                const topSong = stats.topPlayedSongs[0];
-                document.getElementById('most-played').innerText = topSong.title;
-            } else {
-                document.getElementById('most-played').innerText = 'No data';
+            if (mostPlayedElement) {
+                if (stats.topPlayedSongs && stats.topPlayedSongs.length > 0) {
+                    const topSong = stats.topPlayedSongs[0];
+                    mostPlayedElement.innerText = topSong.title;
+                } else {
+                    mostPlayedElement.innerText = 'No data';
+                }
             }
             
-            // Update recent activity
-            this.displayRecentActivity(stats.recentActivity || []);
+            // Update recent activity if element exists
+            if (recentActivityElement) {
+                this.displayRecentActivity(stats.recentActivity || [], recentActivityElement);
+            }
             
             // Store top songs for chart
             this.topSongs = stats.topPlayedSongs || [];
@@ -59,23 +70,35 @@ const AdminDashboard = {
         } catch (error) {
             console.error('Error loading dashboard stats:', error);
             
-            // Show error state
-            document.getElementById('total-songs').innerText = 'Error';
-            document.getElementById('total-users').innerText = 'Error';
-            document.getElementById('storage-used').innerText = 'Error';
-            document.getElementById('most-played').innerText = 'Error';
+            // Find elements and show error state
+            const totalSongsElement = document.getElementById('total-songs');
+            const totalUsersElement = document.getElementById('total-users');
+            const storageUsedElement = document.getElementById('storage-used');
+            const mostPlayedElement = document.getElementById('most-played');
+            const recentActivityElement = document.getElementById('recent-activity');
             
-            // Display error message in activity section
-            document.getElementById('recent-activity').innerHTML = 
-                '<div class="admin-error">Failed to load dashboard data. Please try refreshing the page.</div>';
+            if (totalSongsElement) totalSongsElement.innerText = 'Error';
+            if (totalUsersElement) totalUsersElement.innerText = 'Error';
+            if (storageUsedElement) storageUsedElement.innerText = 'Error';
+            if (mostPlayedElement) mostPlayedElement.innerText = 'Error';
+            
+            // Display error message in activity section if element exists
+            if (recentActivityElement) {
+                recentActivityElement.innerHTML = '<div class="admin-error">Failed to load dashboard data. Please try refreshing the page.</div>';
+            }
         }
     },
 
     /**
      * Display recent activity
      */
-    displayRecentActivity: function(activities) {
-        const activityContainer = document.getElementById('recent-activity');
+    displayRecentActivity: function(activities, container) {
+        const activityContainer = container || document.getElementById('recent-activity');
+        
+        if (!activityContainer) {
+            console.warn('Recent activity container not found');
+            return;
+        }
         
         if (!activities || activities.length === 0) {
             activityContainer.innerHTML = '<p>No recent activity found.</p>';

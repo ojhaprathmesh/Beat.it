@@ -48,13 +48,11 @@ const AdminPanel = {
      * @param {string} section - Section to load
      */
     loadSection: async function(section) {
-        if (this.activeSection === section) return;
-        
         try {
             // Show loading state
             document.getElementById('admin-content-container').innerHTML = '<div class="admin-loading">Loading...</div>';
             
-            // Load section content
+            // Always load the section content, even if it's the active section
             const response = await fetch(`/admin/sections/${section}`);
             
             if (!response.ok) {

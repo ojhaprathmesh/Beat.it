@@ -109,6 +109,7 @@ body {
     background-color: transparent;
     color: var(--text-primary);
     outline: none;
+    placeholder: " ";
 }
 
 .form-control:focus {
@@ -123,30 +124,29 @@ body {
     font-size: 16px;
     pointer-events: none;
     transition: 0.2s ease all;
+    background-color: var(--card-bg);
+    padding: 0 4px;
 }
 
+/* Make labels float when input is focused or has content */
 .form-control:focus ~ .form-label,
-.form-control.has-value ~ .form-label,
-.form-group.has-initial-value .form-label {
+.form-control:not(:placeholder-shown) ~ .form-label {
     top: -12px;
     left: 12px;
     font-size: 12px;
-    padding: 0 4px;
-    background-color: var(--card-bg);
     color: var(--primary);
+    transform: translateY(0);
+    background-color: var(--card-bg);
+    padding: 0 4px;
+}
+
+/* Remove other selectors that might interfere */
+.form-group.has-initial-value .form-label,
+.form-control.has-value ~ .form-label {
+    /* These are now handled by the :not(:placeholder-shown) selector */
 }
 
 .form-group.focused .form-label {
-    color: var(--primary);
-}
-
-/* Fix for initial state */
-.form-control[required] ~ .form-label {
-    top: -12px;
-    left: 12px;
-    font-size: 12px;
-    padding: 0 4px;
-    background-color: var(--card-bg);
     color: var(--primary);
 }
 
