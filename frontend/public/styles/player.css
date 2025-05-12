@@ -118,12 +118,19 @@ input[type="checkbox"] {
     color: var(--white);
 }
 
-.burger-menu {
+.song-queue {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     height: 100%;
+    gap: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.song-queue i {
+    font-size: 20px;
 }
 
 .volume {

@@ -86,19 +86,36 @@ function updateLikeButtonState(songId) {
 
             console.log(`Song ${songId} is ${isLiked ? 'liked' : 'not liked'}`);
 
-            const likeBtns = document.querySelectorAll('.like-btn');
-            likeBtns.forEach(btn => {
-                const checkbox = btn.querySelector('.like-check');
+            // First, update the player's like button
+            const playerLikeBtn = document.querySelector('.player .like-btn');
+            if (playerLikeBtn) {
+                const checkbox = playerLikeBtn.querySelector('.like-check');
                 if (checkbox) checkbox.checked = isLiked;
-                btn.classList.toggle('liked', isLiked);
+                playerLikeBtn.classList.toggle('liked', isLiked);
 
-                const heartIcon = btn.querySelector('.fa-heart');
+                const heartIcon = playerLikeBtn.querySelector('.fa-heart');
                 if (heartIcon) {
                     heartIcon.style.color = isLiked ? "red" : "#FEFFF1";
                 }
+                
+                // Ensure the button has the song ID
+                playerLikeBtn.dataset.songId = songIdStr;
+            }
+            
+            // Then update any album page song that matches this ID
+            if (window.location.pathname.startsWith('/album')) {
+                const albumLikeBtn = document.querySelector(`.album-songs .like-btn[data-song-id="${songIdStr}"]`);
+                if (albumLikeBtn) {
+                    const checkbox = albumLikeBtn.querySelector('.like-check');
+                    if (checkbox) checkbox.checked = isLiked;
+                    albumLikeBtn.classList.toggle('liked', isLiked);
 
-                btn.dataset.songId = songIdStr;
-            });
+                    const heartIcon = albumLikeBtn.querySelector('.fa-heart');
+                    if (heartIcon) {
+                        heartIcon.style.color = isLiked ? "red" : "#FEFFF1";
+                    }
+                }
+            }
 
             return isLiked;
         })
@@ -230,6 +247,92 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Function to initialize like button states for all song items on the album page
+function initializeAlbumLikeButtons() {
+    // Only proceed if we're on an album page
+    if (!window.location.pathname.startsWith('/album')) return;
+    
+    fetch('/api/user/favorites')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch favorites');
+            }
+            return response.json();
+        })
+        .then(favorites => {
+            // Get all like buttons on the page
+            const likeBtns = document.querySelectorAll('.like-btn');
+            
+            likeBtns.forEach(btn => {
+                const btnSongId = btn.dataset.songId;
+                if (btnSongId) {
+                    // Check if this song is in favorites
+                    const isLiked = favorites.some(song => 
+                        song.id.toString() === btnSongId.toString());
+                    
+                    // Update UI accordingly
+                    const checkbox = btn.querySelector('.like-check');
+                    if (checkbox) checkbox.checked = isLiked;
+                    
+                    btn.classList.toggle('liked', isLiked);
+                    
+                    const heartIcon = btn.querySelector('.fa-heart');
+                    if (heartIcon) {
+                        heartIcon.style.color = isLiked ? "red" : "#FEFFF1";
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error initializing album like buttons:', error);
+        });
+}
+
+// Function to save volume settings to user preferences in the database
+const saveVolumeSettings = (volume) => {
+    // Don't make API calls for minor volume changes, use a debounce approach
+    if (window.volumeChangeTimeout) {
+        clearTimeout(window.volumeChangeTimeout);
+    }
+    
+    window.volumeChangeTimeout = setTimeout(() => {
+        // Save volume setting to user preferences
+        fetch('/api/user/preferences', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                volume: volume 
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to save volume setting');
+            }
+            console.log('Volume setting saved:', volume);
+        })
+        .catch(error => {
+            console.error('Error saving volume setting:', error);
+        });
+    }, 1000); // Wait 1 second after the last volume change
+    
+    // Also save to localStorage as a fallback
+    localStorage.setItem('playerVolume', volume.toString());
+};
+
+// Function to load volume settings from localStorage or default
+const loadVolumeSettings = () => {
+    // First try to get from localStorage
+    const savedVolume = localStorage.getItem('playerVolume');
+    if (savedVolume !== null) {
+        return parseInt(savedVolume, 10);
+    }
+    
+    // Default volume if nothing is saved
+    return 50;
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
     // Get the initial song ID from the audio element
     const audioElement = document.getElementById('songPlayer');
@@ -241,6 +344,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+    // Initialize like buttons on album page if needed
+    initializeAlbumLikeButtons();
+
     // Initialize the like buttons after getting the initial state
     toggleLike(".like-btn", ".like-check");
 
@@ -251,7 +357,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const volumeSlider = document.getElementById("seekVolume");
     const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
-    let currentVol = 50;
+    // Load saved volume settings
+    let currentVol = loadVolumeSettings();
     let storedVolume = currentVol;
 
     // Initialize volume level and update icons
@@ -276,12 +383,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 currentVol = 0;
             }
             updateVolumeUI(currentVol, volumeIcons, musicControl.audio, volumeSlider);
+            saveVolumeSettings(currentVol);
         });
     });
 
     volumeSlider.addEventListener("input", () => {
         currentVol = volumeSlider.value;
         updateVolumeUI(currentVol, volumeIcons, musicControl.audio, volumeSlider);
+        saveVolumeSettings(currentVol);
     });
 
     // Add favorite functionality
@@ -340,13 +449,8 @@ document.addEventListener('song-changed', async function (event) {
     if (songData && songData.id) {
         // Update like button for the new song
         await updateLikeButtonState(songData.id);
-
-        // Also update the data-song-id attribute on any like buttons
-        const likeBtns = document.querySelectorAll('.like-btn');
-        likeBtns.forEach(btn => {
-            btn.setAttribute('data-song-id', songData.id);
-        });
-
+        
+        // Log the song change
         console.log(`Song changed to: ${songData.title} (ID: ${songData.id})`);
     }
 });
