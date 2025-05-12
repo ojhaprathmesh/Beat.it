@@ -85,15 +85,17 @@
 
 .album-row-item {
     flex-direction: column;
-    max-width: fit-content;
+    max-width: 145px;
     row-gap: 15px;
     text-align: center;
     font-size: smaller;
+    margin-right: 20px;
 }
 
 .song-row-item:hover,
 .album-row-item:hover {
     transform: scale(1.05);
+    z-index: 2;
 }
 
 .song-row-item .song-cover {
@@ -113,6 +115,11 @@
 .album-title {
     font-weight: 200;
     color: var(--primary-text);
+    width: 145px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 5px;
 }
 
 .title-artist {

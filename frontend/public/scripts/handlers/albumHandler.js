@@ -24,6 +24,67 @@ const getActualDuration = (file) => {
     });
 };
 
+// Function to toggle favorite status for a song
+const toggleFavorite = (songId, isLiked, likeBtn) => {
+    if (!songId) {
+        console.error("No song ID found for like button");
+        return;
+    }
+
+    const checkbox = likeBtn.querySelector('.like-check');
+    const heartIcon = likeBtn.querySelector('.fa-heart');
+    
+    // Update UI first
+    checkbox.checked = isLiked;
+    likeBtn.classList.toggle('liked', isLiked);
+    if (heartIcon) {
+        heartIcon.style.color = isLiked ? "red" : "#FEFFF1";
+    }
+
+    // Update player's like button if this song is currently playing
+    const audioElement = document.getElementById('songPlayer');
+    const currentSongId = audioElement ? audioElement.getAttribute('data-song-id') : null;
+    if (currentSongId === songId.toString()) {
+        const playerLikeBtn = document.querySelector('.player .like-btn');
+        if (playerLikeBtn) {
+            const playerCheckbox = playerLikeBtn.querySelector('.like-check');
+            if (playerCheckbox) playerCheckbox.checked = isLiked;
+            playerLikeBtn.classList.toggle('liked', isLiked);
+            
+            const playerHeartIcon = playerLikeBtn.querySelector('.fa-heart');
+            if (playerHeartIcon) {
+                playerHeartIcon.style.color = isLiked ? "red" : "#FEFFF1";
+            }
+        }
+    }
+
+    // Make API call to update favorites
+    fetch(`/api/user/favorites/${songId}`, {
+        method: isLiked ? 'POST' : 'DELETE'
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to ${isLiked ? 'add' : 'remove'} favorite`);
+            }
+
+            console.log(`Song ${isLiked ? 'added to' : 'removed from'} favorites:`, songId);
+
+            if (window.socket) {
+                window.socket.emit('refresh-favorites', songId);
+            }
+        })
+        .catch(error => {
+            console.error('Error updating favorite status:', error);
+            // Revert UI changes on error
+            checkbox.checked = !isLiked;
+            likeBtn.classList.toggle('liked', !isLiked);
+            if (heartIcon) {
+                heartIcon.style.color = !isLiked ? "red" : "#FEFFF1";
+            }
+            alert(`Failed to ${isLiked ? 'add to' : 'remove from'} favorites. Please try again.`);
+        });
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
     const pathname = window.location.pathname;
     const isHomeOrSearch = ["/home", "/search"].includes(pathname);
@@ -53,6 +114,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         try {
+            // First fetch user's favorites to know which songs are liked
+            let userFavorites = [];
+            try {
+                const favResponse = await fetch('/api/user/favorites');
+                if (favResponse.ok) {
+                    userFavorites = await favResponse.json();
+                }
+            } catch (error) {
+                console.error("Error fetching user favorites:", error);
+            }
+
+            // Then fetch all song data
             const songData = await fetchSongData();
             const albumSongs = songData.filter((song) => song.album === albumName);
 
@@ -83,7 +156,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             const songItems = await Promise.all(albumSongs.map(async (song, index) => {
                 // Get actual duration if possible
                 const actualDuration = await getActualDuration(song.file);
-
+                
+                // Check if this song is in user favorites
+                const isLiked = userFavorites.some(favSong => 
+                    favSong.id && song.id && favSong.id.toString() === song.id.toString());
+                
                 const songItem = document.createElement("div");
                 songItem.className = "album-song-item";
                 songItem.id = `song-${index + 1}`;
@@ -91,20 +168,46 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <div class="index">${index + 1}.</div>
                     <div class="song-name">${song.title}</div>
                     <div class="song-duration">${actualDuration}</div>
-                    <div class="like-btn">
-                        <i class="fas fa-heart" style="font-size: larger;">
-                            <input type="checkbox" class="like-check" />
+                    <div class="like-btn ${isLiked ? 'liked' : ''}" data-song-id="${song.id}">
+                        <i class="fas fa-heart" style="font-size: larger; color: ${isLiked ? 'red' : '#FEFFF1'}">
+                            <input type="checkbox" class="like-check" ${isLiked ? 'checked' : ''} />
                         </i>
                     </div>
                 `;
 
-                // Add click listener for the song item
-                songItem.addEventListener("click", () => {
+                // Add click listener for the song item (except like button)
+                songItem.addEventListener("click", (e) => {
+                    // Don't trigger song play if clicking on the like button
+                    if (e.target.closest('.like-btn')) {
+                        return;
+                    }
+                    
+                    const songId = song.id;
+                    
+                    // Update player like button with this song's ID
+                    const playerLikeBtn = document.querySelector('.player .like-btn');
+                    if (playerLikeBtn) {
+                        playerLikeBtn.dataset.songId = songId.toString();
+                    }
+                    
                     const songClickEvent = new CustomEvent("songClicked", {
-                        detail: `${song.id}`,
+                        detail: `${songId}`,
                     });
                     document.dispatchEvent(songClickEvent);
                 });
+                
+                // Add specific listener for the like button
+                const likeBtn = songItem.querySelector('.like-btn');
+                if (likeBtn) {
+                    likeBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation(); // Prevent the song item click
+                        
+                        const checkbox = likeBtn.querySelector('.like-check');
+                        const newIsLiked = !checkbox.checked; // Toggle state
+                        toggleFavorite(song.id, newIsLiked, likeBtn);
+                    });
+                }
 
                 return songItem;
             }));
