@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node backend/server",
     "dev": "nodemon backend/server",
-    "build": "echo \"Building application...\" && npm install"
+    "build": "npm install"
   },
   "authors": [
     "Prathmesh Ojha",
