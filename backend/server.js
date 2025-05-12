@@ -11,8 +11,8 @@ dotenv.config();
 
 // Firebase imports
 const {db} = require('./firebase/firebaseConfig');
-const {collection, query, where, getDocs, doc, updateDoc, limit, getDoc, setDoc} = require('firebase/firestore');
-const {createUser, loginUser, forgotPassword, resetPassword, isUserAdmin, promoteUserToAdmin, ADMIN_EMAILS, initializeAdminEmails, deleteUserAccount} = require('./firebase/authService');
+const {collection, query, where, getDocs, doc, updateDoc, limit, getDoc, setDoc, deleteDoc} = require('firebase/firestore');
+const {createUser, loginUser, forgotPassword, resetPassword, isUserAdmin, promoteUserToAdmin, ADMIN_EMAILS, loadAdminEmails, deleteUserAccount} = require('./firebase/authService');
 
 // Import Cloudinary image service
 const {uploadProfilePicture} = require('./cloudinary/imageService');
@@ -78,6 +78,56 @@ io.on('connection', (socket) => {
         // Broadcast to all clients except sender
         socket.broadcast.emit('refresh-favorites', songId);
     });
+
+    // Listen for user to fetch their favorites
+    socket.on('fetch-favorites', async (userId) => {
+        try {
+            const favorites = await getFavoritesForUser(userId);
+            
+            // Load song data for favorites
+            const favoriteTracksData = [];
+            for (const songId of favorites) {
+                const song = songsData.find(s => s.id.toString() === songId.toString());
+                if (song) {
+                    favoriteTracksData.push(song);
+                }
+            }
+            
+            // Only log once per socket connection
+            if (!socket.loggedFavorites) {
+                console.log('Fetched user favorites:', favorites);
+                console.log('Matched favorites with song data:', favoriteTracksData.length, 'songs');
+                socket.loggedFavorites = true;
+            }
+            
+            socket.emit('favorites-data', favoriteTracksData);
+        } catch (error) {
+            console.error('Error fetching favorites:', error);
+            socket.emit('error', { message: 'Failed to fetch favorites' });
+        }
+    });
+
+    // Add a custom logging function that prevents duplicate logs
+    socket.log = function(type, data) {
+        // Only log if we haven't logged this type of message before
+        if (!socket.loggedMessages) {
+            socket.loggedMessages = {};
+        }
+        
+        // For favorites, only log the first time or when the count changes
+        if (type === 'favorites') {
+            const previousLog = socket.loggedMessages[type];
+            if (!previousLog || previousLog.count !== data.count) {
+                console.log('Fetched user favorites:', data.favorites);
+                console.log('Matched favorites with song data:', data.count, 'songs');
+                socket.loggedMessages[type] = data;
+            }
+        } else if (!socket.loggedMessages[type]) {
+            // For other types, log only once
+            console.log(`${type}:`, data);
+            socket.loggedMessages[type] = true;
+        }
+    };
 
     socket.on('disconnect', () => {
         console.log('Client disconnected');
@@ -579,7 +629,10 @@ app.get('/api/user/favorites', async (req, res) => {
 
         const favorites = user.userData.favorites || [];
 
-        console.log('Fetched user favorites:', favorites);
+        // Log favorites only in development environment
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('Fetched user favorites:', favorites);
+        }
 
         // If no favorites, return an empty array
         if (favorites.length === 0) {
@@ -592,7 +645,10 @@ app.get('/api/user/favorites', async (req, res) => {
             return favorites.some(favId => favId.toString() === songIdStr);
         });
 
-        console.log('Matched favorites with song data:', favoriteTracksData.length, 'songs');
+        // Log match count only in development environment
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('Matched favorites with song data:', favoriteTracksData.length, 'songs');
+        }
 
         res.json(favoriteTracksData);
     } catch (error) {
@@ -1040,7 +1096,7 @@ app.get('/api/admin/storage', adminMiddleware, async (req, res) => {
 // Initialize admin data
 (async function() {
     try {
-        await initializeAdminEmails();
+        await loadAdminEmails();
         console.log('Admin data initialized successfully');
     } catch (error) {
         console.error('Error initializing admin data:', error);

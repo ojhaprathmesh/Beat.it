@@ -126,20 +126,31 @@ function updateLikeButtonState(songId) {
 }
 
 const updateVolumeUI = (volume, [muteIcon, lowIcon, midIcon, highIcon], audioElement, sliderElement) => {
+    // Parse volume to ensure it's a number and handle potential string inputs
+    volume = parseInt(volume, 10);
+    
     // Set audio volume and update slider
     audioElement.volume = volume / 100;
     sliderElement.value = volume;
     sliderElement.style.setProperty("--width-v", `${volume}%`);
 
-    // Update icon visibility
-    [muteIcon, lowIcon, midIcon, highIcon].forEach((icon, index) => {
-        icon.style.display = [
-            volume === 0,                // Mute icon
-            volume > 0 && volume < 30,   // Low volume
-            volume >= 30 && volume < 70, // Mid volume
-            volume >= 70                 // High volume
-        ][index] ? "block" : "none";
+    // Immediately update icon visibility without transitions
+    // First hide all icons
+    [muteIcon, lowIcon, midIcon, highIcon].forEach(icon => {
+        icon.style.display = "none";
     });
+
+    // Then show only the appropriate icon
+    // Check for zero volume, comparing both exactly zero and very low values
+    if (volume === 0 || audioElement.volume === 0) {
+        muteIcon.style.display = "block"; // Show mute icon when volume is zero
+    } else if (volume < 30) {
+        lowIcon.style.display = "block";
+    } else if (volume < 70) {
+        midIcon.style.display = "block";
+    } else {
+        highIcon.style.display = "block";
+    }
 };
 
 // Handles add/remove favorite when the heart is clicked
@@ -288,49 +299,99 @@ function initializeAlbumLikeButtons() {
         });
 }
 
-// Function to save volume settings to user preferences in the database
-const saveVolumeSettings = (volume) => {
+// Helper function to save volume and muted state to Firestore
+function saveVolumePreferences(volume, isMuted) {
     // Don't make API calls for minor volume changes, use a debounce approach
     if (window.volumeChangeTimeout) {
         clearTimeout(window.volumeChangeTimeout);
     }
     
     window.volumeChangeTimeout = setTimeout(() => {
-        // Save volume setting to user preferences
+        // Save volume and muted settings to user preferences in Firestore
         fetch('/api/user/preferences', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ 
-                volume: volume 
+                volume: volume,
+                isMuted: isMuted
             })
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Failed to save volume setting');
+                throw new Error('Failed to save audio preferences to Firestore');
             }
-            console.log('Volume setting saved:', volume);
+            console.log('Audio preferences saved to Firestore:', { volume, isMuted });
         })
         .catch(error => {
-            console.error('Error saving volume setting:', error);
+            console.error('Error saving audio preferences to Firestore:', error);
         });
-    }, 1000); // Wait 1 second after the last volume change
+    }, 1000); // Wait 1 second after the last change
     
     // Also save to localStorage as a fallback
     localStorage.setItem('playerVolume', volume.toString());
-};
+    localStorage.setItem('playerMuted', isMuted.toString());
+}
 
-// Function to load volume settings from localStorage or default
+// Update the loading function to also fetch muted state
 const loadVolumeSettings = () => {
-    // First try to get from localStorage
-    const savedVolume = localStorage.getItem('playerVolume');
-    if (savedVolume !== null) {
-        return parseInt(savedVolume, 10);
-    }
-    
-    // Default volume if nothing is saved
-    return 50;
+    return new Promise((resolve) => {
+        // First try to get from Firestore
+        fetch('/api/user/preferences')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch preferences from Firestore');
+                }
+                return response.json();
+            })
+            .then(preferences => {
+                // Get volume and muted state from preferences
+                if (preferences) {
+                    console.log('Audio preferences loaded from Firestore:', preferences);
+                    
+                    // Update localStorage with the Firestore values
+                    if (preferences.volume !== undefined) {
+                        localStorage.setItem('playerVolume', preferences.volume.toString());
+                    }
+                    
+                    if (preferences.isMuted !== undefined) {
+                        localStorage.setItem('playerMuted', preferences.isMuted.toString());
+                        
+                        // Update song state for playback
+                        const savedState = JSON.parse(localStorage.getItem("songState")) || {};
+                        savedState.isMuted = preferences.isMuted;
+                        localStorage.setItem("songState", JSON.stringify(savedState));
+                    }
+                    
+                    // Determine volume to return
+                    if (preferences.isMuted) {
+                        resolve(0); // Return 0 if muted
+                    } else if (preferences.volume !== undefined) {
+                        resolve(parseInt(preferences.volume, 10));
+                    } else {
+                        throw new Error('Volume not found in Firestore preferences');
+                    }
+                } else {
+                    throw new Error('No preferences found in Firestore');
+                }
+            })
+            .catch(error => {
+                console.log('Using localStorage fallback for volume:', error.message);
+                // Fall back to localStorage
+                const savedVolume = localStorage.getItem('playerVolume');
+                const savedMuted = localStorage.getItem('playerMuted') === 'true';
+                
+                if (savedMuted) {
+                    resolve(0); // Return 0 if muted in localStorage
+                } else if (savedVolume !== null) {
+                    resolve(parseInt(savedVolume, 10));
+                } else {
+                    // Default volume if nothing is saved
+                    resolve(50);
+                }
+            });
+    });
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -357,12 +418,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const volumeSlider = document.getElementById("seekVolume");
     const volumeIcons = Array.from(document.querySelectorAll(".volume i"));
 
-    // Load saved volume settings
-    let currentVol = loadVolumeSettings();
-    let storedVolume = currentVol;
+    // Load saved volume settings - now async from Firestore
+    let currentVol = await loadVolumeSettings();
+    let storedVolume = currentVol > 0 ? currentVol : 50; // Default to 50 if stored volume is 0
 
     // Initialize volume level and update icons
     updateVolumeUI(currentVol, volumeIcons, musicControl.audio, volumeSlider);
+
+    // Check if we need to initialize volume to zero because of mute state
+    const savedState = JSON.parse(localStorage.getItem("songState"));
+    if (savedState && savedState.isMuted) {
+        currentVol = 0;
+        updateVolumeUI(currentVol, volumeIcons, musicControl.audio, volumeSlider);
+    }
 
     volumeIcons.forEach(icon => {
         icon.style.width = "20px";
@@ -377,20 +445,46 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (musicControl.audio.volume === 0) {
                 // If muted, restore volume to stored value
                 currentVol = storedVolume;
+                // Save unmuted state to Firestore
+                saveVolumePreferences(currentVol, false);
             } else {
                 // If not muted, store current volume, then mute
-                storedVolume = currentVol;
+                storedVolume = currentVol > 0 ? currentVol : storedVolume;
                 currentVol = 0;
+                // Save muted state to Firestore
+                saveVolumePreferences(currentVol, true);
             }
+            
+            // Update UI with new volume settings
             updateVolumeUI(currentVol, volumeIcons, musicControl.audio, volumeSlider);
-            saveVolumeSettings(currentVol);
+            
+            // Also update the saved state for page refresh handling
+            const savedState = JSON.parse(localStorage.getItem("songState")) || {};
+            savedState.isMuted = currentVol === 0;
+            localStorage.setItem("songState", JSON.stringify(savedState));
         });
     });
 
     volumeSlider.addEventListener("input", () => {
-        currentVol = volumeSlider.value;
+        const newVolume = parseInt(volumeSlider.value, 10);
+        
+        // If volume was previously non-zero and is now zero, save the previous value
+        if (currentVol > 0 && newVolume === 0) {
+            storedVolume = currentVol;
+        }
+        
+        currentVol = newVolume;
+        
+        // Save to Firestore with appropriate muted state
+        saveVolumePreferences(currentVol, currentVol === 0);
+        
+        // Update UI
         updateVolumeUI(currentVol, volumeIcons, musicControl.audio, volumeSlider);
-        saveVolumeSettings(currentVol);
+        
+        // Also update the saved state for page refresh handling
+        const savedState = JSON.parse(localStorage.getItem("songState")) || {};
+        savedState.isMuted = currentVol === 0;
+        localStorage.setItem("songState", JSON.stringify(savedState));
     });
 
     // Add favorite functionality

@@ -3,15 +3,18 @@ const {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     sendPasswordResetEmail,
-    confirmPasswordReset
+    confirmPasswordReset,
+    deleteUser,
+    EmailAuthProvider,
+    reauthenticateWithCredential
 } = require('firebase/auth');
-const {doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, limit} = require('firebase/firestore');
+const {doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, limit, deleteDoc} = require('firebase/firestore');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Admin email addresses - this will be kept in sync with Firestore collection
-const ADMIN_EMAILS = ['prathmeshojha2307@gmail.com'];
+let ADMIN_EMAILS = [];
+let adminEmailsLoaded = false; // Add a flag to track if emails have been loaded
 
 /**
  * Create a readable document ID from a username
@@ -26,29 +29,22 @@ const createReadableId = (username) => {
     return `${sanitized}_${timestamp}`;
 };
 
-// Initialize the admin emails from Firestore
-const initializeAdminEmails = async () => {
+// Load admin emails from Firestore
+async function loadAdminEmails() {
+    if (adminEmailsLoaded) return ADMIN_EMAILS; // Skip if already loaded
+    
     try {
-        // Check if admins collection exists and load existing admins
-        const adminsRef = collection(db, 'admins');
-        const adminsSnapshot = await getDocs(adminsRef);
-        
-        // Sync the ADMIN_EMAILS array with Firestore data
-        ADMIN_EMAILS.length = 0; // Clear existing entries
-        adminsSnapshot.forEach(doc => {
-            const adminData = doc.data();
-            if (adminData.email && !ADMIN_EMAILS.includes(adminData.email)) {
-                ADMIN_EMAILS.push(adminData.email);
-            }
-        });
+        const adminCollection = db.collection('admins');
+        const snapshot = await adminCollection.get();
+        ADMIN_EMAILS = snapshot.docs.map(doc => doc.data().email);
+        adminEmailsLoaded = true; // Set the flag to true after loading
         console.log(`Loaded ${ADMIN_EMAILS.length} admin emails from Firestore`);
+        return ADMIN_EMAILS;
     } catch (error) {
-        console.error('Error initializing admin emails:', error);
+        console.error('Error loading admin emails:', error);
+        return [];
     }
-};
-
-// Initialize admin emails on startup
-initializeAdminEmails().then();
+}
 
 // Completely disabled email notification functionality
 const sendAdminLoginNotification = async (adminEmail) => {
@@ -428,6 +424,70 @@ const promoteUserToAdmin = async (userEmail, adminEmail) => {
     return { message: `User ${userEmail} has been promoted to admin` };
 };
 
+/**
+ * Delete a user account
+ */
+const deleteUserAccount = async (email, password) => {
+    try {
+        // First, get current user from auth
+        const currentUser = auth.currentUser;
+        
+        // If no current user in auth, try to re-authenticate
+        if (!currentUser) {
+            throw new Error('You must be logged in to delete your account');
+        }
+        
+        // Re-authenticate user with password before deletion
+        const credential = EmailAuthProvider.credential(email, password);
+        await reauthenticateWithCredential(currentUser, credential);
+        
+        // Find the user in Firestore
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', email), limit(1));
+        const userSnapshot = await getDocs(q);
+        
+        if (userSnapshot.empty) {
+            throw new Error('User not found in database');
+        }
+        
+        const userDoc = userSnapshot.docs[0];
+        const userId = userDoc.id;
+        
+        // Delete the user document from Firestore
+        await deleteDoc(doc(db, 'users', userId));
+        
+        // If user is admin, also remove from admins collection
+        if (ADMIN_EMAILS.includes(email)) {
+            const adminReadableId = `admin_${userId}`;
+            await deleteDoc(doc(db, 'admins', adminReadableId));
+            
+            // Update in-memory admin list
+            const emailIndex = ADMIN_EMAILS.indexOf(email);
+            if (emailIndex !== -1) {
+                ADMIN_EMAILS.splice(emailIndex, 1);
+            }
+        }
+        
+        // Delete user from Firebase Authentication
+        await deleteUser(currentUser);
+        
+        return { success: true, message: 'Account deleted successfully' };
+    } catch (error) {
+        console.error('Error in deleteUserAccount:', error);
+        
+        // Handle specific errors
+        if (error.code === 'auth/wrong-password') {
+            throw new Error('Incorrect password');
+        } else if (error.code === 'auth/too-many-requests') {
+            throw new Error('Too many attempts. Please try again later.');
+        } else if (error.code === 'auth/requires-recent-login') {
+            throw new Error('Please log out and log in again before deleting your account');
+        }
+        
+        throw error;
+    }
+};
+
 module.exports = {
     createUser, 
     loginUser, 
@@ -436,5 +496,6 @@ module.exports = {
     isUserAdmin,
     promoteUserToAdmin,
     ADMIN_EMAILS,
-    initializeAdminEmails
+    loadAdminEmails,
+    deleteUserAccount
 };

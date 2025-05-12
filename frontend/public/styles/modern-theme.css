@@ -13,6 +13,10 @@
     --background: #f5f5f7;
     --card-bg: #ffffff;
     --shadow-color: rgba(0, 0, 0, 0.1);
+    --primary-color: #9147ff;
+    --primary-hover-color: #7a2bfc;
+    --primary-rgb: 145, 71, 255;
+    --primary-hover-rgb: 122, 43, 252;
 }
 
 /* Base Styles */

@@ -238,6 +238,9 @@ class MusicControl {
         } catch (error) {
             console.error("Error playing song:", error);
         }
+        
+        // Save the current state including muted flag
+        this.saveState();
     }
 
     handlePause() {
@@ -350,8 +353,7 @@ class MusicControl {
             stateIndex: this.stateIndex,
             isNotRepeating: this.isNotRepeating,
             isSingleRepeat: this.isSingleRepeat,
-            isMultiRepeat: this.isMultiRepeat
-        };
+            isMultiRepeat: this.isMultiRepeat};
 
         localStorage.setItem("songState", JSON.stringify(songState));
     }
