@@ -11,8 +11,8 @@ dotenv.config();
 
 // Firebase imports
 const {db} = require('./firebase/firebaseConfig');
-const {collection, query, where, getDocs, doc, updateDoc, limit} = require('firebase/firestore');
-const {createUser, loginUser, forgotPassword, resetPassword} = require('./firebase/authService');
+const {collection, query, where, getDocs, doc, updateDoc, limit, getDoc, setDoc} = require('firebase/firestore');
+const {createUser, loginUser, forgotPassword, resetPassword, isUserAdmin, promoteUserToAdmin, ADMIN_EMAILS, initializeAdminEmails, deleteUserAccount} = require('./firebase/authService');
 
 // Import Cloudinary image service
 const {uploadProfilePicture} = require('./cloudinary/imageService');
@@ -113,6 +113,19 @@ app.use(session({
     }
 }));
 
+// Debug middleware to log session data
+app.use((req, res, next) => {
+    if (req.path === '/admin' || req.path.startsWith('/api/admin')) {
+        console.log('Session data for admin path:', {
+            path: req.path,
+            email: req.session.email,
+            isAdmin: req.session.isAdmin,
+            usernameLetter: req.session.usernameLetter,
+        });
+    }
+    next();
+});
+
 // Configure multer for memory storage
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -136,7 +149,7 @@ async function getUserByEmail(email) {
     }
 
     const userData = userSnapshot.docs[0].data();
-    const userId = userSnapshot.docs[0].id;
+    const userId = userSnapshot.docs[0].id; // This is now the readable ID
 
     return {userData, userId};
 }
@@ -182,18 +195,84 @@ const pageRoutes = {
     "/signup": "SignupPage",
     "/login": "LoginPage",
     "/profile": "ProfilePage",
-    "/search": "SearchPage",
     "/album": "AlbumPage",
     "/reset-password": "ResetPasswordPage",
+    "/admin": "AdminPage"
 };
 
+// Search route is handled separately because it needs the query parameter
+app.get("/search", async (req, res) => {
+    const {usernameLetter, name, email, isAdmin} = req.session;
+    const query = req.query.query || '';
+
+    // Redirect to log in if not authenticated
+    if (!usernameLetter) {
+        console.log(`Redirecting unauthenticated user from /search to /login`);
+        return res.redirect("/login");
+    }
+
+    // Get the user's profile picture if logged in
+    let profilePicture = null;
+    if (email) {
+        try {
+            const user = await getUserByEmail(email);
+            if (user) {
+                profilePicture = user.userData.profilePicture || '/assets/profile/default-avatar.jpg';
+            }
+        } catch (error) {
+            console.error('Error fetching profile picture:', error);
+            profilePicture = '/assets/profile/default-avatar.jpg';
+        }
+    }
+
+    res.render("SearchPage", {usernameLetter, profilePicture, isAdmin, query});
+});
+
 Object.entries(pageRoutes).forEach(([route, view]) => {
+    // Skip search route as it's handled separately
+    if (route === "/search") return;
+    
     app.get(route, async (req, res) => {
-        const {usernameLetter, name, email} = req.session;
+        const {usernameLetter, name, email, isAdmin} = req.session;
+
+        // Debugging info to help troubleshoot issues
+        if (route === '/admin') {
+            console.log('Admin page access attempt:');
+            console.log('- Email:', email);
+            console.log('- Session isAdmin:', isAdmin);
+            if (email) {
+                const adminStatus = await isUserAdmin(email);
+                console.log('- Current isAdmin status:', adminStatus);
+                
+                // Update session if needed
+                if (adminStatus && !isAdmin) {
+                    req.session.isAdmin = true;
+                    console.log('- Updated session isAdmin to true');
+                }
+            }
+        }
 
         // Redirect to log in if not authenticated
         if (!usernameLetter && !['/login', '/signup', '/reset-password'].includes(route)) {
+            console.log(`Redirecting unauthenticated user from ${route} to /login`);
             return res.redirect("/login");
+        }
+
+        // Check for admin access to admin page
+        if (route === '/admin') {
+            // Double-check admin status
+            if (email && !isAdmin) {
+                const adminStatus = await isUserAdmin(email);
+                if (adminStatus) {
+                    req.session.isAdmin = true;
+                } else {
+                    console.log('Non-admin user attempted to access admin page. Redirecting to /home');
+                    return res.redirect("/home");
+                }
+            } else if (!email || !isAdmin) {
+                console.log('Non-admin user attempted to access admin page. Redirecting to /home');
+                return res.redirect("/home");
+            }
         }
 
         // Get the user's profile picture if logged in
@@ -212,10 +291,10 @@ Object.entries(pageRoutes).forEach(([route, view]) => {
 
         // If the route is "/profile", pass user details
         if (route === "/profile") {
-            return res.render(view, {username: name, usermail: email, usernameLetter, profilePicture});
+            return res.render(view, {username: name, usermail: email, usernameLetter, profilePicture, isAdmin});
         }
 
-        res.render(view, {usernameLetter, profilePicture});
+        res.render(view, {usernameLetter, profilePicture, isAdmin});
     });
 });
 
@@ -246,7 +325,14 @@ app.post("/api/register", async (req, res) => {
     const {firstName, lastName, email, password, phoneNumber, username} = req.body;
     try {
         // Create the user with auth service
-        await createUser({firstName, lastName, email, password, phoneNumber, username});
+        const user = await createUser({firstName, lastName, email, password, phoneNumber, username});
+        
+        // Set session data to log the user in automatically
+        req.session.usernameLetter = email.charAt(0).toUpperCase();
+        req.session.email = email;
+        req.session.name = `${firstName} ${lastName}`;
+        req.session.isAdmin = await isUserAdmin(email);
+        
         res.status(201).json({message: "User registered successfully."});
     } catch (error) {
         res.status(error.code === 11000 ? 400 : 500).json({
@@ -261,13 +347,21 @@ app.post("/api/login", async (req, res) => {
     try {
         const user = await loginUser(email, password);
 
+        // Double check admin status
+        const adminStatus = await isUserAdmin(email);
+
         // Set session data
         req.session.usernameLetter = email.charAt(0).toUpperCase();
         req.session.email = email;
         req.session.name = `${user.firstName} ${user.lastName}`;
+        req.session.isAdmin = adminStatus;
 
-        res.status(200).json({message: "Login successful!"});
+        res.status(200).json({
+            message: "Login successful!",
+            isAdmin: adminStatus
+        });
     } catch (error) {
+        console.error('Login error:', error);
         const isInvalidCredentials = error.message === 'Invalid credentials.';
         const isUserNotFound = error.message === 'User profile not found';
 
@@ -582,7 +676,19 @@ app.delete('/api/user/favorites/:songId', async (req, res) => {
 });
 
 // Add a logout route if it doesn't exist
+app.get('/logout', (req, res) => {
+    console.log('GET logout route hit, destroying session');
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Error during logout:', err);
+        }
+        res.clearCookie('connect.sid');
+        res.redirect('/login');
+    });
+});
+
 app.post('/api/logout', (req, res) => {
+    console.log('POST logout route hit, destroying session');
     req.session.destroy(err => {
         if (err) {
             console.error('Error during logout:', err);
@@ -593,6 +699,546 @@ app.post('/api/logout', (req, res) => {
     });
 });
 
+// Admin API Routes
+
+// Middleware to check if user is admin
+const adminMiddleware = async (req, res, next) => {
+    if (!req.session.email) {
+        return res.status(401).json({error: 'Unauthorized'});
+    }
+
+    if (!req.session.isAdmin) {
+        // Double-check in case session is out of date
+        const adminStatus = await isUserAdmin(req.session.email);
+        if (!adminStatus) {
+            return res.status(403).json({error: 'Forbidden: Admin access required'});
+        }
+        // Update session if admin status has changed
+        req.session.isAdmin = true;
+    }
+
+    next();
+};
+
+// Get system stats for admin dashboard
+app.get('/api/admin/stats', adminMiddleware, async (req, res) => {
+    try {
+        // Get total songs count
+        const totalSongs = songData.length;
+
+        // Get total users count
+        const usersRef = collection(db, 'users');
+        const usersSnapshot = await getDocs(usersRef);
+        const totalUsers = usersSnapshot.size;
+
+        // Get top 5 played songs (assuming each song has a play count)
+        const topPlayedSongs = songData
+            .sort((a, b) => (b.playCount || 0) - (a.playCount || 0))
+            .slice(0, 5)
+            .map(song => ({
+                id: song.id,
+                title: song.title,
+                artist: song.artist,
+                playCount: song.playCount || 0
+            }));
+
+        // Calculate storage usage (placeholder - implement actual calculation)
+        const storageUsed = {
+            total: "500 MB", // Placeholder value
+            used: "125 MB",   // Placeholder value
+            percentage: 25     // Placeholder value
+        };
+
+        // Get recent activity (placeholder - implement actual logs)
+        const recentActivity = [
+            { type: 'upload', user: 'user@example.com', item: 'New Song.mp3', timestamp: new Date().toISOString() },
+            { type: 'like', user: 'another@example.com', item: 'Popular Song', timestamp: new Date(Date.now() - 3600000).toISOString() }
+        ];
+
+        res.json({
+            totalSongs,
+            totalUsers,
+            topPlayedSongs,
+            storageUsed,
+            recentActivity
+        });
+    } catch (error) {
+        console.error('Error fetching admin stats:', error);
+        res.status(500).json({error: 'Failed to fetch admin statistics'});
+    }
+});
+
+// Get all users for admin management
+app.get('/api/admin/users', adminMiddleware, async (req, res) => {
+    try {
+        const usersRef = collection(db, 'users');
+        const usersSnapshot = await getDocs(usersRef);
+        
+        const users = [];
+        usersSnapshot.forEach(doc => {
+            const userData = doc.data();
+            users.push({
+                id: doc.id,
+                email: userData.email,
+                name: `${userData.firstName || ''} ${userData.lastName || ''}`.trim(),
+                username: userData.username || '',
+                isAdmin: userData.isAdmin || false,
+                profilePicture: userData.profilePicture || '/assets/profile/default-avatar.jpg',
+                createdAt: userData.createdAt
+            });
+        });
+        
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({error: 'Failed to fetch users'});
+    }
+});
+
+// Create a new user from admin panel
+app.post('/api/admin/users', adminMiddleware, async (req, res) => {
+    try {
+        const { username, email, password, role } = req.body;
+        
+        // Validate required fields
+        if (!email || !password || !username) {
+            return res.status(400).json({ error: 'Email, password and username are required' });
+        }
+        
+        // Create user with basic information
+        const userData = {
+            firstName: username.split(' ')[0] || '',
+            lastName: username.split(' ').slice(1).join(' ') || '',
+            email,
+            password,
+            username
+        };
+        
+        // Create the user with Firebase Auth
+        const user = await createUser(userData);
+        
+        // If role is admin, promote the user to admin
+        if (role === 'admin') {
+            await promoteUserToAdmin(email, req.session.email);
+        }
+        
+        res.status(201).json({ 
+            message: 'User created successfully',
+            id: user.uid
+        });
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(error.code === 'auth/email-already-exists' ? 400 : 500)
+           .json({ error: error.message || 'Failed to create user' });
+    }
+});
+
+// Get a single user by ID for editing
+app.get('/api/admin/users/:userId', adminMiddleware, async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        // userId is now a readable ID, so we can directly access it
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        
+        if (!userDoc.exists()) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        const userData = userDoc.data();
+        
+        res.json({
+            id: userDoc.id, // This is the readable ID
+            authUid: userData.authUid, // Include the Firebase Auth UID
+            email: userData.email,
+            username: userData.username || '',
+            role: userData.isAdmin ? 'admin' : 'user',
+            profilePicture: userData.profilePicture || '/assets/profile/default-avatar.jpg',
+            createdAt: userData.createdAt
+        });
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ error: 'Failed to fetch user' });
+    }
+});
+
+// Update a user
+app.put('/api/admin/users/:userId', adminMiddleware, async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const { username, email, role } = req.body;
+        
+        // userId is now a readable ID
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        
+        if (!userDoc.exists()) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        const userData = userDoc.data();
+        const wasAdmin = userData.isAdmin;
+        const willBeAdmin = role === 'admin';
+        
+        // Update the user data - userId is the readable ID
+        await updateDoc(doc(db, 'users', userId), {
+            username: username || '',
+            email: email || userData.email,
+            isAdmin: willBeAdmin
+        });
+        
+        // If changing to admin role, update ADMIN_EMAILS
+        if (!wasAdmin && willBeAdmin && !ADMIN_EMAILS.includes(email)) {
+            ADMIN_EMAILS.push(email);
+        }
+        
+        res.json({ message: 'User updated successfully' });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ error: 'Failed to update user' });
+    }
+});
+
+// Delete a user
+app.delete('/api/admin/users/:userId', adminMiddleware, async (req, res) => {
+    // Note: This is a stub - Firebase doesn't directly support deleting users from client SDK
+    // In a real application, you would need to use Firebase Admin SDK or Cloud Functions
+    res.status(501).json({ error: 'User deletion not implemented yet' });
+});
+
+// Promote user to admin
+app.post('/api/admin/promote-user', adminMiddleware, async (req, res) => {
+    try {
+        const {userEmail} = req.body;
+        
+        if (!userEmail) {
+            return res.status(400).json({error: 'User email is required'});
+        }
+        
+        const result = await promoteUserToAdmin(userEmail, req.session.email);
+        res.json(result);
+    } catch (error) {
+        console.error('Error promoting user:', error);
+        res.status(error.message.includes('Unauthorized') ? 403 : 500)
+           .json({error: error.message || 'Failed to promote user'});
+    }
+});
+
+// Get all songs for admin management
+app.get('/api/admin/songs', adminMiddleware, async (req, res) => {
+    try {
+        res.json(songData);
+    } catch (error) {
+        console.error('Error fetching songs:', error);
+        res.status(500).json({error: 'Failed to fetch songs'});
+    }
+});
+
+// Upload new song (placeholder)
+app.post('/api/admin/songs/upload', adminMiddleware, upload.single('songFile'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({error: 'No file uploaded'});
+        }
+        
+        // Placeholder response - actual implementation would save the file and update DB
+        res.json({
+            message: 'Song upload placeholder - implementation pending',
+            filename: req.file.originalname
+        });
+    } catch (error) {
+        console.error('Error uploading song:', error);
+        res.status(500).json({error: 'Failed to upload song'});
+    }
+});
+
+// Update song metadata
+app.put('/api/admin/songs/:songId', adminMiddleware, async (req, res) => {
+    try {
+        const { songId } = req.params;
+        const { title, artist, album, genre } = req.body;
+        
+        // Find the song in the array
+        const songIndex = songData.findIndex(song => song.id.toString() === songId.toString());
+        
+        if (songIndex === -1) {
+            return res.status(404).json({error: 'Song not found'});
+        }
+        
+        // Update the song in memory
+        songData[songIndex] = {
+            ...songData[songIndex],
+            title: title || songData[songIndex].title,
+            artist: artist || songData[songIndex].artist,
+            album: album || songData[songIndex].album,
+            genre: genre || songData[songIndex].genre
+        };
+        
+        // Write the updated data to the JSON file
+        fs.writeFileSync(
+            path.join(__dirname, '../frontend/public/data/songsData.json'),
+            JSON.stringify(songData, null, 2)
+        );
+        
+        res.json({
+            message: 'Song updated successfully',
+            song: songData[songIndex]
+        });
+    } catch (error) {
+        console.error('Error updating song:', error);
+        res.status(500).json({error: 'Failed to update song'});
+    }
+});
+
+// Delete song
+app.delete('/api/admin/songs/:songId', adminMiddleware, async (req, res) => {
+    try {
+        const { songId } = req.params;
+        
+        // Find the song in the array
+        const songIndex = songData.findIndex(song => song.id.toString() === songId.toString());
+        
+        if (songIndex === -1) {
+            return res.status(404).json({error: 'Song not found'});
+        }
+        
+        // Remove the song from memory
+        const removedSong = songData.splice(songIndex, 1)[0];
+        
+        // Write the updated data to the JSON file
+        fs.writeFileSync(
+            path.join(__dirname, '../frontend/public/data/songsData.json'),
+            JSON.stringify(songData, null, 2)
+        );
+        
+        res.json({
+            message: 'Song deleted successfully',
+            song: removedSong
+        });
+    } catch (error) {
+        console.error('Error deleting song:', error);
+        res.status(500).json({error: 'Failed to delete song'});
+    }
+});
+
+// Get all storage usage (Vercel Blob integration placeholder)
+app.get('/api/admin/storage', adminMiddleware, async (req, res) => {
+    try {
+        // Placeholder response - actual implementation would query Vercel Blob API
+        res.json({
+            totalStorage: '1 GB',
+            usedStorage: '250 MB',
+            files: [
+                { name: 'song1.mp3', size: '5 MB', type: 'audio/mp3', url: '/songs/song1.mp3', uploaded: new Date().toISOString() },
+                { name: 'album-cover.jpg', size: '1 MB', type: 'image/jpeg', url: '/images/album-cover.jpg', uploaded: new Date().toISOString() }
+            ]
+        });
+    } catch (error) {
+        console.error('Error fetching storage info:', error);
+        res.status(500).json({error: 'Failed to fetch storage information'});
+    }
+});
+
+// Initialize admin data
+(async function() {
+    try {
+        await initializeAdminEmails();
+        console.log('Admin data initialized successfully');
+    } catch (error) {
+        console.error('Error initializing admin data:', error);
+    }
+})();
+
+// Add a specific route for the admin page to ensure it works
+app.get('/admin', async (req, res) => {
+    console.log('Admin page access attempt');
+    
+    // If not logged in, redirect to login
+    if (!req.session.email) {
+        console.log('Not logged in, redirecting to login');
+        return res.redirect('/login');
+    }
+    
+    // Check admin status directly
+    const isAdmin = await isUserAdmin(req.session.email);
+    console.log(`Admin status for ${req.session.email}: ${isAdmin}`);
+    
+    if (!isAdmin) {
+        console.log('Not an admin, redirecting to home');
+        return res.redirect('/home');
+    }
+    
+    // Update session
+    req.session.isAdmin = true;
+    
+    // Get user data
+    let userData = {
+        username: req.session.name || req.session.email.split('@')[0],
+        email: req.session.email,
+        profilePicture: '/assets/profile/default-avatar.jpg'
+    };
+    
+    try {
+        const user = await getUserByEmail(req.session.email);
+        if (user) {
+            userData.profilePicture = user.userData.profilePicture || '/assets/profile/default-avatar.jpg';
+            userData.username = user.userData.username || req.session.name || req.session.email.split('@')[0];
+        }
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+    }
+    
+    // Render the admin page
+    res.render('AdminPage', {
+        usernameLetter: req.session.usernameLetter,
+        profilePicture: userData.profilePicture,
+        isAdmin: true,
+        user: userData
+    });
+});
+
+// Admin section routes
+app.get('/admin/sections/:section', async (req, res) => {
+    // Check if admin
+    if (!req.session.isAdmin) {
+        return res.status(403).send('Access denied');
+    }
+
+    const section = req.params.section;
+    const allowedSections = ['dashboard', 'users', 'songs', 'artists', 'storage', 'analytics'];
+    
+    if (!allowedSections.includes(section)) {
+        return res.status(404).send('Section not found');
+    }
+    
+    try {
+        res.render(`admin/sections/${section}`, {
+            user: {
+                username: req.session.name || req.session.email.split('@')[0]
+            }
+        });
+    } catch (error) {
+        console.error(`Error rendering admin section ${section}:`, error);
+        res.status(500).send(`<div class="admin-error">Error loading section</div>`);
+    }
+});
+
+// Save user preferences
+app.post('/api/user/preferences', async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({error: 'Unauthorized'});
+    }
+
+    try {
+        const userId = req.session.userId || (await getUserByEmail(req.session.email))?.userId;
+        if (!userId) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        const { theme, audioQuality } = req.body;
+        
+        // Get current user document
+        const userRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userRef);
+        
+        if (!userDoc.exists()) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        // Get current preferences
+        const userData = userDoc.data();
+        const currentPrefs = userData.preferences || {};
+        
+        // Update only the provided preferences
+        const updatedPrefs = {
+            ...currentPrefs,
+            ...(theme !== undefined && { theme }),
+            ...(audioQuality !== undefined && { audioQuality })
+        };
+        
+        // Save updated preferences
+        await updateDoc(userRef, { preferences: updatedPrefs });
+        
+        res.status(200).json({ 
+            message: 'Preferences updated successfully',
+            preferences: updatedPrefs
+        });
+    } catch (error) {
+        console.error('Error updating preferences:', error);
+        res.status(500).json({ error: 'Failed to update preferences' });
+    }
+});
+
+// Add search API endpoint
+app.get('/api/search', (req, res) => {
+    const query = req.query.q?.toLowerCase() || '';
+    
+    if (!query || query.trim() === '') {
+        return res.json({
+            songs: [],
+            artists: [],
+            albums: []
+        });
+    }
+    
+    // Search through songs
+    const matchedSongs = songData.filter(song => {
+        return (
+            song.title.toLowerCase().includes(query) ||
+            song.artist.some(artist => artist.toLowerCase().includes(query)) ||
+            song.album.toLowerCase().includes(query)
+        );
+    });
+    
+    // Extract unique artists from matched songs
+    const artists = [...new Set(
+        matchedSongs.flatMap(song => song.artist)
+            .filter(artist => artist.toLowerCase().includes(query))
+    )];
+    
+    // Extract unique albums from matched songs
+    const albums = [...new Set(
+        matchedSongs
+            .filter(song => song.album.toLowerCase().includes(query))
+            .map(song => song.album)
+    )];
+    
+    res.json({
+        songs: matchedSongs,
+        artists,
+        albums
+    });
+});
+
+// Delete user account
+app.post('/api/user/delete-account', async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    try {
+        const { password } = req.body;
+        
+        if (!password) {
+            return res.status(400).json({ error: 'Password is required' });
+        }
+        
+        // Call the deleteUserAccount function from authService
+        const result = await deleteUserAccount(req.session.email, password);
+        
+        // Destroy the session
+        req.session.destroy(err => {
+            if (err) {
+                console.error('Error destroying session:', err);
+            }
+            
+            res.clearCookie('connect.sid');
+            res.status(200).json({ message: 'Account deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error deleting account:', error);
+        res.status(400).json({ error: error.message || 'Failed to delete account' });
+    }
+});
+
 // 404 Error Handling
 app.use((req, res) => {
     res.status(404).send(`<h1>404—Page Not Found</h1><p>The page you're looking for doesn't exist.</p><a href="/">Go back to the homepage</a>`);
@@ -600,5 +1246,5 @@ app.use((req, res) => {
 
 // Start the Server
 server.listen(port, () => {
-    console.log(`Server hosting at http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}/`);
 });
