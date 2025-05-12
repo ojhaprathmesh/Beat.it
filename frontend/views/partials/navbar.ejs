@@ -22,6 +22,9 @@
         </div>
         <div class="overlay" id="profileMenu">
             <p id="profile">Profile</p>
+            <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+                <p id="admin-panel">Admin Panel</p>
+            <% } %>
             <div>
                 <hr style="width: 90%; border: 1px solid #3E3E3E">
             </div>
@@ -63,6 +66,16 @@ socket.on("refresh", () => {
             window.location.href = '/profile';
             e.stopPropagation();
         };
+        
+        // Admin panel navigation (if element exists)
+        const adminPanelLink = document.getElementById('admin-panel');
+        if (adminPanelLink) {
+            adminPanelLink.onclick = function(e) {
+                console.log('Admin panel clicked');
+                window.location.href = '/admin';
+                e.stopPropagation();
+            };
+        }
         
         // Logout navigation with API call
         document.getElementById('logout').onclick = async function(e) {

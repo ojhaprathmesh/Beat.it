@@ -26,6 +26,10 @@
             </div>
 
             <form id="login-form" method="POST">
+                <div id="success-message" class="success-message" style="display: none;">
+                    Your account has been successfully deleted. We're sorry to see you go!
+                </div>
+
                 <div class="form-group">
                     <input type="email" class="form-control" id="email-label" required autocomplete="username">
                     <label for="email-label" class="form-label">Email</label>
@@ -60,8 +64,19 @@
             const errorContainer = document.querySelector(".error-messages") || document.createElement('p');
             const redirectLink = document.getElementById("redirect-signup");
             const forgotPasswordLink = document.getElementById("forgot-password");
+            const successMessage = document.getElementById("success-message");
 
             errorContainer.className = "error-messages";
+
+            // Check URL for account_deleted parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('message') === 'account_deleted') {
+                successMessage.style.display = 'block';
+                // Automatically hide the message after 10 seconds
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 10000);
+            }
 
             const showError = (message) => {
                 errorContainer.textContent = message;
