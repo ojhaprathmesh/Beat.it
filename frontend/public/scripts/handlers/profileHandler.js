@@ -19,78 +19,151 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Favorites section
     const favoritesContainer = document.getElementById('favorites-container');
-    document.querySelector('.no-favorites');
+    const noFavoritesMessage = document.querySelector('.no-favorites');
+
 // Preferences elements
     const qualitySelect = document.getElementById('quality');
-    const lightThemeBtn = document.getElementById('light-theme');
-    const darkThemeBtn = document.getElementById('dark-theme');
     const savePreferencesBtn = document.getElementById('save-preferences');
 
     // Profile avatar
     const profileAvatar = document.getElementById('profile-avatar');
     const photoUpload = document.getElementById('photo-upload');
 
-    // Theme preferences
-    let themePreference = 'light';
+    // Delete account elements
+    const deleteAccountBtn = document.getElementById('delete-account-btn');
+    const deleteAccountModal = document.getElementById('delete-account-modal');
+    const closeModalBtn = document.querySelector('.close-modal');
+    const cancelDeleteBtn = document.getElementById('cancel-delete');
+    const confirmDeleteBtn = document.getElementById('confirm-delete');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const deleteErrorMessage = document.getElementById('delete-error');
 
-    // Load user profile data
-    function loadProfileData() {
-        return fetch('/api/user/profile')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to load profile data');
-                }
-                return response.json();
-            })
-            .then(userData => {
-                // Populate form fields
-                firstNameInput.value = userData.firstName || '';
-                lastNameInput.value = userData.lastName || '';
-                emailInput.value = userData.email || '';
-                usernameInput.value = userData.username || '';
-                phoneInput.value = userData.phoneNumber || '';
+    // Quality preference
+    let audioQualityPreference = 'auto';
+    
+    // Initialize profile data
+    loadUserProfile();
 
-                // Update profile picture if available
-                if (userData.profilePicture && userData.profilePicture !== '/assets/profile/default-avatar.jpg') {
-                    profileAvatar.src = userData.profilePicture;
-                } else {
-                    // Make sure the default avatar is set if nothing else is available
-                    profileAvatar.src = '/assets/profile/default-avatar.jpg';
-                }
+    // Menu switching
+    menuItems.forEach(item => {
+        item.addEventListener('click', function () {
+            const targetSection = this.getAttribute('data-section');
 
-                return userData;
-            })
-            .catch(error => {
-                console.error('Error loading profile data:', error);
-                errorMessage.textContent = 'Failed to load profile data. Please try again.';
-                errorMessage.style.display = 'block';
+            // Update active states
+            menuItems.forEach(mi => mi.classList.remove('active'));
+            contentSections.forEach(cs => cs.classList.remove('active'));
 
-                // Set default avatar on error
-                profileAvatar.src = '/assets/profile/default-avatar.jpg';
-            });
+            // Set new active section
+            this.classList.add('active');
+            document.getElementById(targetSection).classList.add('active');
+        });
+    });
+
+    // Logout button
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function () {
+            window.location.href = '/logout';
+        });
     }
 
-    // Load user preferences
-    function loadPreferences() {
-        return fetch('/api/user/preferences')
+    // Profile form submission
+    if (profileForm) {
+        profileForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            updateProfile();
+        });
+    }
+
+    // Preferences save button
+    if (savePreferencesBtn) {
+        savePreferencesBtn.addEventListener('click', function () {
+            savePreferences();
+        });
+    }
+
+    // Photo upload
+    if (photoUpload) {
+        photoUpload.addEventListener('change', function (e) {
+            uploadProfilePhoto(e.target.files[0]);
+        });
+    }
+
+    // Delete account button
+    if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener('click', function() {
+            openDeleteModal();
+        });
+    }
+
+    // Close modal events
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeDeleteModal);
+    }
+
+    if (cancelDeleteBtn) {
+        cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+    }
+
+    // Confirm account deletion
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', function() {
+            deleteUserAccount();
+        });
+    }
+
+    // Allow Enter key to trigger deletion from password field
+    if (confirmPasswordInput) {
+        confirmPasswordInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                deleteUserAccount();
+            }
+        });
+    }
+
+    // Window click to close modal
+    window.addEventListener('click', function(event) {
+        if (event.target === deleteAccountModal) {
+            closeDeleteModal();
+        }
+    });
+
+    // Function to load user profile data
+    function loadUserProfile() {
+        fetch('/api/user/profile')
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Failed to load preferences');
+                    throw new Error('Failed to load profile');
                 }
                 return response.json();
             })
-            .then(preferences => {
-                // Set audio quality
-                qualitySelect.value = preferences.audioQuality || 'auto';
+            .then(data => {
+                // Populate form fields
+                if (firstNameInput) firstNameInput.value = data.firstName || '';
+                if (lastNameInput) lastNameInput.value = data.lastName || '';
+                if (emailInput) emailInput.value = data.email || '';
+                if (usernameInput) usernameInput.value = data.username || '';
+                if (phoneInput) phoneInput.value = data.phoneNumber || '';
 
-                // Set theme preference
-                themePreference = preferences.theme || 'light';
-                applyTheme(themePreference);
+                // Set profile avatar
+                if (profileAvatar && data.profilePicture) {
+                    profileAvatar.src = data.profilePicture;
+                }
 
-                return preferences;
+                // Set preferences
+                if (data.preferences) {
+                    // Set audio quality preference
+                    if (qualitySelect && data.preferences.audioQuality) {
+                        qualitySelect.value = data.preferences.audioQuality;
+                        audioQualityPreference = data.preferences.audioQuality;
+                    }
+                }
+
+                // Also load favorites
+                loadFavorites();
             })
             .catch(error => {
-                console.error('Error loading preferences:', error);
+                console.error('Error loading profile:', error);
             });
     }
 
@@ -399,9 +472,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Save profile data
-    function saveProfile(event) {
-        event.preventDefault();
-
+    function updateProfile() {
         return fetch('/api/user/profile', {
             method: 'PUT',
             headers: {
@@ -441,33 +512,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Apply theme function
-    function applyTheme(theme) {
-        // Set the theme attribute on the HTML element
-        document.documentElement.setAttribute('data-theme', theme);
-
-        // Also add/remove the class if needed for CSS
-        if (theme === 'dark') {
-            document.body.classList.add('dark-theme');
-            document.documentElement.style.setProperty('--text-primary', '#f5f5f7');
-            document.documentElement.style.setProperty('--text-secondary', '#ccc');
-            document.documentElement.style.setProperty('--card-bg', '#333');
-            document.documentElement.style.setProperty('--background', '#222');
-        } else {
-            document.body.classList.remove('dark-theme');
-            document.documentElement.style.setProperty('--text-primary', '#121212');
-            document.documentElement.style.setProperty('--text-secondary', '#555555');
-            document.documentElement.style.setProperty('--card-bg', '#ffffff');
-            document.documentElement.style.setProperty('--background', '#f5f5f7');
-        }
-
-        // Save the theme preference to localStorage as well for immediate effect
-        localStorage.setItem('theme', theme);
-    }
-
     // Handle photo upload
-    function handlePhotoUpload(event) {
-        const file = event.target.files[0];
+    function uploadProfilePhoto(file) {
         if (!file) return;
 
         const fileType = file.type;
@@ -510,111 +556,127 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Handle sidebar menu clicks
-    function handleMenuClick() {
-        // Remove the active class from all menu items and content sections
-        menuItems.forEach(item => item.classList.remove('active'));
-        contentSections.forEach(section => section.classList.remove('active'));
+    // Save user preferences
+    function savePreferences() {
+        // Get values
+        const audioQuality = qualitySelect ? qualitySelect.value : audioQualityPreference;
 
-        // Add active class to clicked menu item and corresponding content section
-        this.classList.add('active');
-        const sectionId = this.dataset.section;
-        document.getElementById(sectionId).classList.add('active');
-    }
+        // Create preferences object
+        const preferences = {
+            audioQuality,
+        };
 
-    // Handle theme button clicks
-    function handleThemeClick(theme) {
-        themePreference = theme;
-        applyTheme(theme);
-
-        // Save the preference to the server
-        savePreferences().then();
-    }
-
-    // Handle logout
-    function handleLogout() {
-        return fetch('/api/logout', {
-            method: 'POST'
+        // Save to server
+        fetch('/api/user/preferences', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(preferences)
         })
             .then(response => {
-                if (response.ok) {
-                    window.location.href = '/login';
-                } else {
-                    throw new Error('Logout failed');
+                if (!response.ok) {
+                    throw new Error('Failed to save preferences');
                 }
+                return response.json();
+            })
+            .then(data => {
+                // Show success message or update UI
+                showMessage(true, 'Preferences saved successfully');
             })
             .catch(error => {
-                console.error('Error during logout:', error);
-                alert('Failed to logout. Please try again.');
+                console.error('Error saving preferences:', error);
+                showMessage(false, 'Failed to save preferences');
             });
     }
 
-    // Save preferences
-    function savePreferences() {
-        console.log('Saving preferences:', {theme: themePreference, audioQuality: qualitySelect.value});
+    // Show message function
+    function showMessage(isSuccess, message) {
+        if (isSuccess) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        } else {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 3000);
+        }
+    }
 
-        return fetch('/api/user/preferences', {
-            method: 'PUT',
+    // Function to open delete account modal
+    function openDeleteModal() {
+        if (deleteAccountModal) {
+            deleteAccountModal.style.display = 'flex';
+            if (confirmPasswordInput) {
+                confirmPasswordInput.value = '';
+                confirmPasswordInput.focus();
+            }
+            if (deleteErrorMessage) {
+                deleteErrorMessage.style.display = 'none';
+            }
+        }
+    }
+
+    // Function to close delete account modal
+    function closeDeleteModal() {
+        if (deleteAccountModal) {
+            deleteAccountModal.style.display = 'none';
+        }
+    }
+
+    // Function to delete user account
+    function deleteUserAccount() {
+        if (!confirmPasswordInput || !confirmPasswordInput.value) {
+            if (deleteErrorMessage) {
+                deleteErrorMessage.textContent = 'Please enter your password to confirm';
+                deleteErrorMessage.style.display = 'block';
+            }
+            return;
+        }
+
+        // Disable button to prevent multiple requests
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.disabled = true;
+            confirmDeleteBtn.textContent = 'Deleting...';
+        }
+
+        fetch('/api/user/delete-account', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                theme: themePreference,
-                audioQuality: qualitySelect.value
+                password: confirmPasswordInput.value
             })
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to update preferences');
-                }
-                alert('Preferences saved successfully!');
-            })
-            .catch(error => {
-                console.error('Error saving preferences:', error);
-                alert('Failed to save preferences. Please try again.');
-            });
-    }
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.error || 'Failed to delete account');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Success - redirect to login page
+            window.location.href = '/login?message=account_deleted';
+        })
+        .catch(error => {
+            console.error('Error deleting account:', error);
+            if (deleteErrorMessage) {
+                deleteErrorMessage.textContent = error.message || 'Failed to delete account. Please try again.';
+                deleteErrorMessage.style.display = 'block';
+            }
 
-    // Add event listeners
-    if (profileForm) {
-        profileForm.addEventListener('submit', saveProfile);
-    }
-
-    if (menuItems.length > 0) {
-        menuItems.forEach(item => {
-            item.addEventListener('click', handleMenuClick);
+            // Re-enable button for retry
+            if (confirmDeleteBtn) {
+                confirmDeleteBtn.disabled = false;
+                confirmDeleteBtn.textContent = 'Delete Account';
+            }
         });
     }
-
-    if (lightThemeBtn) {
-        lightThemeBtn.addEventListener('click', () => handleThemeClick('light'));
-    }
-
-    if (darkThemeBtn) {
-        darkThemeBtn.addEventListener('click', () => handleThemeClick('dark'));
-    }
-
-    if (savePreferencesBtn) {
-        savePreferencesBtn.addEventListener('click', savePreferences);
-    }
-
-    if (photoUpload) {
-        photoUpload.addEventListener('change', handlePhotoUpload);
-    }
-
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', handleLogout);
-    }
-
-    // Load user data when the page loads
-    loadProfileData().then();
-    loadPreferences().then();
-    loadFavorites().then();
-
-    // Update heart icons for liked songs
-    updateHeartIcons().then();
-
-    // Update heart icons when songs change in the player
-    document.addEventListener('song-changed', updateHeartIcons);
 });

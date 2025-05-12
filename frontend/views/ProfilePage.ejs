@@ -356,6 +356,97 @@
         #logo img:hover {
             box-shadow: 0 0 30px var(--shadow);
         }
+
+        .danger-zone {
+            margin-top: 40px;
+            padding: 20px;
+            border: 1px solid #ff4f4f;
+            border-radius: 12px;
+            background-color: rgba(255, 79, 79, 0.05);
+        }
+        
+        .danger-title {
+            color: #ff4f4f;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .danger-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+        
+        .delete-button {
+            background: linear-gradient(135deg, #ff4f4f, #ff7070);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .delete-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 79, 79, 0.3);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .cancel-button {
+            background-color: #e0e0e0;
+            color: var(--text-primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .cancel-button:hover {
+            background-color: #d0d0d0;
+        }
     </style>
 </head>
 
@@ -426,6 +517,31 @@
                     <p class="success-message">Your profile has been updated successfully!</p>
                     <p class="error-message">There was an error updating your profile. Please try again.</p>
                 </form>
+                
+                <!-- Delete Account Section -->
+                <div class="danger-zone">
+                    <h4 class="danger-title">Danger Zone</h4>
+                    <p class="danger-description">Deleting your account will permanently remove all your data including profile information, favorite songs, and preferences. This action cannot be undone.</p>
+                    <button id="delete-account-btn" class="delete-button">Delete Account</button>
+                </div>
+                
+                <!-- Delete Account Modal -->
+                <div id="delete-account-modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-modal">&times;</span>
+                        <h3>Delete Account</h3>
+                        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                        <div class="profile-form-group">
+                            <label class="profile-form-label" for="confirm-password">Enter your password to confirm:</label>
+                            <input type="password" id="confirm-password" class="profile-form-input" placeholder="Password">
+                        </div>
+                        <div class="modal-actions">
+                            <button id="cancel-delete" class="cancel-button">Cancel</button>
+                            <button id="confirm-delete" class="delete-button">Delete Account</button>
+                        </div>
+                        <p id="delete-error" class="error-message"></p>
+                    </div>
+                </div>
             </div>
 
             <!-- Favorites Section -->
@@ -442,15 +558,6 @@
             <!-- Preferences Section -->
             <div class="content-section" id="preferences">
                 <h3 class="section-title">Preferences</h3>
-                <div class="profile-form-group">
-                    <label class="profile-form-label">Theme</label>
-                    <div class="form-row">
-                        <div style="display: flex; gap: 10px;">
-                            <button class="save-button" style="margin-top: 0;" id="light-theme">Light</button>
-                            <button class="save-button" style="margin-top: 0; background: #333;" id="dark-theme">Dark</button>
-                        </div>
-                    </div>
-                </div>
                 <div class="profile-form-group">
                     <label class="profile-form-label" for="quality">Audio Quality</label>
                     <select id="quality" class="profile-form-input">
