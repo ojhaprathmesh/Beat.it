@@ -579,38 +579,9 @@
     <script src="/scripts/utility/profileUtils.js"></script>
     <script src="/scripts/handlers/profileHandler.js"></script>
     <script type="module" src="/scripts/handlers/playerHandler.js" defer></script>
-    <script src="/socket.io/socket.io.js"></script>
     
     <!-- Direct fix for profile picture upload -->
     <script>
-        // Socket setup for page refresh on profile updates
-        // Initialize socket with reconnection options
-        const socket = io({
-            reconnection: true,          // Enable reconnection
-            reconnectionAttempts: 5,     // Try to reconnect 5 times
-            reconnectionDelay: 1000,     // How long to initially wait before reconnecting (1 second)
-            reconnectionDelayMax: 5000,  // Maximum reconnection delay (5 seconds)
-        });
-        
-        // Listen for reconnect events
-        socket.on('reconnect', (attemptNumber) => {
-            console.log(`Reconnected after ${attemptNumber} attempts`);
-        });
-        
-        socket.on('reconnect_error', (error) => {
-            console.error('Reconnect error:', error);
-        });
-        
-        socket.on('reconnect_failed', () => {
-            console.error('Failed to reconnect to server');
-        });
-        
-        // Listen for the refresh signal from server
-        socket.on("refresh", () => {
-            console.log("Received refresh signal from server");
-            location.reload();
-        });
-        
         document.addEventListener('DOMContentLoaded', function() {
             // Get elements
             const photoUpload = document.getElementById('photo-upload');
@@ -653,11 +624,8 @@
                         const data = await response.json();
                         console.log('Upload response:', data);
                         
-                        // Update profile picture with the returned URL
+                        // Update profile picture with the returned URL and refresh if needed
                         if (data && data.profilePicture) {
-                            // No need for complex client-side updates anymore
-                            // The server will emit a refresh signal to all clients
-                            
                             // Create a small preview to show successful upload
                             const successMessage = document.createElement('div');
                             successMessage.style.position = 'fixed';
@@ -672,14 +640,10 @@
                             successMessage.textContent = 'Profile picture updated successfully!';
                             document.body.appendChild(successMessage);
                             
-                            // Remove the success message after 3 seconds
+                            // Refresh the page after a short delay
                             setTimeout(() => {
-                                successMessage.style.opacity = '0';
-                                successMessage.style.transition = 'opacity 0.5s';
-                                setTimeout(() => {
-                                    document.body.removeChild(successMessage);
-                                }, 500);
-                            }, 2000);
+                                location.reload();
+                            }, 1500);
                         }
                         
                     } catch (error) {

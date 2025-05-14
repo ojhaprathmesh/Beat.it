@@ -69,8 +69,9 @@ const toggleFavorite = (songId, isLiked, likeBtn) => {
 
             console.log(`Song ${isLiked ? 'added to' : 'removed from'} favorites:`, songId);
 
-            if (window.socket) {
-                window.socket.emit('refresh-favorites', songId);
+            // Use checkForRefresh to check if we need to refresh the page
+            if (window.checkForRefresh) {
+                window.checkForRefresh('/api/user/check-favorite/' + songId);
             }
         })
         .catch(error => {

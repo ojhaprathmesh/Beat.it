@@ -59,13 +59,21 @@
 
         <%- include('partials/player.ejs') %>
 
-            <script src="/socket.io/socket.io.js"></script>
             <script>
-                // Socket setup for page refresh on profile updates
-                const socket = io();
-                socket.on("refresh", () => {
-                    console.log("Received refresh signal from server");
-                    location.reload();
+                // Function to periodically check for updates that need page refresh
+                function checkForUpdates() {
+                    if (window.checkForRefresh) {
+                        window.checkForRefresh('/api/user/check-updates');
+                    }
+                    
+                    // Check every 30 seconds
+                    setTimeout(checkForUpdates, 30000);
+                }
+                
+                // Start checking for updates when the page is fully loaded
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Start periodic checks after a delay
+                    setTimeout(checkForUpdates, 10000);
                 });
             </script>
             <script type="module" src="/scripts/handlers/navbarHandler.js" defer></script>

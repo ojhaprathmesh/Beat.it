@@ -430,9 +430,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Update any heart icons in the player or elsewhere
                 updateHeartIcons().then();
 
-                // If socket.io is available, emit the refresh event
-                if (window.socket) {
-                    window.socket.emit('refresh-favorites', songId);
+                // Check if we need to refresh the page
+                if (window.checkForRefresh) {
+                    window.checkForRefresh('/api/user/check-favorite/' + songId);
                 }
             })
             .catch(error => {

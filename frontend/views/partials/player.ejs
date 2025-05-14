@@ -81,46 +81,54 @@
 </footer>
 
 <script>
-    // Initialize socket connection if available
-    if (typeof io !== 'undefined') {
-        const socket = io();
-        
-        // Make socket available globally so other scripts can access it
-        window.socket = socket;
-        
-        // Listen for favorites refresh events
-        socket.on('refresh-favorites', (songId) => {
-            console.log('Received refresh-favorites event for song ID:', songId);
-            
-            // Get the current song ID from the audio element
-            const audioElement = document.getElementById('songPlayer');
-            if (audioElement) {
-                const currentSongId = audioElement.getAttribute('data-song-id');
+    // Global variable to check for refresh
+    window.checkForRefresh = async function(endpoint, params = {}) {
+        try {
+            // Build the query string if params are provided
+            const queryString = Object.keys(params).length > 0 
+                ? '?' + new URLSearchParams(params).toString() 
+                : '';
                 
-                // If the updated song is the current song, update the like button
-                if (currentSongId === songId.toString()) {
-                    // Trigger an update on the like button state
-                    if (typeof updateLikeButtonState === 'function') {
-                        updateLikeButtonState(currentSongId);
-                    }
+            // Make a fetch request to check for updates
+            const response = await fetch(`${endpoint}${queryString}`);
+            if (response.ok) {
+                const data = await response.json();
+                
+                // If the server indicates a refresh is needed, reload the page
+                if (data.shouldRefresh) {
+                    console.log('Server indicated a page refresh is needed');
+                    location.reload();
+                    return true;
                 }
             }
-        });
+            return false;
+        } catch (error) {
+            console.error('Error checking for refresh:', error);
+            return false;
+        }
+    };
+    
+    // Function to update like button state without socket
+    window.updateFavoriteStatus = async function(songId) {
+        const likeButtons = document.querySelectorAll(`.like-btn[data-song-id="${songId}"]`);
         
-        // Also listen for general refresh events (like profile picture updates)
-        socket.on('refresh', () => {
-            // Handle profile picture updates without full page refresh
-            // This could update specific elements based on what changed
-            console.log('Received general refresh event');
-            
-            // You can add specific DOM updates here if needed
-            // For example, refresh the profile picture if it's visible
-            const profilePic = document.querySelector('.profile-picture img');
-            if (profilePic) {
-                // Add a cache-busting parameter to force a refresh
-                const currentSrc = profilePic.src.split('?')[0];
-                profilePic.src = `${currentSrc}?t=${new Date().getTime()}`;
+        if (likeButtons.length > 0) {
+            try {
+                const response = await fetch(`/api/user/check-favorite/${songId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Update all like buttons for this song
+                    likeButtons.forEach(button => {
+                        const checkbox = button.querySelector('.like-check');
+                        if (checkbox) {
+                            checkbox.checked = data.isFavorite;
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error checking favorite status:', error);
             }
-        });
-    }
+        }
+    };
 </script>

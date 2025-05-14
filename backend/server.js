@@ -5,7 +5,6 @@ const session = require("express-session");
 const dotenv = require('dotenv');
 const multer = require('multer');
 const http = require('http');
-const socketIo = require('socket.io');
 
 dotenv.config();
 
@@ -65,74 +64,8 @@ function loadLocalSongs() {
 const app = express();
 const port = 3000;
 
-// Create an HTTP server and initialize Socket.io
+// Create an HTTP server
 const server = http.createServer(app);
-const io = socketIo(server);
-
-// Initialize Socket.io connection
-io.on('connection', (socket) => {
-    console.log('New client connected');
-
-    // Handle refresh-favorite event
-    socket.on('refresh-favorites', (songId) => {
-        // Broadcast to all clients except sender
-        socket.broadcast.emit('refresh-favorites', songId);
-    });
-
-    // Listen for user to fetch their favorites
-    socket.on('fetch-favorites', async (userId) => {
-        try {
-            const favorites = await getFavoritesForUser(userId);
-            
-            // Load song data for favorites
-            const favoriteTracksData = [];
-            for (const songId of favorites) {
-                const song = songsData.find(s => s.id.toString() === songId.toString());
-                if (song) {
-                    favoriteTracksData.push(song);
-                }
-            }
-            
-            // Only log once per socket connection
-            if (!socket.loggedFavorites) {
-                console.log('Fetched user favorites:', favorites);
-                console.log('Matched favorites with song data:', favoriteTracksData.length, 'songs');
-                socket.loggedFavorites = true;
-            }
-            
-            socket.emit('favorites-data', favoriteTracksData);
-        } catch (error) {
-            console.error('Error fetching favorites:', error);
-            socket.emit('error', { message: 'Failed to fetch favorites' });
-        }
-    });
-
-    // Add a custom logging function that prevents duplicate logs
-    socket.log = function(type, data) {
-        // Only log if we haven't logged this type of message before
-        if (!socket.loggedMessages) {
-            socket.loggedMessages = {};
-        }
-        
-        // For favorites, only log the first time or when the count changes
-        if (type === 'favorites') {
-            const previousLog = socket.loggedMessages[type];
-            if (!previousLog || previousLog.count !== data.count) {
-                console.log('Fetched user favorites:', data.favorites);
-                console.log('Matched favorites with song data:', data.count, 'songs');
-                socket.loggedMessages[type] = data;
-            }
-        } else if (!socket.loggedMessages[type]) {
-            // For other types, log only once
-            console.log(`${type}:`, data);
-            socket.loggedMessages[type] = true;
-        }
-    };
-
-    socket.on('disconnect', () => {
-        console.log('Client disconnected');
-    });
-});
 
 // Load songs from the file if they weren't loaded earlier
 if (songData.length === 0) {
@@ -546,14 +479,14 @@ app.post('/api/user/profile-picture', upload.single('profilePicture'), async (re
             req.file.mimetype,
             // Callback to run after a successful Cloudinary upload and Firebase update
             () => {
-                // Emit refresh signal to all clients only after a confirmed upload
-                io.emit('refresh');
-                console.log('Emitted refresh signal to all clients after Cloudinary confirmation');
+                // No longer emitting socket refresh
+                console.log('Profile picture updated successfully');
             }
         );
 
         // Return the Cloudinary URL immediately so the client gets a response
-        res.json({profilePicture: imageURL});
+        // Include a refresh flag to indicate the client should reload the page
+        res.json({profilePicture: imageURL, shouldRefresh: true});
     } catch (error) {
         console.error('Error updating profile picture:', error);
         res.status(500).json({error: 'Failed to update profile picture'});
@@ -701,10 +634,8 @@ app.post('/api/user/favorites/:songId', async (req, res) => {
         const songId = req.params.songId.toString(); // Ensure it's a string
         const result = await updateFavorites(req.session.email, songId, 'add');
 
-        // Emit targeted refresh event
-        io.emit('refresh-favorites', songId);
-
-        res.json(result);
+        // Include a flag indicating to refresh for other clients
+        res.json({...result, shouldRefresh: true});
     } catch (error) {
         console.error('Error adding song to favorites:', error);
         res.status(500).json({error: 'Internal server error'});
@@ -721,12 +652,34 @@ app.delete('/api/user/favorites/:songId', async (req, res) => {
         const songId = req.params.songId.toString(); // Ensure it's a string
         const result = await updateFavorites(req.session.email, songId, 'remove');
 
-        // Emit targeted refresh event
-        io.emit('refresh-favorites', songId);
-
-        res.json(result);
+        // Include a flag indicating to refresh for other clients
+        res.json({...result, shouldRefresh: true});
     } catch (error) {
         console.error('Error removing song from favorites:', error);
+        res.status(500).json({error: 'Internal server error'});
+    }
+});
+
+// Check if a song is favorited by the user
+app.get('/api/user/check-favorite/:songId', async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({error: 'Unauthorized'});
+    }
+
+    try {
+        const songId = req.params.songId.toString();
+        const user = await getUserByEmail(req.session.email);
+
+        if (!user) {
+            return res.status(404).json({error: 'User not found'});
+        }
+
+        const favorites = user.userData.favorites || [];
+        const isFavorite = favorites.some(id => id.toString() === songId);
+
+        res.json({isFavorite});
+    } catch (error) {
+        console.error('Error checking favorite status:', error);
         res.status(500).json({error: 'Internal server error'});
     }
 });
