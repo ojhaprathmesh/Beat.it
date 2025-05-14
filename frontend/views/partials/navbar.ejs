@@ -55,8 +55,7 @@ socket.on("refresh", () => {
     if (menuBtn && profileMenuBtn) {
         profileMenuBtn.onclick = function(e) {
             console.log('Profile menu clicked');
-            const isVisible = menuOverlay.style.display === 'flex';
-            menuOverlay.style.display = isVisible ? 'none' : 'flex';
+            menuBtn.classList.toggle('show-overlay');
             e.stopPropagation();
         };
         
@@ -103,7 +102,7 @@ socket.on("refresh", () => {
         
         // Close when clicking elsewhere
         document.body.addEventListener('click', function() {
-            menuOverlay.style.display = 'none';
+            menuBtn.classList.remove('show-overlay');
         });
     }
     
@@ -138,5 +137,4 @@ socket.on("refresh", () => {
 })();
 </script>
 
-<script src="/scripts/handlers/navbarHandler.js"></script>
 <script src="/scripts/utility/profileUtils.js"></script>
