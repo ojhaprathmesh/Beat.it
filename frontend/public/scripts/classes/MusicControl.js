@@ -18,16 +18,19 @@ class MusicControl {
         if (this.albumControls) {
             this.albumPlayBtn = this.albumControls.querySelector(".play");
             this.albumPauseBtn = this.albumControls.querySelector(".pause");
+            this.albumShuffleBtn = this.albumControls.querySelector(".shuffle");
             this.albumRepeatBtn = this.albumControls.querySelector(".repeat");
         }
 
         this.songList = [];
+        this.albumSongs = []; // Store album songs separately
         this.currentSongIndex = 0;
         this.loadSongCallCount = 0;
         this.stateIndex = 0;
         this.isNotRepeating = true;
         this.repeatStates = ['isNotRepeating', 'isSingleRepeat', 'isMultiRepeat'];
         this.isShuffling = false;
+        this.currentAlbum = null; // Track current album
 
         this.init().then(() => {
             console.log("MusicControl initialized successfully!");
@@ -69,9 +72,10 @@ class MusicControl {
         this.shuffleBtn.addEventListener("click", () => this.handleShuffle(this.songList));
 
         if (this.albumControls) {
-            this.albumPlayBtn.addEventListener("click", () => this.handlePlay());
+            this.albumPlayBtn.addEventListener("click", () => this.handleAlbumPlay());
             this.albumPauseBtn.addEventListener("click", () => this.handlePause());
-            this.albumRepeatBtn.addEventListener("click", () => this.handleRepeat());
+            this.albumShuffleBtn.addEventListener("click", () => this.handleAlbumShuffle());
+            this.albumRepeatBtn.addEventListener("click", () => this.handleAlbumRepeat());
         }
 
         this.seekBar.addEventListener("updatedSeekbar", (event) => {
@@ -263,6 +267,52 @@ class MusicControl {
     }
 
     handleForward() {
+        const currentSong = this.songList[this.currentSongIndex];
+        const isCurrentSongFromAlbum = this.albumSongs.some(s => s.id === currentSong?.id);
+
+        // If we're playing album songs and in album repeat mode
+        if (isCurrentSongFromAlbum && this.albumSongs.length > 0) {
+            const currentAlbumIndex = this.albumSongs.findIndex(s => s.id === currentSong.id);
+            
+            let nextAlbumIndex;
+            
+            if (this.isSingleRepeat) {
+                // Repeat the same song
+                nextAlbumIndex = currentAlbumIndex;
+            } else if (this.isMultiRepeat) {
+                // Go to next song, wrap around if at end
+                nextAlbumIndex = (currentAlbumIndex + 1) % this.albumSongs.length;
+            } else {
+                // Go to next song, stop at end
+                nextAlbumIndex = currentAlbumIndex + 1;
+                
+                // If we're at the end of album songs
+                if (nextAlbumIndex >= this.albumSongs.length) {
+                    // Stop or continue to non-album songs
+                    if (!isNaN(this.audio.duration)) {
+                        this.audio.currentTime = this.audio.duration;
+                        this.handlePause();
+                        return;
+                    }
+                }
+            }
+            
+            if (nextAlbumIndex < this.albumSongs.length) {
+                const nextSong = this.albumSongs[nextAlbumIndex];
+                const nextSongIndex = this.songList.findIndex(s => s.id === nextSong.id);
+                
+                if (nextSongIndex !== -1) {
+                    this.loadSong(nextSongIndex);
+                } else {
+                    this.loadAndPlaySong(nextSong);
+                }
+                
+                this.handlePlay();
+                return;
+            }
+        }
+        
+        // Fall back to default behavior for non-album songs
         let nextIndex = this.isSingleRepeat
             ? this.currentSongIndex
             : this.isMultiRepeat
@@ -423,6 +473,115 @@ class MusicControl {
             }
         }
     }
+
+    // New method to set current album songs
+    setAlbumSongs(albumSongs, albumName) {
+        this.albumSongs = [...albumSongs]; // Make a copy
+        this.currentAlbum = albumName;
+        console.log(`Album set to "${albumName}" with ${albumSongs.length} songs`);
+    }
+
+    // New method to handle album play button
+    handleAlbumPlay() {
+        if (this.albumSongs.length === 0) {
+            console.warn("No album songs to play");
+            return;
+        }
+
+        // If no song is playing or current song is not from this album, start with first album song
+        const currentSong = this.songList[this.currentSongIndex];
+        const isPlayingAlbumSong = currentSong && this.albumSongs.some(s => s.id === currentSong.id);
+        
+        if (!isPlayingAlbumSong) {
+            const firstAlbumSong = this.albumSongs[0];
+            const firstAlbumSongIndex = this.songList.findIndex(s => s.id === firstAlbumSong.id);
+            
+            if (firstAlbumSongIndex !== -1) {
+                this.loadSong(firstAlbumSongIndex);
+            } else {
+                // If album song is not in playlist, load it directly
+                this.loadAndPlaySong(firstAlbumSong);
+            }
+        }
+        
+        this.handlePlay();
+    }
+
+    // New method to shuffle only album songs
+    handleAlbumShuffle() {
+        if (this.isShuffling || this.albumSongs.length === 0) {
+            console.warn("Shuffle not available");
+            return;
+        }
+
+        this.isShuffling = true;
+
+        this.albumShuffleBtn.style.animation = "shuffleAnimation 750ms forwards ease-in-out";
+        this.albumShuffleBtn.addEventListener("animationend", () => {
+            this.albumShuffleBtn.style.animation = "";
+        }, {once: true});
+
+        setTimeout(() => {
+            // Get current song if it's from this album
+            const currentSong = this.songList[this.currentSongIndex];
+            const isCurrentSongFromAlbum = this.albumSongs.some(s => s.id === currentSong?.id);
+            
+            // Shuffle album songs
+            const shuffledAlbumSongs = shuffle([...this.albumSongs]);
+            
+            // If current song is from album, put it first
+            if (isCurrentSongFromAlbum) {
+                const currentSongIndex = shuffledAlbumSongs.findIndex(s => s.id === currentSong.id);
+                if (currentSongIndex !== -1) {
+                    const songToMove = shuffledAlbumSongs.splice(currentSongIndex, 1)[0];
+                    shuffledAlbumSongs.unshift(songToMove);
+                }
+            }
+            
+            // Update album songs with shuffled version
+            this.albumSongs = shuffledAlbumSongs;
+            
+            // Now play the first album song
+            const firstAlbumSong = this.albumSongs[0];
+            this.loadAndPlaySong(firstAlbumSong);
+            
+            this.isShuffling = false;
+        }, 750);
+    }
+
+    // New method to handle album repeat button
+    handleAlbumRepeat() {
+        this.repeatStates.forEach((state) => this[state] = false);
+        this.stateIndex = (this.stateIndex + 1) % 3;
+        this[this.repeatStates[this.stateIndex]] = true;
+
+        this.updateAlbumRepeatIcon();
+    }
+
+    // Update album repeat icon
+    updateAlbumRepeatIcon() {
+        if (!this.albumControls) return;
+        
+        const p = this.albumControls.querySelector("i p");
+        if (!p) return;
+
+        // Clear previous animation
+        this.albumRepeatBtn.style.animation = "";
+
+        if (this.isSingleRepeat) {
+            p.textContent = "1";
+            p.style.display = "block";
+        } else if (this.isMultiRepeat) {
+            p.textContent = "";
+            p.style.display = "block";
+            this.albumRepeatBtn.style.animation = "rotateClockwise 500ms linear forwards";
+        } else {
+            p.style.display = "none";
+        }
+    }
 }
 
-export {MusicControl};
+export { MusicControl };
+
+// Global instance
+window.MusicControl = MusicControl;

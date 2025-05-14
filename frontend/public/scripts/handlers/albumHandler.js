@@ -136,6 +136,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
+            // Set album songs in the music controller for album-specific functionality
+            if (window.MusicControl) {
+                const musicController = new window.MusicControl();
+                // Set the album songs for album-specific behavior
+                musicController.setAlbumSongs(albumSongs, albumName);
+            }
+
             // Populate album details
             const albumDetails = document.querySelector(".album-details");
             if (albumDetails) {

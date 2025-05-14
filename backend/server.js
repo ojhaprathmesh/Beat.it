@@ -683,6 +683,25 @@ app.get('/api/user/check-favorite/:songId', async (req, res) => {
     }
 });
 
+// Generic endpoint to check for updates
+app.get('/api/user/check-updates', async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({error: 'Unauthorized'});
+    }
+
+    try {
+        // Currently, no specific updates to check
+        // In the future, this could check for new content, notifications, etc.
+        res.json({
+            shouldRefresh: false,
+            message: 'No updates available'
+        });
+    } catch (error) {
+        console.error('Error checking for updates:', error);
+        res.status(500).json({error: 'Internal server error'});
+    }
+});
+
 // Add a logout route if it doesn't exist
 app.get('/logout', (req, res) => {
     console.log('GET logout route hit, destroying session');
