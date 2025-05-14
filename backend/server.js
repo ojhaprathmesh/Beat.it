@@ -479,7 +479,6 @@ app.post('/api/user/profile-picture', upload.single('profilePicture'), async (re
             req.file.mimetype,
             // Callback to run after a successful Cloudinary upload and Firebase update
             () => {
-                // No longer emitting socket refresh
                 console.log('Profile picture updated successfully');
             }
         );
