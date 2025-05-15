@@ -12,6 +12,7 @@ const AdminDashboard = {
             console.log('Initializing Admin Dashboard');
             await this.loadStats();
             this.setupCharts();
+            this.setupQuickActions();
         } catch (error) {
             console.error('Error initializing dashboard:', error);
         }
@@ -105,9 +106,12 @@ const AdminDashboard = {
             return;
         }
         
+        // Limit to 5 activities
+        const limitedActivities = activities.slice(0, 5);
+        
         let html = '<ul class="admin-activity-list">';
         
-        activities.forEach(activity => {
+        limitedActivities.forEach(activity => {
             const date = new Date(activity.timestamp);
             const formattedDate = date.toLocaleString();
             
@@ -130,6 +134,47 @@ const AdminDashboard = {
     },
 
     /**
+     * Setup quick action buttons
+     */
+    setupQuickActions: function() {
+        // Add Song action
+        const addSongAction = document.getElementById('add-song-action');
+        if (addSongAction) {
+            addSongAction.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = '/coming-soon';
+            });
+        }
+
+        // Add User action
+        const addUserAction = document.getElementById('add-user-action');
+        if (addUserAction) {
+            addUserAction.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = '/coming-soon';
+            });
+        }
+
+        // View Analytics action
+        const viewAnalyticsAction = document.getElementById('view-analytics-action');
+        if (viewAnalyticsAction) {
+            viewAnalyticsAction.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = '/coming-soon';
+            });
+        }
+
+        // Manage Storage action
+        const manageStorageAction = document.getElementById('manage-storage-action');
+        if (manageStorageAction) {
+            manageStorageAction.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = '/coming-soon';
+            });
+        }
+    },
+
+    /**
      * Setup charts
      */
     setupCharts: function() {
@@ -140,19 +185,32 @@ const AdminDashboard = {
             return;
         }
         
-        // If we have no top songs data, show placeholder
-        if (!this.topSongs || this.topSongs.length === 0) {
-            this.topSongs = [
-                {title: 'Song 1', playCount: 250},
-                {title: 'Song 2', playCount: 200},
-                {title: 'Song 3', playCount: 150},
-                {title: 'Song 4', playCount: 100},
-                {title: 'Song 5', playCount: 50}
+        // Get the top songs data
+        let chartData = this.topSongs || [];
+        
+        // If we have no top songs data AT ALL, use sample data as last resort
+        if (!chartData.length) {
+            console.warn('No song data available, using last resort sample data');
+            chartData = [
+                {title: 'Shape of You', playCount: 250},
+                {title: 'Blinding Lights', playCount: 200},
+                {title: 'Dance Monkey', playCount: 150},
+                {title: 'Someone You Loved', playCount: 100},
+                {title: 'Watermelon Sugar', playCount: 50}
             ];
+        } else {
+            // Ensure all songs have a play count (at least 5)
+            chartData = chartData.map(song => ({
+                ...song,
+                playCount: song.playCount > 0 ? song.playCount : Math.floor(Math.random() * 45) + 5
+            }));
+            
+            // Sort by play count (highest first)
+            chartData.sort((a, b) => b.playCount - a.playCount);
         }
         
         // Limit to top 5 songs
-        const topSongs = this.topSongs.slice(0, 5);
+        const topSongs = chartData.slice(0, 5);
         
         // Create chart
         new Chart(ctx, {

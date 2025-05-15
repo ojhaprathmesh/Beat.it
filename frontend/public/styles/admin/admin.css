@@ -203,9 +203,9 @@
     margin-top: 5px;
 }
 
-/* Button styles */
+/* Button styles improved */
 .admin-btn {
-    padding: 10px 20px;
+    padding: 8px 15px;
     border-radius: 5px;
     font-weight: 500;
     cursor: pointer;
@@ -214,6 +214,12 @@
     justify-content: center;
     transition: all 0.2s ease;
     border: none;
+    margin-right: 5px;
+    font-size: 13px;
+}
+
+.admin-btn i {
+    margin-right: 5px;
 }
 
 .admin-btn-primary {
@@ -223,6 +229,19 @@
 
 .admin-btn-primary:hover {
     background-color: #3a5cd8;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.admin-btn-danger {
+    background-color: var(--admin-danger);
+    color: white;
+}
+
+.admin-btn-danger:hover {
+    background-color: #ff4757;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Table styles */
@@ -316,41 +335,212 @@
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
+    color: var(--admin-text);
 }
 
 .admin-form-input {
     width: 100%;
-    padding: 10px 15px;
-    border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.1);
+    padding: 12px 15px;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.2);
     color: white;
-    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    transition: all 0.3s ease;
 }
 
 .admin-form-input:focus {
     outline: none;
     border-color: var(--admin-primary);
+    box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.25);
 }
 
-/* Card header with actions */
-.admin-card-header {
+/* File upload styling */
+.admin-file-upload {
+    position: relative;
+    overflow: hidden;
+    margin-top: 5px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 15px;
+}
+
+.admin-file-upload .file-preview {
+    width: 100%;
+    height: 120px;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    overflow: hidden;
+}
+
+.admin-file-upload .file-preview i {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.admin-file-upload .file-preview.has-file {
+    border-style: solid;
+    border-color: var(--admin-primary);
+    color: var(--admin-text);
+}
+
+.admin-file-upload .file-label {
+    padding: 10px 15px;
+    background-color: var(--admin-primary);
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+    text-align: center;
+}
+
+.admin-file-upload .file-label:hover {
+    background-color: #3a5cd8;
+}
+
+.admin-file-upload input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+/* Song form modal improvements */
+#song-modal .admin-modal-content {
+    max-width: 550px;
+}
+
+#song-modal .admin-form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 0;
+}
+
+#song-modal .admin-form-row .admin-form-group {
+    flex: 1;
+}
+
+#song-modal .admin-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+}
+
+/* Quick action buttons */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.quick-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 15px;
+    background-color: rgba(74, 108, 247, 0.1);
+    border: 1px solid rgba(74, 108, 247, 0.3);
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: var(--admin-text);
+}
+
+.quick-action-btn:hover {
+    background-color: rgba(74, 108, 247, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.quick-action-btn i {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--admin-primary);
+}
+
+.quick-action-btn span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Chart card styling */
+.chart-card {
+    height: 100%;
+}
+
+.chart-card .admin-card-content {
+    height: 300px;
+}
+
+.admin-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 992px) {
+    .admin-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Admin table improvements */
+.admin-table-container {
+    overflow-x: auto;
+    margin-top: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14px;
+}
+
+.admin-table th {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--admin-text);
+    font-weight: 600;
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table tr:hover td {
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* User actions button styles */
-.admin-btn-danger {
-    background-color: var(--admin-danger);
-    color: white;
-}
-
-.admin-btn-danger:hover {
-    background-color: #ff4757;
-}
-
 .admin-btn-success {
     background-color: var(--admin-success);
     color: white;
@@ -586,15 +776,6 @@
 }
 
 /* Admin loading state */
-.admin-loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-    color: rgba(255, 255, 255, 0.7);
-    position: relative;
-}
-
 .admin-loading:after {
     content: '';
     width: 25px;

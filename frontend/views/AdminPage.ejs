@@ -75,31 +75,75 @@
                     <div class="stats-grid">
                         <div class="stat-card">
                             <h3>Total Songs</h3>
-                            <div class="stat-value">Loading...</div>
+                            <div class="stat-value" id="total-songs">Loading...</div>
                             <div class="stat-subtitle">In your library</div>
                         </div>
                         <div class="stat-card">
                             <h3>Total Users</h3>
-                            <div class="stat-value">Loading...</div>
+                            <div class="stat-value" id="total-users">Loading...</div>
                             <div class="stat-subtitle">Registered accounts</div>
                         </div>
                         <div class="stat-card">
                             <h3>Storage Used</h3>
-                            <div class="stat-value">Loading...</div>
+                            <div class="stat-value" id="storage-used">Loading...</div>
                             <div class="stat-subtitle">Of available space</div>
                         </div>
                         <div class="stat-card">
                             <h3>Most Played</h3>
-                            <div class="stat-value">Loading...</div>
+                            <div class="stat-value" id="most-played">Loading...</div>
                             <div class="stat-subtitle">Top song</div>
                         </div>
                     </div>
+
+                    <div class="admin-row">
+                        <!-- Top songs chart card -->
+                        <div class="admin-card chart-card">
+                            <div class="admin-card-header">
+                                <h2 class="admin-card-title"><i class="fas fa-chart-bar"></i> Top Played Songs</h2>
+                            </div>
+                            <div class="admin-card-content">
+                                <div class="chart-container">
+                                    <canvas id="top-songs-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick actions card -->
+                        <div class="admin-card">
+                            <div class="admin-card-header">
+                                <h2 class="admin-card-title"><i class="fas fa-bolt"></i> Quick Actions</h2>
+                            </div>
+                            <div class="admin-card-content">
+                                <div class="quick-actions">
+                                    <a href="#" class="quick-action-btn" id="add-song-action">
+                                        <i class="fas fa-music"></i>
+                                        <span>Add Song</span>
+                                    </a>
+                                    <a href="#" class="quick-action-btn" id="add-user-action">
+                                        <i class="fas fa-user-plus"></i>
+                                        <span>Add User</span>
+                                    </a>
+                                    <a href="#" class="quick-action-btn" id="view-analytics-action">
+                                        <i class="fas fa-chart-line"></i>
+                                        <span>View Analytics</span>
+                                    </a>
+                                    <a href="#" class="quick-action-btn" id="manage-storage-action">
+                                        <i class="fas fa-database"></i>
+                                        <span>Manage Storage</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
+                    <!-- Recent activity card -->
                     <div class="admin-card">
                         <div class="admin-card-header">
-                            <h2 class="admin-card-title"><i class="fas fa-chart-line"></i> Recent Activity</h2>
+                            <h2 class="admin-card-title"><i class="fas fa-history"></i> Recent Activity</h2>
                         </div>
-                        <div class="admin-loading">Loading activity data...</div>
+                        <div class="admin-card-content">
+                            <div id="recent-activity" class="admin-loading">Loading activity data...</div>
+                        </div>
                     </div>
                 </div>
             </div>
