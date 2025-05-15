@@ -134,6 +134,11 @@ class MusicControl {
 
         this.loadSongCallCount++;
 
+        // Track the song play when loaded and played (except for the first time)
+        if (this.loadSongCallCount > 1) {
+            this.trackSongPlay(song.id);
+        }
+
         // Dispatch a custom event to notify other components that the song has changed
         // Include the full song object for easier access to song properties
         document.dispatchEvent(new CustomEvent('song-changed', {
@@ -226,7 +231,16 @@ class MusicControl {
         // Attempt to play the song
         try {
             if (this.audio.paused) {
-                this.audio.play().catch(() => {
+                this.audio.play().then(() => {
+                    // Track song play when resumed after being paused
+                    // Only track if the song has already started playing (more than 1 second)
+                    // and is not near the end (more than 5 seconds from the end)
+                    const songId = this.audio.getAttribute('data-song-id');
+                    if (songId && this.audio.currentTime > 1 && 
+                        (!this.audio.duration || this.audio.currentTime < this.audio.duration - 5)) {
+                        this.trackSongPlay(songId);
+                    }
+                }).catch(() => {
                     console.warn("Autoplay prevented. Waiting for user interaction.");
 
                     const playAfterInteraction = () => {
@@ -442,6 +456,8 @@ class MusicControl {
             console.log('Found song in playlist at index', songIndex);
             this.loadSong(songIndex);
             this.handlePlay();
+            // Track play
+            this.trackSongPlay(song.id);
             return true;
         } else {
             console.log('Song not in playlist, attempting to play directly', song.title);
@@ -464,6 +480,8 @@ class MusicControl {
                 // Load and play
                 this.loadSong(newIndex);
                 this.handlePlay();
+                // Track play
+                this.trackSongPlay(song.id);
 
                 // Set a flag that this is a temporary song
                 return true;
@@ -472,6 +490,22 @@ class MusicControl {
                 return false;
             }
         }
+    }
+
+    // Add method to track song plays in Firestore
+    trackSongPlay(songId) {
+        // Track song play in Firestore
+        fetch('/api/songs/track-play', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                songId: songId
+            })
+        }).catch(error => {
+            console.error('Error tracking song play:', error);
+        });
     }
 
     // New method to set current album songs

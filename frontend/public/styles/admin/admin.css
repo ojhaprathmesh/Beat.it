@@ -77,7 +77,8 @@
     margin-bottom: 5px;
 }
 
-.admin-nav-item:hover, .admin-nav-item.active {
+.admin-nav-item:hover,
+.admin-nav-item.active {
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
     border-left: 3px solid var(--admin-primary);
@@ -92,7 +93,8 @@
 /* Main content */
 .admin-content {
     flex: 1;
-    padding: 30px 30px 30px 270px; /* Added left padding to account for fixed sidebar */
+    padding: 30px 30px 30px 270px;
+    /* Added left padding to account for fixed sidebar */
     width: calc(100% - 240px);
     box-sizing: border-box;
     min-height: 100vh;
@@ -155,7 +157,8 @@
     border-bottom: 3px solid transparent;
 }
 
-.admin-tab:hover, .admin-tab.active {
+.admin-tab:hover,
+.admin-tab.active {
     color: white;
     border-bottom: 3px solid var(--admin-primary);
 }
@@ -339,7 +342,7 @@
 }
 
 .admin-form-input {
-    width: 100%;
+    width: 94%;
     padding: 12px 15px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
@@ -573,8 +576,9 @@
     background-color: rgba(255, 107, 107, 0.1);
     border-left: 3px solid var(--admin-danger);
     padding: 15px;
-    margin: 20px 0;
-    color: var(--admin-danger);
+    color: rgba(255, 255, 255, 0.9);
+    margin: 10px 0;
+    border-radius: 0 4px 4px 0;
 }
 
 /* Form actions */
@@ -771,8 +775,13 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* Admin loading state */
@@ -788,16 +797,46 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
-/* Admin error state */
-.admin-error {
-    background-color: rgba(255, 107, 107, 0.1);
-    border-left: 3px solid var(--admin-danger);
-    padding: 15px;
-    color: rgba(255, 255, 255, 0.9);
-    margin: 10px 0;
-    border-radius: 0 4px 4px 0;
-} 
+/* Song play counts table */
+.song-play-counts {
+    margin-top: 1rem;
+}
+
+.admin-card-subtitle {
+    font-size: 16px;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+/* Text alignment utility */
+.text-center {
+    text-align: center;
+}
+
+/* Additional admin styles */
+
+/* Song play counts table */
+.song-play-counts {
+    margin-top: 1rem;
+}
+
+/* Admin card subtitle - specifically for play count details */
+.admin-card-subtitle {
+    font-size: 16px;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+/* Text alignment utility */
+.text-center {
+    text-align: center;
+}

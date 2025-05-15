@@ -66,8 +66,8 @@ const AdminSongs = {
                     duration = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
                 }
                 
-                // Get play count - Set minimum to give a more realistic view
-                const playCount = song.playCount > 0 ? song.playCount : Math.floor(Math.random() * 50) + 5;
+                // Use the real play count from Firestore
+                const playCount = song.playCount || 0;
                 
                 const tr = document.createElement('tr');
                 tr.dataset.songId = song.id;

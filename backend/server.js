@@ -10,7 +10,7 @@ dotenv.config();
 
 // Firebase imports
 const {db} = require('./firebase/firebaseConfig');
-const {collection, query, where, getDocs, doc, updateDoc, limit, getDoc, setDoc, deleteDoc} = require('firebase/firestore');
+const {collection, query, where, getDocs, doc, updateDoc, limit, getDoc, setDoc, deleteDoc, addDoc, increment} = require('firebase/firestore');
 const {createUser, loginUser, forgotPassword, resetPassword, isUserAdmin, promoteUserToAdmin, ADMIN_EMAILS, loadAdminEmails, deleteUserAccount} = require('./firebase/authService');
 
 // Import Cloudinary image service
@@ -759,15 +759,16 @@ app.get('/api/admin/stats', adminMiddleware, async (req, res) => {
         const usersSnapshot = await getDocs(usersRef);
         const totalUsers = usersSnapshot.size;
 
-        // Track play counts properly for songs - update songData with play counts
-        const playCountRef = collection(db, 'playCounts');
-        const playCountSnapshot = await getDocs(playCountRef);
+        // Get all plays from the 'plays' collection
+        const playsRef = collection(db, 'plays');
+        const playsSnapshot = await getDocs(playsRef);
         
-        // Create a map of song ID to play count
+        // Create a map of song ID to play count by aggregating plays
         const playCountMap = {};
-        playCountSnapshot.forEach(doc => {
+        playsSnapshot.forEach(doc => {
             const data = doc.data();
-            playCountMap[data.songId] = (playCountMap[data.songId] || 0) + data.count;
+            const songId = data.songId;
+            playCountMap[songId] = (playCountMap[songId] || 0) + 1;
         });
         
         // Update song data with play counts
@@ -1064,7 +1065,25 @@ app.post('/api/admin/promote-user', adminMiddleware, async (req, res) => {
 // Get all songs for admin management
 app.get('/api/admin/songs', adminMiddleware, async (req, res) => {
     try {
-        res.json(songData);
+        // Get all plays from the 'plays' collection to count plays
+        const playsRef = collection(db, 'plays');
+        const playsSnapshot = await getDocs(playsRef);
+        
+        // Create a map of song ID to play count by aggregating plays
+        const playCountMap = {};
+        playsSnapshot.forEach(doc => {
+            const data = doc.data();
+            const songId = data.songId;
+            playCountMap[songId] = (playCountMap[songId] || 0) + 1;
+        });
+        
+        // Update song data with play counts
+        const songsWithPlayCounts = songData.map(song => ({
+            ...song,
+            playCount: playCountMap[song.id] || 0
+        }));
+        
+        res.json(songsWithPlayCounts);
     } catch (error) {
         console.error('Error fetching songs:', error);
         res.status(500).json({error: 'Failed to fetch songs'});
@@ -1375,6 +1394,32 @@ app.post('/api/user/delete-account', async (req, res) => {
     } catch (error) {
         console.error('Error deleting account:', error);
         res.status(400).json({ error: error.message || 'Failed to delete account' });
+    }
+});
+
+// Track a song play in Firestore
+app.post('/api/songs/track-play', async (req, res) => {
+    try {
+        const { songId } = req.body;
+        if (!songId) {
+            return res.status(400).json({ error: 'Song ID is required' });
+        }
+
+        // Get user information if logged in
+        const userEmail = req.session.email || 'Anonymous User';
+        
+        // Record the play in the 'plays' collection
+        const playsRef = collection(db, 'plays');
+        await addDoc(playsRef, {
+            songId: songId,
+            userEmail: userEmail,
+            timestamp: new Date().toISOString()
+        });
+
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error tracking song play:', error);
+        res.status(500).json({ error: 'Failed to track song play' });
     }
 });
 
