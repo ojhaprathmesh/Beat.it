@@ -1,6 +1,6 @@
 /**
  * Admin Storage Module
- * Handles file storage management using Vercel Blob
+ * Handles file storage management
  */
 
 const AdminStorage = {
@@ -9,11 +9,12 @@ const AdminStorage = {
      */
     init: async function() {
         try {
+            console.log('Initializing Admin Storage module');
             await this.loadStorageData();
             this.setupEventListeners();
         } catch (error) {
             console.error('Error initializing admin storage module:', error);
-            alert('Error loading storage data. Please try refreshing the page.');
+            this.displayError('Error loading storage data. Please try refreshing the page.');
         }
     },
 
@@ -22,6 +23,12 @@ const AdminStorage = {
      */
     loadStorageData: async function() {
         try {
+            // Show loading state
+            document.getElementById('files-table').querySelector('tbody').innerHTML = '<tr><td colspan="5">Loading files...</td></tr>';
+            document.getElementById('total-storage').textContent = 'Loading...';
+            document.getElementById('used-storage').textContent = 'Loading...';
+            document.getElementById('available-storage').textContent = 'Loading...';
+            
             const response = await fetch('/api/admin/storage');
             
             if (!response.ok) {
@@ -38,8 +45,18 @@ const AdminStorage = {
             
         } catch (error) {
             console.error('Error loading storage data:', error);
-            throw error;
+            this.displayError('Failed to load storage data');
         }
+    },
+
+    /**
+     * Display error message in the UI
+     * @param {string} message - Error message to display
+     */
+    displayError: function(message) {
+        // Display error in files table
+        document.getElementById('files-table').querySelector('tbody').innerHTML = 
+            `<tr><td colspan="5" class="admin-error">${message}</td></tr>`;
     },
 
     /**
@@ -47,6 +64,11 @@ const AdminStorage = {
      * @param {Object} stats - Storage usage statistics
      */
     updateStorageStats: function(stats) {
+        if (!stats) {
+            console.error('No stats data provided');
+            return;
+        }
+        
         document.getElementById('total-storage').textContent = stats.total || '0 GB';
         document.getElementById('used-storage').textContent = stats.used || '0 MB';
         document.getElementById('available-storage').textContent = stats.available || '0 GB';
@@ -58,6 +80,9 @@ const AdminStorage = {
         if (progressBar) {
             progressBar.style.width = `${percentage}%`;
             progressBar.textContent = `${percentage}%`;
+            
+            // Remove existing classes
+            progressBar.classList.remove('critical', 'warning', 'normal');
             
             // Change color based on usage
             if (percentage > 90) {
@@ -86,8 +111,8 @@ const AdminStorage = {
                 // Format file size
                 const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
                 
-                // Extract filename from URL
-                const filename = this.getFilenameFromUrl(file.url);
+                // Extract filename from URL or use provided name
+                const filename = file.name || this.getFilenameFromUrl(file.url);
                 
                 // Format date
                 const uploadDate = new Date(file.uploadedAt).toLocaleDateString();
@@ -98,14 +123,18 @@ const AdminStorage = {
                     <td>${sizeInMB} MB</td>
                     <td>${uploadDate}</td>
                     <td>
-                        <button class="admin-btn view-file" data-url="${file.url}">View</button>
-                        <button class="admin-btn admin-btn-danger delete-file" data-url="${file.url}">Delete</button>
+                        <button class="admin-btn view-file" data-url="${file.url}">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="admin-btn admin-btn-danger delete-file" data-url="${file.url}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </td>
                 `;
                 filesTable.appendChild(tr);
             });
         } else {
-            filesTable.innerHTML = '<tr><td colspan="5">No files found</td></tr>';
+            filesTable.innerHTML = '<tr><td colspan="5" class="text-center">No files found</td></tr>';
         }
     },
 
@@ -118,15 +147,21 @@ const AdminStorage = {
         if (!url) return 'Unknown';
         
         try {
-            const urlObj = new URL(url);
-            const pathname = urlObj.pathname;
-            
-            // Get the last part of the path (the filename)
-            const parts = pathname.split('/');
-            return parts[parts.length - 1];
+            // First try to parse as URL
+            try {
+                const urlObj = new URL(url);
+                const pathname = urlObj.pathname;
+                
+                // Get the last part of the path (the filename)
+                const parts = pathname.split('/');
+                return decodeURIComponent(parts[parts.length - 1]);
+            } catch (e) {
+                // If URL parsing fails, use string manipulation
+                return url.substring(url.lastIndexOf('/') + 1);
+            }
         } catch (error) {
             console.error('Error parsing URL:', error);
-            return url.substring(url.lastIndexOf('/') + 1);
+            return 'Unknown file';
         }
     },
 
@@ -146,14 +181,25 @@ const AdminStorage = {
             uploadForm.addEventListener('submit', this.handleFileUpload.bind(this));
         }
         
+        // Modal close button
+        const closeBtn = document.querySelector('.admin-modal-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                document.getElementById('upload-modal').classList.remove('active');
+            });
+        }
+        
         // Files table actions (using event delegation)
         const filesTable = document.getElementById('files-table');
         if (filesTable) {
             filesTable.addEventListener('click', (e) => {
-                if (e.target.classList.contains('view-file')) {
-                    window.open(e.target.dataset.url, '_blank');
-                } else if (e.target.classList.contains('delete-file')) {
-                    this.deleteFile(e.target.dataset.url);
+                const viewBtn = e.target.closest('.view-file');
+                const deleteBtn = e.target.closest('.delete-file');
+                
+                if (viewBtn) {
+                    window.open(viewBtn.dataset.url, '_blank');
+                } else if (deleteBtn) {
+                    this.deleteFile(deleteBtn.dataset.url);
                 }
             });
         }
@@ -167,10 +213,10 @@ const AdminStorage = {
         const form = document.getElementById('upload-form');
         
         // Reset form
-        form.reset();
+        if (form) form.reset();
         
         // Show modal
-        modal.classList.add('active');
+        if (modal) modal.classList.add('active');
     },
 
     /**
@@ -183,13 +229,13 @@ const AdminStorage = {
         const fileInput = document.getElementById('file-upload');
         const filePathInput = document.getElementById('file-path');
         
-        if (fileInput.files.length === 0) {
+        if (!fileInput || fileInput.files.length === 0) {
             alert('Please select a file to upload');
             return;
         }
         
         const file = fileInput.files[0];
-        const filePath = filePathInput.value.trim() || 'uploads';
+        const filePath = filePathInput ? filePathInput.value.trim() : 'uploads';
         
         // Create FormData for upload
         const formData = new FormData();
@@ -198,8 +244,11 @@ const AdminStorage = {
         
         try {
             // Show loading state
-            document.getElementById('upload-submit').disabled = true;
-            document.getElementById('upload-submit').textContent = 'Uploading...';
+            const uploadBtn = document.getElementById('upload-submit');
+            if (uploadBtn) {
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = 'Uploading...';
+            }
             
             const response = await fetch('/api/admin/storage/upload', {
                 method: 'POST',
@@ -208,12 +257,15 @@ const AdminStorage = {
             
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to upload file');
+                throw new Error(errorData.error || 'Failed to upload file');
             }
             
             // Reset form and close modal
-            document.getElementById('upload-form').reset();
-            document.getElementById('upload-modal').classList.remove('active');
+            const form = document.getElementById('upload-form');
+            if (form) form.reset();
+            
+            const modal = document.getElementById('upload-modal');
+            if (modal) modal.classList.remove('active');
             
             // Refresh storage data
             await this.loadStorageData();
@@ -225,8 +277,11 @@ const AdminStorage = {
             alert(`Error: ${error.message}`);
         } finally {
             // Reset button state
-            document.getElementById('upload-submit').disabled = false;
-            document.getElementById('upload-submit').textContent = 'Upload';
+            const uploadBtn = document.getElementById('upload-submit');
+            if (uploadBtn) {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Upload';
+            }
         }
     },
 
@@ -250,14 +305,10 @@ const AdminStorage = {
             
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to delete file');
+                throw new Error(errorData.error || 'Failed to delete file');
             }
             
-            // Remove from table
-            const row = document.querySelector(`tr[data-file-url="${fileUrl}"]`);
-            if (row) row.remove();
-            
-            // Refresh storage stats
+            // Refresh storage data instead of directly modifying DOM
             await this.loadStorageData();
             
             alert('File deleted successfully');
@@ -269,5 +320,10 @@ const AdminStorage = {
     }
 };
 
-// Export the module
-window.AdminStorage = AdminStorage; 
+// Initialize the storage module when the DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if we're on the storage page before initializing
+    if (document.getElementById('files-table')) {
+        AdminStorage.init();
+    }
+}); 
