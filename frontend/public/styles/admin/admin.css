@@ -821,22 +821,3 @@
 .text-center {
     text-align: center;
 }
-
-/* Additional admin styles */
-
-/* Song play counts table */
-.song-play-counts {
-    margin-top: 1rem;
-}
-
-/* Admin card subtitle - specifically for play count details */
-.admin-card-subtitle {
-    font-size: 16px;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-}
-
-/* Text alignment utility */
-.text-center {
-    text-align: center;
-}

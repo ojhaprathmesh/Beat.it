@@ -1090,6 +1090,85 @@ app.get('/api/admin/songs', adminMiddleware, async (req, res) => {
     }
 });
 
+// Get all artists for admin management
+app.get('/api/admin/artists', adminMiddleware, async (req, res) => {
+    try {
+        // Extract unique artists from song data
+        const artistMap = {};
+        
+        songData.forEach(song => {
+            if (Array.isArray(song.artist)) {
+                song.artist.forEach(artistName => {
+                    if (!artistMap[artistName]) {
+                        artistMap[artistName] = {
+                            id: artistName.toLowerCase().replace(/\s+/g, '-'),
+                            name: artistName,
+                            songs: [],
+                            albums: new Set()
+                        };
+                    }
+                    
+                    // Add song to artist's songs
+                    artistMap[artistName].songs.push(song.id);
+                    
+                    // Add album to artist's albums
+                    if (song.album) {
+                        artistMap[artistName].albums.add(song.album);
+                    }
+                });
+            }
+        });
+        
+        // Convert to array and convert album sets to arrays
+        const artists = Object.values(artistMap).map(artist => ({
+            ...artist,
+            albums: Array.from(artist.albums)
+        }));
+        
+        res.json(artists);
+    } catch (error) {
+        console.error('Error fetching artists:', error);
+        res.status(500).json({error: 'Failed to fetch artists'});
+    }
+});
+
+// Get all albums for admin management
+app.get('/api/admin/albums', adminMiddleware, async (req, res) => {
+    try {
+        // Read albums data from the JSON file
+        const albumsDataPath = path.join(paths.data, 'albumsData.json');
+        
+        if (!fs.existsSync(albumsDataPath)) {
+            return res.json([]);
+        }
+        
+        const albumsData = JSON.parse(fs.readFileSync(albumsDataPath, 'utf8'));
+        
+        // Format albums for admin panel
+        const albums = albumsData.map(album => {
+            // Get the primary artist from the first song, or use a default
+            const primaryArtist = album.songs && album.songs[0] && album.songs[0].artist && album.songs[0].artist[0] 
+                ? album.songs[0].artist[0] 
+                : 'Unknown Artist';
+                
+            return {
+                id: album.albumName.toLowerCase().replace(/\s+/g, '-'),
+                title: album.albumName,
+                artist: primaryArtist,
+                artistId: primaryArtist.toLowerCase().replace(/\s+/g, '-'),
+                albumCover: album.albumCover,
+                songs: album.songs || [],
+                year: album.year || new Date().getFullYear() // Default to current year if not specified
+            };
+        });
+        
+        res.json(albums);
+    } catch (error) {
+        console.error('Error fetching albums:', error);
+        res.status(500).json({error: 'Failed to fetch albums'});
+    }
+});
+
 // Upload new song (placeholder)
 app.post('/api/admin/songs/upload', adminMiddleware, upload.single('songFile'), async (req, res) => {
     try {
